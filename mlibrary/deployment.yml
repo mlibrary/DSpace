@@ -1,0 +1,96 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    service: dspace
+  name: app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: dspace
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        service: dspace
+    spec:
+      containers:
+        - name: app
+          image: ghcr.io/mlibrary/dspace-7.4/dspace-app:v7.4
+          command: ["/bin/bash"]
+          args: ["-c", "while (!</dev/tcp/dspacedb/5432) > /dev/null 2>&1; do sleep 1; done; /dspace/bin/dspace database migrate; catalina.sh run"]
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: dspace__P__dir
+              value: "/dspace"
+            - name: dspace__P__name
+              value: "DSpace Demo"
+            - name: db__P__url
+              value: "jdbc:postgresql://dspacedb:5432/dspace"
+            - name: solr__P__server
+              value: "http://dspacesolr:8983/solr"
+            - name: proxies__P__trusted__P__ipranges
+              value: "172.23.0"
+          ports:
+            - containerPort: 8080
+            - containerPort: 8009
+          volumeMounts:
+            - name: app-assetstore
+              mountPath: /dspace/assetstore
+            - name: app-config
+              mountPath: /dspace/config
+      volumes:
+        - name: app-assetstore
+          persistentVolumeClaim:
+            claimName: app-assetstore
+        - name: app-config
+          persistentVolumeClaim:
+            claimName: app-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    service: dspace
+  name: dspace
+spec:
+  ports:
+    - name: "backend"
+      targetPort: 8080
+      port: 8080
+    - name: "backdoor"
+      targetPort: 8009
+      port: 8009
+  selector:
+    service: dspace
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    service: dspace
+  name: app-assetstore
+spec:
+  storageClassName: efs
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    service: dspace
+  name: app-config
+spec:
+  storageClassName: efs
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi

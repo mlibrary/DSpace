@@ -1,0 +1,63 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    service: dspacedb
+  name: dspacedb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: dspacedb
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        service: dspacedb
+    spec:
+      containers:
+        - name: dspacedb
+          image: ghcr.io/mlibrary/dspace-7.4/dspace-db:v7.4
+          imagePullPolicy: Always
+          env:
+            - name: PGDATA
+              value: "/pgdata"
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: db-data
+              mountPath: /pgdata
+      volumes:
+        - name: db-data
+          persistentVolumeClaim:
+            claimName: db-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    service: dspacedb
+  name: dspacedb
+spec:
+  ports:
+    - name: "dspacedb"
+      targetPort: 5432
+      port: 5432
+  selector:
+    service: dspacedb
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    service: dspacedb
+  name: db-data
+spec:
+  storageClassName: efs
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi

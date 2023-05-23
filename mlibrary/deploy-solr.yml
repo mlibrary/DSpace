@@ -1,0 +1,62 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    service: dspacesolr
+  name: dspacesolr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: dspacesolr
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        service: dspacesolr
+    spec:
+      containers:
+        - name: dspacesolr
+          image: ghcr.io/mlibrary/dspace-7.4/dspace-solr:v7.4
+          command: ["/bin/bash"]
+          args: ["-c", "init-var-solr; precreate-core authority /opt/solr/server/solr/configsets/authority; cp -r -u /opt/solr/server/solr/configsets/authority/* authority; precreate-core oai /opt/solr/server/solr/configsets/oai; cp -r -u /opt/solr/server/solr/configsets/oai/* oai; precreate-core search /opt/solr/server/solr/configsets/search; cp -r -u /opt/solr/server/solr/configsets/search/* search; precreate-core statistics /opt/solr/server/solr/configsets/statistics; cp -r -u /opt/solr/server/solr/configsets/statistics/* statistics; exec solr -f"]
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8983
+          volumeMounts:
+            - name: solr-data
+              mountPath: /var/solr/data
+      volumes:
+        - name: solr-data
+          persistentVolumeClaim:
+            claimName: solr-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    service: dspacesolr
+  name: dspacesolr
+spec:
+  ports:
+    - name: "solr"
+      targetPort: 8983
+      port: 8983
+  selector:
+    service: dspacesolr
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    service: dspacesolr
+  name: solr-data
+spec:
+  storageClassName: efs
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi

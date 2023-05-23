@@ -65,8 +65,10 @@ services:
     container_name: dspacedb
     environment:
       PGDATA: /pgdata
+      POSTGRES_HOST_AUTH_METHOD: trust
     # Uses a custom Postgres image with pgcrypto installed
-    image: dspace/dspace-postgres-pgcrypto
+    image: dspace/dspace-postgres-pgcrypto:dspace-7_x
+#    platform: linux/amd64
     networks:
       dspacenet:
     ports:

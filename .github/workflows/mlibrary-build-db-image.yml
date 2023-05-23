@@ -1,0 +1,44 @@
+---
+name: "Build dspace-db image (mlibrary)"
+
+on:
+  workflow_dispatch:  # This allows to kick-off the action manually from GitHub Actions
+    inputs:
+      dspace_version:
+        description: "DSpace Version"
+        required: true
+        default: "latest"
+        type: choice
+        options:
+          - "latest"
+          - "v7.4"
+
+jobs:
+  build:
+    name: Build
+    # Ensure this job only executed for 'mlibrary/DSpace-7.4'
+    if: github.repository == 'mlibrary/DSpace-7.4'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build dspace-db image and push to GitHub Container Registry
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: 'ghcr.io/mlibrary/dspace-7.4/dspace-db:${{ github.sha }}, ghcr.io/mlibrary/dspace-7.4/dspace-db:${{ github.event.inputs.dspace_version }}'
+          file: ./mlibrary/db.dockerfile
+          build-args: |
+            DSPACE_VERSION=${{ github.event.inputs.dspace_version }}
