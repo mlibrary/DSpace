@@ -240,13 +240,15 @@ public class SubmissionConfigReader {
         log.debug("Loading submission process config named '" + submitName
                       + "'");
 
+        lastSubmissionConfig = null;
         // check mini-cache, and return if match
         if (lastSubmissionConfig != null
             && lastSubmissionConfig.getSubmissionName().equals(submitName)) {
             log.debug("Found submission process config '" + submitName
                           + "' in cache.");
 
-            return lastSubmissionConfig;
+            // Don't use cache.
+            //return lastSubmissionConfig;
         }
 
         // cache miss - construct new SubmissionConfig

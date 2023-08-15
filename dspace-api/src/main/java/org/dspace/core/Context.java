@@ -114,6 +114,8 @@ public class Context implements AutoCloseable {
      */
     private String dispName = null;
 
+    private boolean noDoiStatus = false;
+
     /**
      * Context mode
      */
@@ -248,6 +250,15 @@ public class Context implements AutoCloseable {
     public void setCurrentUser(EPerson user) {
         currentUser = user;
     }
+
+    public void setNoDoiStatus(boolean status) {
+        noDoiStatus = status;
+    }
+
+    public boolean getNoDoiStatus() {
+        return noDoiStatus;
+    }
+
 
     /**
      * Get the current (authenticated) user

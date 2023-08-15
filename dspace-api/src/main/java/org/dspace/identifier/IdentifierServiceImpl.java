@@ -66,6 +66,7 @@ public class IdentifierServiceImpl implements IdentifierService {
     @Override
     public void reserve(Context context, DSpaceObject dso)
         throws AuthorizeException, SQLException, IdentifierException {
+
         for (IdentifierProvider service : providers) {
             try {
                 String identifier = service.mint(context, dso);
@@ -81,8 +82,9 @@ public class IdentifierServiceImpl implements IdentifierService {
     }
 
     @Override
-    public void reserve(Context context, DSpaceObject dso, String identifier)
+    public void reserve(Context context, DSpaceObject dso, String identifier) 
         throws AuthorizeException, SQLException, IdentifierException {
+
         // Next resolve all other services
         for (IdentifierProvider service : providers) {
             if (service.supports(identifier)) {
@@ -100,6 +102,8 @@ public class IdentifierServiceImpl implements IdentifierService {
     @Override
     public void register(Context context, DSpaceObject dso)
             throws AuthorizeException, SQLException, IdentifierException {
+
+
         //We need to commit our context because one of the providers might require the handle created above
         // Next resolve all other services
         for (IdentifierProvider service : providers) {
@@ -116,6 +120,8 @@ public class IdentifierServiceImpl implements IdentifierService {
     @Override
     public void register(Context context, DSpaceObject dso, Class<? extends Identifier> type, Filter filter)
             throws AuthorizeException, SQLException, IdentifierException {
+
+
         boolean registered = false;
         // Iterate all services and register identifiers as appropriate
         for (IdentifierProvider service : providers) {
@@ -144,6 +150,7 @@ public class IdentifierServiceImpl implements IdentifierService {
     @Override
     public void register(Context context, DSpaceObject dso, Class<? extends Identifier> type)
             throws AuthorizeException, SQLException, IdentifierException {
+
         boolean registered = false;
         // Iterate all services and register identifiers as appropriate
         for (IdentifierProvider service : providers) {
@@ -167,6 +174,8 @@ public class IdentifierServiceImpl implements IdentifierService {
     @Override
     public void register(Context context, DSpaceObject dso, Map<Class<? extends Identifier>, Filter> typeFilters)
             throws AuthorizeException, SQLException, IdentifierException {
+        boolean noDoi = context.getNoDoiStatus();
+
         // Iterate all services and register identifiers as appropriate
         for (IdentifierProvider service : providers) {
             try {
@@ -184,11 +193,27 @@ public class IdentifierServiceImpl implements IdentifierService {
                     }
                     if (filter != null) {
                         // Pass the found filter to the provider
+
                         filteredService.register(context, dso, filter);
                     } else {
+
+
+            if ( noDoi )
+            {
+                String serviceName = filteredService.getClass().getSimpleName();
+                if (!serviceName.contains("DOI"))
+                {
                         // Let the provider use the default filter / behaviour
                         filteredService.register(context, dso);
-                    }
+                }
+            }
+            else 
+            {
+                    // Let the provider use the default filter / behaviour
+                    filteredService.register(context, dso);
+
+            }
+                }
                 } else {
                     service.register(context, dso);
                 }
@@ -205,16 +230,45 @@ public class IdentifierServiceImpl implements IdentifierService {
     @Override
     public void register(Context context, DSpaceObject object, String identifier)
         throws AuthorizeException, SQLException, IdentifierException {
+
+        // UM this is called at install, you don't want to regitster the DOI if the user does not want one.
+        boolean noDoi = context.getNoDoiStatus();
+
+        log.info("DOI: 123  should BE  in this reserve the value of noDoi=" + noDoi);
+
         // Iterate all services and register identifiers as appropriate
         boolean registered = false;
         for (IdentifierProvider service : providers) {
-            if (service.supports(identifier)) {
+            if ( noDoi )
+            {
+                String serviceName = service.getClass().getSimpleName();
+                log.info("DOI: 123 checking service= " + serviceName);
+                if (!serviceName.contains("DOI"))
+                {
+                log.info("DOI: 123 doing...= " + serviceName + " identifier=" + identifier);
+
+                  if (service.supports(identifier)) {
+                    try {
+                        service.register(context, object, identifier);
+                        registered = true;
+                    } catch (IdentifierNotApplicableException e) {
+                        log.warn("Identifier not registered (inapplicable): " + e.getMessage());
+                    }
+                  }
+                }
+            }
+            else 
+            {
+
+              if (service.supports(identifier)) {
                 try {
                     service.register(context, object, identifier);
                     registered = true;
                 } catch (IdentifierNotApplicableException e) {
                     log.warn("Identifier not registered (inapplicable): " + e.getMessage());
                 }
+              }
+
             }
         }
         if (!registered) {
@@ -227,6 +281,7 @@ public class IdentifierServiceImpl implements IdentifierService {
 
     @Override
     public String lookup(Context context, DSpaceObject dso, Class<? extends Identifier> identifier) {
+
         for (IdentifierProvider service : providers) {
             if (service.supports(identifier)) {
                 try {
@@ -249,6 +304,15 @@ public class IdentifierServiceImpl implements IdentifierService {
 
     @Override
     public List<String> lookup(Context context, DSpaceObject dso) {
+
+        boolean noDoi = context.getNoDoiStatus();
+
+        if ( noDoi ) {
+            return  lookupNoDoi(context, dso);
+        }
+        else {
+
+
         List<String> identifiers = new ArrayList<>();
         // Attempt to lookup DSO's identifiers using every available provider
         // TODO: We may want to eventually limit providers based on DSO type, as not every provider supports every DSO
@@ -302,12 +366,90 @@ public class IdentifierServiceImpl implements IdentifierService {
         }
 
         log.debug("Found identifiers: " + identifiers.toString());
+        log.info("DOI: 123 dont expect list of ids created. Found identifiers: " + identifiers.toString());
+        return identifiers;
+    }
+    }
+
+    @Override
+    public List<String> lookupNoDoi(Context context, DSpaceObject dso) {
+
+        log.info("DOI: 123 in lookupNoDoi expect to be here");
+
+        List<String> identifiers = new ArrayList<>();
+        // Attempt to lookup DSO's identifiers using every available provider
+        // TODO: We may want to eventually limit providers based on DSO type, as not every provider supports every DSO
+        for (IdentifierProvider service : providers) {
+            try {
+
+                String serviceName = service.getClass().getSimpleName();
+                log.info("DOI: 123 checking service= " + serviceName);
+                if (!serviceName.contains("DOI"))
+                {
+                    log.info("DOI: 123 getting this service= " + serviceName);
+
+                    String result = service.lookup(context, dso);
+                    if (!StringUtils.isEmpty(result)) {
+                        if (log.isDebugEnabled()) {
+                            try {
+                                log.debug("Got an identifier from " + service.getClass().getCanonicalName() + ".");
+                            } catch (NullPointerException ex) {
+                                log.debug(ex.getMessage(), ex);
+                            }
+                        }
+                    // Never gets here    
+                    log.info("DOI: 123 very important identifier is= " + result);
+
+                    identifiers.add(result);
+                    }
+                }
+            } catch (IdentifierNotFoundException ex) {
+                // This IdentifierNotFoundException is NOT logged by default, as some providers do not apply to
+                // every DSO (e.g. DOIs usually don't apply to EPerson objects). So it is expected some may fail lookup.
+                log.debug(service.getClass().getName() + " doesn't find an "
+                             + "Identifier for " + contentServiceFactory.getDSpaceObjectService(dso)
+                                                                        .getTypeText(dso) + ", "
+                             + dso.getID().toString() + ".");
+            } catch (IdentifierException ex) {
+                log.error(ex);
+            }
+        }
+
+        try {
+            String handle = dso.getHandle();
+            if (!StringUtils.isEmpty(handle)) {
+                if (!identifiers.contains(handle)
+                        && !identifiers.contains("hdl:" + handle)
+                        && !identifiers.contains(handleService.getCanonicalForm(handle))) {
+                    // The VersionedHandleIdentifierProvider gets loaded by default
+                    // it returns handles without any scheme (neither hdl: nor http:).
+                    // If the VersionedHandleIdentifierProvider is not loaded,
+                    // we adds the handle in way it would.
+                    // Generally it would be better if identifiers would be added
+                    // here in a way they could be recognized.
+                    log.info("Adding handle '" + handle + "' to the "
+                                 + "array of looked up identifiers.");
+                    identifiers.add(handle);
+                }
+            }
+        } catch (Exception ex) {
+            // nothing is expected here, but if an exception is thrown it
+            // should not stop everything running.
+            log.error(ex.getMessage(), ex);
+        }
+
+        log.debug("Found identifiers: " + identifiers.toString());
+
+        log.info("DOI: 123 expect list of ids created. Found identifiers: " + identifiers.toString());
         return identifiers;
     }
 
     @Override
     public DSpaceObject resolve(Context context, String identifier)
         throws IdentifierNotFoundException, IdentifierNotResolvableException {
+
+log.info("DOI: 123  should NOT be in this resolve");
+
         for (IdentifierProvider service : providers) {
             if (service.supports(identifier)) {
                 try {
@@ -330,6 +472,8 @@ public class IdentifierServiceImpl implements IdentifierService {
 
     @Override
     public void delete(Context context, DSpaceObject dso) throws AuthorizeException, SQLException, IdentifierException {
+log.info("DOI: 123 ONE should NOT be in this delete");
+
         for (IdentifierProvider service : providers) {
             try {
                 service.delete(context, dso);
@@ -342,6 +486,8 @@ public class IdentifierServiceImpl implements IdentifierService {
     @Override
     public void delete(Context context, DSpaceObject dso, String identifier)
         throws AuthorizeException, SQLException, IdentifierException {
+log.info("DOI: 123 should NOT be in this delete");
+
         for (IdentifierProvider service : providers) {
             try {
                 if (service.supports(identifier)) {

@@ -51,6 +51,60 @@
         <!-- Form which defines the first page/section of the "traditional" DSpace submission process,
              often used when depositing normal Items (i.e. Items which are not Entities). -->
         <form name="traditionalpageone">
+
+           <row>
+                <field>
+                    <dc-schema>dc</dc-schema>
+                    <dc-element>description</dc-element>
+                    <dc-qualifier>depositor</dc-qualifier>
+                    <repeatable>false</repeatable>
+                    <label>Depositing as</label>
+                    <input-type value-pairs-name="depositor_123456789_2">dropdown</input-type>
+                    <hint>Deposit as yourself, or as a proxy for someone else.</hint>
+                    <required></required>
+                </field>
+            </row>
+
+
+            <row>
+                <field>
+                    <dc-schema>dc</dc-schema>
+                    <dc-element>date</dc-element>
+                    <dc-qualifier>available</dc-qualifier>
+                    <repeatable>false</repeatable>
+                    <label>Date thesis is available</label>
+                    <input-type value-pairs-name="embargo">dropdown</input-type>
+                    <hint> </hint>
+                    <required></required>
+                </field>
+            </row>
+
+            <row>
+                <field>
+                        <dc-schema>dc</dc-schema>
+                        <dc-element>description</dc-element>
+                        <dc-qualifier>peerreviewed</dc-qualifier>
+                        <repeatable>false</repeatable>
+                        <label>Peer Reviewed</label>
+                        <input-type value-pairs-name="peer_reviewed">dropdown</input-type>
+                        <hint>Select "Peer Reviewed" if item is peer reviewed.</hint>
+                        <required></required>
+                </field>
+            </row>
+
+            <row>
+                <field>
+                    <dc-schema>dc</dc-schema>
+                    <dc-element>description</dc-element>
+                    <dc-qualifier>mapping</dc-qualifier>
+                    <repeatable>true</repeatable>
+                    <label>Display in Other Collections</label>
+                    <input-type value-pairs-name="collection_mappings">dropdown</input-type>
+                    <hint>If you are also a depositor in another collection and you'd like to associate your work with it, you may select the collection(s) here (e.g. a thesis may be added to the general thesis collection as well as appear in the relevant departmental collection(s) ). This box will be blank if you are not a depositor in other collections</hint> 
+                    <required></required>
+                </field>
+            </row>
+
             <row>
                 <field>
                     <dc-schema>dc</dc-schema>
@@ -1985,6 +2039,51 @@
                 <stored-value>FundingOrganization</stored-value>
             </pair>
         </value-pairs>
+
+  <value-pairs value-pairs-name="embargo" dc-term="date_available">
+     <pair>
+       <displayed-value>Immediate access to full description and files</displayed-value>
+       <stored-value>NO_RESTRICTION</stored-value>
+     </pair>
+     <pair>
+       <displayed-value>Access to full description and files in 3 months</displayed-value>
+       <stored-value>WITHHELD_THREE_MONTHS</stored-value>
+     </pair>
+     <pair>
+       <displayed-value>Access to full description and files in 6 months</displayed-value>
+       <stored-value>WITHHELD_HALF_YEAR</stored-value>
+     </pair>
+     <pair>
+       <displayed-value>Access to full description and files in 12 months</displayed-value>
+       <stored-value>WITHHELD_ONE_YEAR</stored-value>
+     </pair>
+   </value-pairs>        
+
+  <value-pairs value-pairs-name="peer_reviewed" dc-term="description_peerreviewed">
+    <pair>
+      <displayed-value> </displayed-value>
+      <stored-value></stored-value>
+    </pair>
+    <pair>
+      <displayed-value>Peer Reviewed</displayed-value>
+      <stored-value>Peer Reviewed</stored-value>
+    </pair>
+  </value-pairs>
+
+
+   <value-pairs value-pairs-name="collection_mappings" dc-term="description_mapping">
+     <pair>
+       <displayed-value>display_filler</displayed-value>
+       <stored-value>value_filler</stored-value>
+      </pair>
+   </value-pairs>
+
+   <value-pairs value-pairs-name="depositor_123456789_2" dc-term="description_depositor">
+     <pair>
+       <displayed-value>display_filler</displayed-value>
+       <stored-value>value_filler</stored-value>
+      </pair>
+   </value-pairs>
 
     </form-value-pairs>
 

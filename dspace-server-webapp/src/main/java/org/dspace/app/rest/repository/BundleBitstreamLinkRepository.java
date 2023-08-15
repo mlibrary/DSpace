@@ -39,6 +39,10 @@ public class BundleBitstreamLinkRepository extends AbstractDSpaceRestRepository
     @Autowired
     BundleService bundleService;
 
+
+    // UM - this is suppose to not send bitstreams unless the bundle has READ
+    //      access.  I spoke to Tim about it and he highly recommended NOT 
+    //      changing this.
     @PreAuthorize("hasPermission(#bundleId, 'BUNDLE', 'READ')")
     public Page<BitstreamRest> getBitstreams(@Nullable HttpServletRequest request,
                                              UUID bundleId,

@@ -5,7 +5,7 @@
     Created on : January 23, 2013, 1:26 PM
     Updated on : November 26, 2015, 3:00 PM
     Author     : pbecker, ffuerste
-    Description: Converts metadata from DSpace Intermediate Format (DIM) into
+    Description: Converts metadata from DSpace Intermediat Format (DIM) into
                  metadata following the DataCite Schema for the Publication and
                  Citation of Research Data, Version 3.1
 -->
@@ -23,9 +23,9 @@
     <!-- DO NOT CHANGE ANYTHING BELOW THIS LINE EXCEPT YOU REALLY KNOW WHAT YOU ARE DOING! -->
     
     <!-- We need the prefix to determine DOIs that were minted by ourself. -->
-    <xsl:param name="prefix">10.5072/dspace-</xsl:param>
+    <xsl:param name="prefix">10.33577</xsl:param>
     <!-- The content of the following parameter will be used as element publisher. -->
-    <xsl:param name="publisher">My University</xsl:param>
+    <xsl:param name="publisher">University of Michigan</xsl:param>
     <!-- The content of the following variable will be used as element contributor with contributorType datamanager. -->
     <xsl:param name="datamanager"><xsl:value-of select="$publisher" /></xsl:param>
     <!-- The content of the following variable will be used as element contributor with contributorType hostingInstitution. -->

@@ -21,12 +21,39 @@ import org.dspace.core.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+// UM Change
+import javax.servlet.http.HttpServletRequest;
+import org.dspace.core.Context;
+import javax.servlet.ServletException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
+// For UM Changes.
+import org.dspace.core.Constants;
+import org.dspace.eperson.EPerson;
+import java.util.UUID;
+import org.dspace.content.service.CollectionService;
+import org.dspace.content.factory.ContentServiceFactory;
+
+//UM Changes
+import org.dspace.web.ContextUtil;
+import org.dspace.services.RequestService;
+import org.dspace.services.model.Request;
+import org.dspace.utils.DSpace;
+import org.dspace.services.factory.DSpaceServicesFactory;
+import org.dspace.content.Collection;
+
 /**
  * Class representing a line in an input form.
  *
  * @author Brian S. Hughes, based on work by Jenny Toves, OCLC
  */
 public class DCInput {
+
+    private CollectionService collectionService =
+        ContentServiceFactory.getInstance().getCollectionService();
+
 
     private static final Logger log = LoggerFactory.getLogger(DCInput.class);
 
@@ -109,7 +136,11 @@ public class DCInput {
     /**
      * if input list-controlled, the list itself
      */
-    private List<String> valueList = null;
+    // This is how it was declared in 7.6 originally.
+    //private List<String> valueList = null;
+    private List<String> valueList = new ArrayList<String>();
+
+
 
     /**
      * if non-null, visibility scope restriction
@@ -173,6 +204,22 @@ public class DCInput {
      * @param listMap  value-pairs map, computed from the forms definition XML file
      */
     public DCInput(Map<String, String> fieldMap, Map<String, List<String>> listMap) {
+
+        // UM Change - needed for mapping and proxy depositor logic.
+        Context c = ContextUtil.obtainCurrentRequestContext();
+        HttpServletRequest request = null;
+
+        RequestService requestService = new DSpace().getRequestService();
+
+        Request currentRequest = requestService.getCurrentRequest();
+        if ( currentRequest != null)
+        {
+          request = currentRequest.getHttpServletRequest();
+        }
+        // End UM Change
+
+
+
         dcElement = fieldMap.get("dc-element");
         dcQualifier = fieldMap.get("dc-qualifier");
 
@@ -205,8 +252,141 @@ public class DCInput {
         if ("dropdown".equals(inputType) || "qualdrop_value".equals(inputType)
             || "list".equals(inputType)) {
             valueListName = fieldMap.get("value-pairs-name");
-            valueList = listMap.get(valueListName);
+
+/// As far as I can tell this does nothing.
+
+            if ( valueListName.equals("collection_mappings") )
+            {
+                try
+                {
+                        valueList.add ( "In just DC" );
+                        valueList.add ( "In just DC" );
+
+
+                    // Having this here causes perfomace problems in depoist pages loading and traverssing.
+                    //HandleService handleService = HandleServiceFactory.getInstance().getHandleService();
+                    //AuthorizeService authorizeService = AuthorizeServiceFactory.getInstance().getAuthorizeService();
+                    //ContentServiceFactory contentServiceFactory = ContentServiceFactory.getInstance();
+                    //List<Collection> collections = contentServiceFactory.getCollectionService().findAll(c);
+
+                    String pr_collection_id = DSpaceServicesFactory.getInstance().getConfigurationService()
+                                                 .getProperty("pr.collectionid");
+                    List<Collection> collections = collectionService.findAuthorizedOptimized(c, Constants.ADD);
+                    for (Collection t : collections) {
+                        String handle = t.getHandle();
+                        if ( handle != null )
+                        {
+                            //DSpaceObject coll = handleService.resolveToObject(c, handle);
+                            //Collection coll = (Collection) handleService.resolveToObject(c, handle);
+                            //if ( authorizeService.authorizeActionBoolean ( c, coll,  Constants.ADD ) )
+                            //{
+                                String name = t.getName();
+                                UUID     id = t.getID();
+                                String the_id = id.toString();
+
+                                if ( !the_id.equals(pr_collection_id) )
+                                {
+                                    log.info("PROX-JustDC:  Adding collections for mapping.");
+
+                                    valueList.add ( name );
+                                    valueList.add ( the_id );
+                                }
+                            //}
+                        }
+                    }
+
+                    log.info("PROX-JustDC:  DONE Adding collections for mapping.");
+
+                    valueList.add ( "None" );
+                    valueList.add ( "-1" );
+                }
+                catch (Exception e)
+                {
+                    log.info("PROX-JustDC: ERROR but it may be OK jose, creating collection mapping context is null.");
+                    //Do Nothing
+                }
+
+            }
+
+            else if ( valueListName.startsWith("depositor"))
+            {
+
+                try
+                {
+
+                            String collectionHandle = valueListName.substring(10).replace("_", "/");
+                            log.info ("PROX-JustDC: this is the coll=" + collectionHandle);
+
+                        valueList.add ( "In just DC" );
+                        valueList.add ( "In just DC" );
+
+
+
+                   log.info("PROX-JustDC: Creating depositor pick list " + collectionHandle);
+
+                   //Get the eperson
+                   EPerson e = c.getCurrentUser();
+
+                UUID userid = e.getID();
+
+                    // Jim asked to remove this option.
+                    //valueList.add ( "" );
+                    //valueList.add ( "" );
+
+                    EPerson[] Proxies = e.getProxies ( c, userid, collectionHandle );
+
+                    String nameMain = e.getFullName();
+                    String emailMain = e.getEmail();
+
+
+                    String labelMain = nameMain + ", " + emailMain;
+                    valueList.add ( labelMain );
+
+                    //valueList.add ( "SELF" );
+                    valueList.add ( "SELF" );
+                    for (int i = 0; i < Proxies.length; i++)
+                    {
+                        String name = Proxies[i].getFullName();
+                        String email = Proxies[i].getEmail();
+                        UUID id = Proxies[i].getID();
+
+                        String label = name + ", " + email;
+
+                        log.info("PROX-JustDC:  Adding proxies." + label + " " + id.toString());
+
+                        valueList.add ( label );
+                        valueList.add ( id.toString() );
+                    }
+
+                    log.info("PROX-JustDC:  DONE Adding proxies.");
+
+                }
+                catch (Exception e)
+                {
+                    log.info("PROX-JustDC: ERROR but it may be OK jose, creating the depositor picklist for proxies, request is null");
+                    //Do Nothing
+                }
+            }
+            else
+            {
+                valueList = (List) listMap.get(valueListName);
+            }
+
+
+
+
+
+            // The first value is how it came with 7.6.
+            // valueList = listMap.get(valueListName);
+            //valueList = (List) listMap.get(valueListName);
         }
+
+
+
+
+
+
+
         hint = fieldMap.get("hint");
         warning = fieldMap.get("required");
         required = warning != null && warning.length() > 0;
@@ -227,18 +407,18 @@ public class DCInput {
                 typeBind.add(type.trim());
             }
         }
-        style = fieldMap.get("style");
-        isRelationshipField = fieldMap.containsKey("relationship-type");
-        isMetadataField = fieldMap.containsKey("dc-schema");
-        relationshipType = fieldMap.get("relationship-type");
-        searchConfiguration = fieldMap.get("search-configuration");
-        filter = fieldMap.get("filter");
-        externalSources = new ArrayList<>();
-        String externalSourcesDef = fieldMap.get("externalsources");
-        if (StringUtils.isNotBlank(externalSourcesDef)) {
-            String[] sources = StringUtils.split(externalSourcesDef, ",");
-            for (String source: sources) {
-                externalSources.add(StringUtils.trim(source));
+         style = fieldMap.get("style");
+         isRelationshipField = fieldMap.containsKey("relationship-type");
+         isMetadataField = fieldMap.containsKey("dc-schema");
+         relationshipType = fieldMap.get("relationship-type");
+         searchConfiguration = fieldMap.get("search-configuration");
+         filter = fieldMap.get("filter");
+         externalSources = new ArrayList<>();
+         String externalSourcesDef = fieldMap.get("externalsources");
+         if (StringUtils.isNotBlank(externalSourcesDef)) {
+             String[] sources = StringUtils.split(externalSourcesDef, ",");
+             for (String source: sources) {
+                 externalSources.add(StringUtils.trim(source));
             }
         }
 
@@ -523,11 +703,12 @@ public class DCInput {
      * @return true when there is no type restriction or typeName is allowed
      */
     public boolean isAllowedFor(String typeName) {
-        if (typeBind.size() == 0) {
-            return true;
-        }
+        return true;
+        //if (typeBind.size() == 0) {
+        //    return true;
+        // }
 
-        return typeBind.contains(typeName);
+        //return typeBind.contains(typeName);
     }
 
     public String getScope() {
@@ -570,18 +751,18 @@ public class DCInput {
     }
 
     public boolean validate(String value) {
-        if (StringUtils.isNotBlank(value)) {
-            try {
-                if (this.pattern != null) {
-                    if (!pattern.matcher(value).matches()) {
-                        return false;
-                    }
-                }
-            } catch (PatternSyntaxException ex) {
-                log.error("Regex validation failed!  {}", ex.getMessage());
-            }
+        // if (StringUtils.isNotBlank(value)) {
+        //     try {
+        //         if (this.pattern != null) {
+        //             if (!pattern.matcher(value).matches()) {
+        //                 return false;
+        //             }
+        //         }
+        //     } catch (PatternSyntaxException ex) {
+        //         log.error("Regex validation failed!  {}", ex.getMessage());
+        //     }
 
-        }
+        // }
         return true;
     }
 
