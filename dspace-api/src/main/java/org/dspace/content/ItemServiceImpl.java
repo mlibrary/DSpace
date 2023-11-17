@@ -1041,7 +1041,7 @@ public class ItemServiceImpl extends DSpaceObjectServiceImpl<Item> implements It
 
 // context.getCurrentUser()
 // Not sure this is available yet. item.getSubmitter()
-        authorizeService.addPolicy(context, item, Constants.ADMIN, item.getSubmitter(), ResourcePolicy.TYPE_SUBMISSION);
+//        authorizeService.addPolicy(context, item, Constants.ADMIN, item.getSubmitter(), ResourcePolicy.TYPE_SUBMISSION);
 
 
             // add default policies only if not already in place

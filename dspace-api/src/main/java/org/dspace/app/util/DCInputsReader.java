@@ -136,6 +136,8 @@ public class DCInputsReader {
             + File.separator + "config" + File.separator + FORM_DEF_FILE;
 
 log.info("PROX: building without a filename=" + defsFile);
+log.info("JOSEPROX: fileName one = " + defsFile);
+
         buildInputs(defsFile);
     }
 
@@ -143,7 +145,10 @@ log.info("PROX: building without a filename=" + defsFile);
     public DCInputsReader(String fileName)
         throws DCInputsReaderException {
 
-log.info("PROX: building with a filename=" + fileName);            
+log.info("PROX: building with a filename=" + fileName);   
+
+log.info("JOSEPROX: fileName two = " + fileName);
+
         buildInputs(fileName);
     }
 
@@ -245,6 +250,20 @@ log.info("PROX: building with a filename=" + fileName);
      */
     public DCInputSet getInputsByFormName(String formName)
         throws DCInputsReaderException {
+
+log.info("JOSEPROX: formName = " + formName);
+
+// Jose
+
+        String defsFile = DSpaceServicesFactory.getInstance().getConfigurationService().getProperty("dspace.dir")
+            + File.separator + "config" + File.separator + FORM_DEF_FILE;
+
+
+
+        buildInputs(defsFile);
+
+
+
         // check mini-cache, and return if match
         //    lastInputSet = null;
         //if (lastInputSet != null && lastInputSet.getFormName().equals(formName)) {
@@ -692,14 +711,14 @@ log.info("PROX: building with a filename=" + fileName);
                             String collectionHandle = pairsName.substring(10).replace("_", "/");
                             log.info ("PROX: this is the coll=" + collectionHandle);
 
-                            pairs.add ( "testing prox1234567890" );
+                            pairs.add ( "abc" );
                             pairs.add ( "-10" );
 
 
-                            pairs.add ( "jose testing prox1234567890" );
+                            pairs.add ( "def" );
                             pairs.add ( "-100" );
 
-                            pairs.add ( "testing, jb5852601@gmail.com" );
+                            pairs.add ( "ghi" );
                             pairs.add ( "SELF" );
 
 

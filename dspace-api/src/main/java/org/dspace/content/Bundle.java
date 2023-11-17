@@ -27,6 +27,7 @@ import org.dspace.core.Constants;
 import org.dspace.core.Context;
 import org.hibernate.proxy.HibernateProxyHelper;
 
+import org.dspace.services.factory.DSpaceServicesFactory;
 /**
  * Class representing bundles of bitstreams stored in the DSpace system
  * <P>
@@ -137,6 +138,23 @@ public class Bundle extends DSpaceObject implements DSpaceObjectLegacySupport {
      * @return the bitstreams
      */
     public List<Bitstream> getBitstreams() {
+        List<Bitstream> bitstreamList = new ArrayList<>(this.bitstreams);
+
+        List<Bitstream> bitstreamsNoHiddenFiles = new ArrayList<>();
+
+        String hidden_format = DSpaceServicesFactory.getInstance().getConfigurationService()
+                                                 .getProperty("hidden.format");
+
+        for(Bitstream bit: bitstreamList) {
+            if( (bit.getFormatId() != null) &&  (bit.getFormatId() != Integer.valueOf(hidden_format) ) )  {
+                bitstreamsNoHiddenFiles.add(bit); 
+            }
+        }
+
+        return bitstreamsNoHiddenFiles;
+    }
+
+    public List<Bitstream> getBitstreamsAll() {
         List<Bitstream> bitstreamList = new ArrayList<>(this.bitstreams);
         return bitstreamList;
     }

@@ -257,23 +257,52 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
 
     public static boolean isUMUser(HttpServletRequest request)
     {
-       //String addr = request.getRemoteAddr();
-       String addr = request.getHeader("X-Forwarded-For");
-
-       String ips = DSpaceServicesFactory.getInstance().getConfigurationService()
-                                                 .getProperty("ip.umIPs");
-       LOGGER.info ("JOSEAUTHips: the ips from config = " + ips);
-       final String[] umIPs = ips.split("\\|");
-
-       for (int i = 0; i < umIPs.length; i++)
-       {
-            LOGGER.info ("JOSEAUTH: umIPs= " + umIPs[i]);
-       }
+        //String addr = request.getRemoteAddr();
+        String addr = request.getHeader("X-Forwarded-For");
 
         if ( addr == null )
         {
             return false;
         }
+
+
+        final String[] umIPs = {
+            "141.211.",        // Ann Arbor
+            "141.212.",        // Ann Arbor
+            "141.213.",        // Ann Arbor
+            "141.214.",        // Ann Arbor
+            "198.108.200.",    // Ann Arbor
+            "198.111.224.",    // Ann Arbor
+            "198.111.225.",    // Ann Arbor
+            "198.111.226.",    // Ann Arbor
+            "198.111.227.",    // Ann Arbor
+            "207.75.144.",     // Ann Arbor
+            "207.75.145.",     // Ann Arbor
+            "207.75.146.",     // Ann Arbor
+            "207.75.147.",     // Ann Arbor
+            "207.75.148.",     // Ann Arbor
+            "207.75.149.",     // Ann Arbor
+            "207.75.150.",     // Ann Arbor
+            "207.75.151.",     // Ann Arbor
+            "207.75.152.",     // Ann Arbor
+            "207.75.153.",     // Ann Arbor
+            "207.75.154.",     // Ann Arbor
+            "207.75.155.",     // Ann Arbor
+            "207.75.156.",     // Ann Arbor
+            "207.75.157.",     // Ann Arbor
+            "207.75.158.",     // Ann Arbor
+            "207.75.159.",     // Ann Arbor
+            "207.75.176.",     // Ann Arbor
+            "207.75.177.",     // Ann Arbor
+            "207.75.178.",     // Ann Arbor
+            "207.75.179.",     // Ann Arbor
+            "207.75.180.",     // Ann Arbor
+            "207.75.181.",     // Ann Arbor
+            "207.75.182.",     // Ann Arbor
+            "207.75.183.",     // Ann Arbor
+            "141.215.",        // Dearborn
+            "141.216."         // Flint
+        };
 
         for (int i = 0; i < umIPs.length; i++)
         {
@@ -293,20 +322,18 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
 
         LOGGER.info ( "OIDC:  in isBioUser The addr is (IP) value " + addr );
 
-       String ips = DSpaceServicesFactory.getInstance().getConfigurationService()
-                                                 .getProperty("ip.bioIPs");
-       LOGGER.info ("JOSEAUTHips: the ips from config = " + ips);
-       final String[] bioIPs = ips.split("\\|");
-
-       for (int i = 0; i < bioIPs.length; i++)
-       {
-            LOGGER.info ("JOSEAUTH: bioIPs = " + bioIPs[i]);
-       }
-
         if ( addr == null )
         {
             return false;
         }
+
+        final String[] bioIPs = {
+            "198.108.200.",        // At the biostation
+            "198.108.201.",
+            "198.108.202.",
+            "198.108.203.",
+            "198.110.84."         // At the biostation
+        };
 
         for (int i = 0; i < bioIPs.length; i++)
         {
@@ -324,56 +351,66 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
         //String addr = request.getRemoteAddr();
         String addr = request.getHeader("X-Forwarded-For");
 
-////  Just for testing
+// Just to test config 
+       String ips = DSpaceServicesFactory.getInstance().getConfigurationService()
+                                                 .getProperty("ip.MusicUpperHalfIPs");
 
-       // String ips = DSpaceServicesFactory.getInstance().getConfigurationService()
-       //                                           .getProperty("ip.MusicFullIPs");
-       // LOGGER.info ("JOSEAUTHips: the ips from config = " + ips);
-       // final String[] MusicFullIPs = ips.split("\\|");
+LOGGER.info ("JOSEAUTHips: the ips from config = " + ips);
 
-       // for (int i = 0; i < MusicFullIPs.length; i++)
-       // {
-       //      LOGGER.info ("JOSEAUTH: MusicFullIPs = " + MusicFullIPs[i]);
-       // }
+        //final String[] MusicUpperHalfIPs = {ips};
 
-       // ips = DSpaceServicesFactory.getInstance().getConfigurationService()
-       //                                           .getProperty("ip.MusicLowerHalfIPs");
-       // LOGGER.info ("JOSEAUTHips: the ips from config = " + ips);
-       // final String[] MusicLowerHalfIPs = ips.split("\\|");
+final String[] MusicUpperHalfIPs = ips.split("\\|"); 
 
-       // for (int i = 0; i < MusicLowerHalfIPs.length; i++)
-       // {
-       //      LOGGER.info ("JOSEAUTH: MusicLowerHalfIPs = " + MusicLowerHalfIPs[i]);
-       // }
+         //final String[] MusicUpperHalfIPs = {
+         //    "141.211.84.",     // Bentley
+         //    "141.211.43."
+         //};
 
-       // ips = DSpaceServicesFactory.getInstance().getConfigurationService()
-       //                                            .getProperty("ip.MusicUpperHalfIPs");
 
-       // LOGGER.info ("JOSEAUTHips: the ips from config = " + ips);
-       // final String[] MusicUpperHalfIPs = ips.split("\\|");
+        for (int i = 0; i < MusicUpperHalfIPs.length; i++)
+        {
+            LOGGER.info ("JOSEAUTH: the Upper Half IPS = " + MusicUpperHalfIPs[i]);
+        }
+//END
 
-       //  for (int i = 0; i < MusicUpperHalfIPs.length; i++)
-       //  {
-       //      LOGGER.info ("JOSEAUTH: MusicUpperHalfIPs = " + MusicUpperHalfIPs[i]);
-       //  }
 
-////  Just for testing ends.
+
+
+
+
 
         if ( addr == null )
         {
             return false;
         }
 
+        final String[] MusicFullIPs = {
+            "141.213.30.",        // Duderstadt Center
+            "141.213.31.",
+            "141.213.32.",
+            "141.213.33.",
+            "141.213.34.",
+            "141.213.35.",
+            "141.213.36.",
+            "141.213.39.",
 
-       String ips = DSpaceServicesFactory.getInstance().getConfigurationService()
-                                                 .getProperty("ip.MusicFullIPs");
-       LOGGER.info ("JOSEAUTHips: the ips from config = " + ips);
-       final String[] MusicFullIPs = ips.split("\\|");
+            "141.212.48.",        // Duderstatdt Center Wireless
+            "141.212.49.",
+            "141.212.50.",
+            "141.212.51.",
 
-       for (int i = 0; i < MusicFullIPs.length; i++)
-       {
-            LOGGER.info ("JOSEAUTH: MusicFullIPs = " + MusicFullIPs[i]);
-       }
+            "141.211.172.",       // Hathcher and Shapiro
+            "141.211.173.",
+            "141.211.174.",
+            "141.211.175.",
+
+            "67.194.34.",         // Hatcher 
+            "67.194.35.",
+
+            "67.194.98.",         // Hatcher
+            "67.194.99."
+
+        };
 
         for (int i = 0; i < MusicFullIPs.length; i++)
         {
@@ -383,15 +420,10 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
             }
         }
 
-       ips = DSpaceServicesFactory.getInstance().getConfigurationService()
-                                                 .getProperty("ip.MusicLowerHalfIPs");
-       LOGGER.info ("JOSEAUTHips: the ips from config = " + ips);
-       final String[] MusicLowerHalfIPs = ips.split("\\|");
-
-       for (int i = 0; i < MusicLowerHalfIPs.length; i++)
-       {
-            LOGGER.info ("JOSEAUTH: MusicLowerHalfIPs = " + MusicLowerHalfIPs[i]);
-       }
+        final String[] MusicLowerHalfIPs = {
+            "141.211.39.",     // Bentley
+            "67.194.125."
+        };
 
         int count = 1;
         for (int i = 0; i < MusicLowerHalfIPs.length; i++)
@@ -407,33 +439,40 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
             count = 1;
         }
 
+        // final String[] MusicUpperHalfIPs = {
+        //     "141.211.84.",     // Bentley
+        //     "141.211.43."
+        // };
 
-        ips = DSpaceServicesFactory.getInstance().getConfigurationService()
-                                                  .getProperty("ip.MusicUpperHalfIPs");
+//Start
+        // String ips = DSpaceServicesFactory.getInstance().getConfigurationService()
+        //                                          .getProperty("ip.MusicUpperHalfIPs");
 
-       LOGGER.info ("JOSEAUTHips: the ips from config = " + ips);
-       final String[] MusicUpperHalfIPs = ips.split("\\|");
+        // final String[] MusicUpperHalfIPs = {ips};
 
-        for (int i = 0; i < MusicUpperHalfIPs.length; i++)
-        {
-            LOGGER.info ("JOSEAUTH: MusicUpperHalfIPs = " + MusicUpperHalfIPs[i]);
-        }
+        // // final String[] MusicUpperHalfIPs = {
+        // //     "141.211.84.",     // Bentley
+        // //     "141.211.43."
+        // // };
 
-        count = 129;
-        for (int i = 0; i < MusicUpperHalfIPs.length; i++)
-        {
-             LOGGER.info ("JOSEAUTH: the Upper Half IPS = " + MusicUpperHalfIPs[i]);
-             while ( count < 255 )
-             {
-                 if (addr.equals( MusicUpperHalfIPs[i] + Integer.toString(count) ) )
 
-                 {
-                     return true;
-                 }
-                 count = count + 1;
-             }
-             count = 129;
-        }
+
+        // count = 129;
+        // for (int i = 0; i < MusicUpperHalfIPs.length; i++)
+        // {
+        //     LOGGER.info ("JOSEAUTH: the Upper Half IPS = " + MusicUpperHalfIPs[i]);
+        //     while ( count < 255 )
+        //     {
+        //         if (addr.equals( MusicUpperHalfIPs[i] + Integer.toString(count) ) )
+
+        //         {
+        //             return true;
+        //         }
+        //         count = count + 1;
+        //     }
+        //     count = 129;
+        // }
+//END
 
         return false;
     }
@@ -444,21 +483,14 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
         //String addr = request.getRemoteAddr();
         String addr = request.getHeader("X-Forwarded-For");
 
-       String ips = DSpaceServicesFactory.getInstance().getConfigurationService()
-                                                  .getProperty("ip.BentleyOnlyIPs");
-
-       LOGGER.info ("JOSEAUTHips: the ips from config = " + ips);
-       final String[] BentleyOnlyIPs = ips.split("\\|");
-
-        for (int i = 0; i < BentleyOnlyIPs.length; i++)
-        {
-            LOGGER.info ("JOSEAUTH: BentleyOnlyIPs = " + BentleyOnlyIPs[i]);
-        }
-
         if ( addr == null )
         {
             return false;
         }
+
+        final String[] BentleyOnlyIPs = {
+            "141.211.39."     // Bentley
+        };
 
         int count = 0;
         for (int i = 0; i < BentleyOnlyIPs.length; i++)

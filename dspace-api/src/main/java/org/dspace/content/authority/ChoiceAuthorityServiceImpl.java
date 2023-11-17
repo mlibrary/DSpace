@@ -262,14 +262,26 @@ public final class ChoiceAuthorityServiceImpl implements ChoiceAuthorityService 
 
     @Override
     public void clearCache() {
+        try 
+        {
         controller.clear();
         authorities.clear();
         presentation.clear();
         closed.clear();
         controllerFormDefinitions.clear();
         authoritiesFormDefinitions.clear();
-        itemSubmissionConfigReader = null;
+        //itemSubmissionConfigReader = null;
+        itemSubmissionConfigReader.reload();
         initialized = false;
+    }
+    catch (SubmissionConfigReaderException e) {
+            // the system is in an illegal state as the submission definition is not valid
+            //throw new IllegalStateException("Error reading the item submission configuration: " + e.getMessage(),
+            //        e);
+log.info("ERROR: with configuration of submission form");
+
+
+        }
     }
 
     private void loadChoiceAuthorityConfigurations() {
