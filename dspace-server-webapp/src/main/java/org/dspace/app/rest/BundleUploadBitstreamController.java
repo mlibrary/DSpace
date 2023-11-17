@@ -52,6 +52,10 @@ import org.apache.logging.log4j.Logger;
 import org.dspace.content.Item;
 import org.dspace.content.service.DSpaceObjectService;
 
+import org.dspace.eperson.EPerson;
+import java.util.Date;
+
+
 /**
  * Controller to upload bitstreams to a certain bundle, indicated by a uuid in the request
  * Usage: POST /api/core/bundles/{uuid}/bitstreams (with file and properties of file in request)
@@ -124,6 +128,11 @@ public class BundleUploadBitstreamController {
             throw new UnprocessableEntityException("The InputStream from the file couldn't be read", e);
         }
 
+        EPerson eperson = context.getCurrentUser();
+        String userName = eperson.getFullName();
+        Date date = new Date();
+        String timestamp = date.toString();
+
         BitstreamRest bitstreamRest = bundleRestRepository.uploadBitstream(
                 context, bundle, uploadfile.getOriginalFilename(), fileInputStream, properties);
         BitstreamResource bitstreamResource = converter.toResource(bitstreamRest);
@@ -134,7 +143,12 @@ public class BundleUploadBitstreamController {
         String sequence_id =  Integer.toString(bitstreamRest.getSequenceId());
         String filename =  bitstreamRest.getName();
         String biturl = DSpaceServicesFactory.getInstance().getConfigurationService().getProperty("dspace.url")  + "/bitstream/" + item.getHandle() + "/" + sequence_id + "/" + filename;
+
         itemService.addMetadata(context, item, MetadataSchemaEnum.DC.getName(), "description", "bitstreamurl", "en", biturl);
+
+        String msg = biturl + " added on " + timestamp + " by " + userName;
+        itemService.addMetadata(context, item, MetadataSchemaEnum.DC.getName(), "description", "provenance", "en", msg);
+
         itemService.update(context, item);
         context.commit();
         } catch (Exception e) {

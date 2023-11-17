@@ -230,6 +230,7 @@ public class InstallItemServiceImpl implements InstallItemService {
         }
         //End UM Change
 
+        // This is the initial provenance when the item is installed regarding the bitstreams.
         String provDescription = "Made available in Deep Blue Documents on " + now
             + " (GMT). " + getBitstreamProvenanceMessage(c, item);
 
@@ -276,13 +277,10 @@ public class InstallItemServiceImpl implements InstallItemService {
         itemService.update(c, item);
 
 
-// Start the bitstreamurl metadata creation.
-
+        // Start the bitstreamurl metadata creation.
         //the handle was being lost, not exactly sure why.  But don't want to mess things up.
         String suppliedHandle = item.getHandle();
-        //log.info ("bitstreamurl: handle = " + suppliedHandle);
 
-        //Bundle[] bunds = item.getBundles("ORIGINAL");
         List<Bundle> bundList = itemService.getBundles(item, "ORIGINAL");
         Bundle[] bunds = bundList.toArray(new Bundle[bundList.size()]);
         if ( bunds.length != 0 )
@@ -306,8 +304,6 @@ public class InstallItemServiceImpl implements InstallItemService {
                                                          .getProperty("dspace.url");
 
                     String biturl = dspace_url + "/bitstream/" + suppliedHandle + "/" + sequence_id + "/" + filename;
-                    // Get the information you need for the bitstream.
-                    //item.addDC("description", "bitstreamurl", null, biturl);
                     itemService.addMetadata(c, item, MetadataSchemaEnum.DC.getName(), "description", "bitstreamurl", null, biturl);
 
                     if ( filedesc != null )
@@ -315,7 +311,6 @@ public class InstallItemServiceImpl implements InstallItemService {
                         if ( !filedesc.equals("") )
                         {
                             String msg = "Description of " + filename + " : " + filedesc;
-                            //item.addDC("description", "filedescription", null, msg);
                             itemService.addMetadata(c, item, MetadataSchemaEnum.DC.getName(), "description", "filedescription", null, msg);
                         }
                     }
@@ -324,7 +319,6 @@ public class InstallItemServiceImpl implements InstallItemService {
                 itemService.update(c, item);
             }
         }
-// Finish the bitstreamurl metadata creation
 
         // Notify interested parties of newly archived Item
         c.addEvent(new Event(Event.INSTALL, Constants.ITEM, item.getID(),

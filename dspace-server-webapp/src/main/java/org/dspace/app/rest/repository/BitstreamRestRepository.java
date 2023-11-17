@@ -160,25 +160,19 @@ public class BitstreamRestRepository extends DSpaceObjectRestRepository<Bitstrea
             throw new RuntimeException(e.getMessage(), e);
         }
         try {
-Item item = bit.getBundles().iterator().next().getItems().iterator().next();
-
+            Item item = bit.getBundles().iterator().next().getItems().iterator().next();
             bs.delete(context, bit);
 
-// This is where you would want to get rid of the bitstreamurl
-log.info("DEBUG:  jose here for deleting a file.");
+            itemService.clearMetadata(context, item, MetadataSchemaEnum.DC.getName(), "description", "bitstreamurl", Item.ANY);
 
-log.info("DEBUG:  got item.");
-  itemService.clearMetadata(context, item, MetadataSchemaEnum.DC.getName(), "description", "bitstreamurl", Item.ANY);
+            //the handle was being lost, not exactly sure why.  But don't want to mess things up.
+            String suppliedHandle = item.getHandle();
 
-        //the handle was being lost, not exactly sure why.  But don't want to mess things up.
-        String suppliedHandle = item.getHandle();
-        //log.info ("bitstreamurl: handle = " + suppliedHandle);
-
-        //Bundle[] bunds = item.getBundles("ORIGINAL");
-        List<Bundle> bundList = itemService.getBundles(item, "ORIGINAL");
-        Bundle[] bunds = bundList.toArray(new Bundle[bundList.size()]);
-        if ( bunds.length != 0 )
-        {
+            //Bundle[] bunds = item.getBundles("ORIGINAL");
+            List<Bundle> bundList = itemService.getBundles(item, "ORIGINAL");
+            Bundle[] bunds = bundList.toArray(new Bundle[bundList.size()]);
+            if ( bunds.length != 0 )
+            {
             if (bunds[0] != null)
             {
                 //Bitstream[] bits = bunds[0].getBitstreams();
@@ -216,9 +210,6 @@ log.info("DEBUG:  got item.");
                 context.commit();
             }
         }
-
-////
-
         } catch (SQLException | IOException e) {
             throw new RuntimeException(e.getMessage(), e);
         }

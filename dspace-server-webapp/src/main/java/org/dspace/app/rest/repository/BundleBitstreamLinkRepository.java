@@ -26,12 +26,19 @@ import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
+
+//UM Change for hidden file 
+import org.dspace.authorize.service.AuthorizeService;
+
 /**
  * Link repository for "bitstreams" subresource of an individual bundle.
  */
 @Component(BundleRest.CATEGORY + "." + BundleRest.NAME + "." + BundleRest.BITSTREAMS)
 public class BundleBitstreamLinkRepository extends AbstractDSpaceRestRepository
         implements LinkRestRepository {
+
+    @Autowired
+    private AuthorizeService authorizeService;
 
     @Autowired
     BitstreamService bitstreamService;
@@ -55,7 +62,14 @@ public class BundleBitstreamLinkRepository extends AbstractDSpaceRestRepository
                 throw new ResourceNotFoundException("No such bundle: " + bundleId);
             }
             Pageable pageable = utils.getPageable(optionalPageable);
-            return converter.toRestPage(bundle.getBitstreams(), pageable, projection);
+
+            if (authorizeService.isAdmin(context)) {
+              return converter.toRestPage(bundle.getBitstreamsAll(), pageable, projection);
+            }
+            else
+ 	    {
+              return converter.toRestPage(bundle.getBitstreams(), pageable, projection);
+	}	
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
