@@ -172,6 +172,13 @@ public class WorkspaceItemServiceImpl implements WorkspaceItemService {
 
         itemService.update(context, item);
 
+
+
+        boolean noDoi = context.getNoDoiStatus();
+        // Put this here just for safety, but don't think it affects anything from my testing (UM Change)
+        log.info("DOI:  trying to create a DOI for the initial page");
+        if ( !noDoi ) {
+
         // If configured, register identifiers (eg handle, DOI) now. This is typically used with the Show Identifiers
         // submission step which previews minted handles and DOIs during the submission process. Default: false
         if (DSpaceServicesFactory.getInstance().getConfigurationService()
@@ -190,6 +197,8 @@ public class WorkspaceItemServiceImpl implements WorkspaceItemService {
                 log.error("Could not register identifier(s) for item {}: {}", item.getID(), e.getMessage());
             }
         }
+
+    }
 
         workspaceItem.setItem(item);
 

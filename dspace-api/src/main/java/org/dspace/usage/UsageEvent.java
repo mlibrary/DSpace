@@ -14,6 +14,13 @@ import org.dspace.core.Constants;
 import org.dspace.core.Context;
 import org.dspace.services.model.Event;
 
+// UM Changes
+import org.dspace.services.RequestService;
+import org.dspace.services.model.Request;
+import org.dspace.utils.DSpace;
+import org.dspace.services.factory.DSpaceServicesFactory;
+
+
 /**
  * @author Mark Diggory (mdiggory at atmire.com)
  */
@@ -64,6 +71,8 @@ public class UsageEvent extends Event {
     private DSpaceObject object;
 
     private Action action;
+
+    private static Boolean useProxies;
 
     private String referrer;
 
@@ -119,6 +128,111 @@ public class UsageEvent extends Event {
 
 
         return eventName.toString();
+    }
+
+
+    public Context getContextSpecial() {
+
+        HttpServletRequest request = null;
+        RequestService requestService = new DSpace().getRequestService();
+
+        Request currentRequest = requestService.getCurrentRequest();
+        if ( currentRequest != null)
+        {
+          request = currentRequest.getHttpServletRequest();
+        }
+
+        // Set the session ID
+        context.setExtraLogInfo("session_id="
+                + request.getSession().getId());
+
+        // Set the session ID and IP address
+        String referer = request.getHeader( "Referer" );
+        //String ip = request.getRemoteAddr();
+        String ip = request.getHeader("X-Forwarded-For");
+        if (useProxies == null) {
+            useProxies = DSpaceServicesFactory.getInstance().getConfigurationService().getBooleanProperty("useProxies", false);
+        }
+        if(useProxies && request.getHeader("X-Forwarded-For") != null)
+        {
+            /* This header is a comma delimited list */
+                for(String xfip : request.getHeader("X-Forwarded-For").split(","))
+            {
+                if(!request.getHeader("X-Forwarded-For").contains(ip))
+                {
+                    ip = xfip.trim();
+                }
+            }
+        }
+
+        context.setExtraLogInfo("session_id=" + request.getSession().getId() + ":ip_addr=" + ip + ":referer=" + referer);
+
+        // Store the context in the request
+        //request.setAttribute(DSPACE_CONTEXT, context);
+
+        return context;
+    }
+
+    // For item you want to indicate INSIDE/OUTSIDE status.
+    public Context getContextSpecialItem() {
+
+        HttpServletRequest request = null;
+
+        RequestService requestService = new DSpace().getRequestService();
+
+        Request currentRequest = requestService.getCurrentRequest();
+        if ( currentRequest != null)
+        {
+          request = currentRequest.getHttpServletRequest();
+        }
+
+
+        // Set the session ID
+        context.setExtraLogInfo("session_id="
+            + request.getSession().getId());
+
+        // Set the session ID and IP address
+        String referer = request.getHeader( "Referer" );
+        //String ip = request.getRemoteAddr();
+        String ip = request.getHeader("X-Forwarded-For");
+        if (useProxies == null) {
+            useProxies = DSpaceServicesFactory.getInstance().getConfigurationService().getBooleanProperty("useProxies", false);
+        }
+        if(useProxies && request.getHeader("X-Forwarded-For") != null)
+        {
+            /* This header is a comma delimited list */
+                for(String xfip : request.getHeader("X-Forwarded-For").split(","))
+                {
+                    if(!request.getHeader("X-Forwarded-For").contains(ip))
+                    {
+                        ip = xfip.trim();
+                    }
+                }
+        }
+
+        String InsideOutside;
+        if ( referer != null )
+        {
+            Boolean InDeepBlue = referer.indexOf("deepblue") > 0;   
+            if ( InDeepBlue )
+            {
+                InsideOutside = "INSIDE";
+            }
+            else
+            {
+                InsideOutside = "OUTSIDE";
+            }
+        }
+        else
+        {
+            InsideOutside = "OUTSIDE";
+        }
+        context.setExtraLogInfo("session_id=" + request.getSession().getId() + ":ip_addr=" + ip + ":referer=" + referer + ":collection=" + InsideOutside);
+
+        // Store the context in the request
+        //request.setAttribute(DSPACE_CONTEXT, context);
+
+        return context;
     }
 
     public UsageEvent(Action action, HttpServletRequest request, Context context, DSpaceObject object) {

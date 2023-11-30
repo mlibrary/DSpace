@@ -43,9 +43,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.dspace.app.rest.utils.ContextUtil;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import org.apache.logging.log4j.Logger;
+import org.dspace.content.service.CollectionService;
+import org.dspace.content.service.ItemService;
+
 /**
  * This will be the entry point for the api/eperson/groups endpoint with additional paths to it
  */
+// /api/eperson/groups
+// There is something that has defined this GroupRest.CATEGORY,
+// So if i create a new Controller, I will have to create a new Rest for it, just like this one.
 @RestController
 @RequestMapping("/api/" + GroupRest.CATEGORY + "/" + GroupRest.GROUPS)
 public class GroupRestController {
@@ -57,7 +66,17 @@ public class GroupRestController {
     private EPersonService ePersonService;
 
     @Autowired
+    private CollectionService collectionService;
+
+    @Autowired
+    private ItemService itemService;
+
+
+    @Autowired
     Utils utils;
+
+private static Logger log = org.apache.logging.log4j.LogManager.getLogger(GroupRestController.class);
+
 
     /**
      * Method to add one or more subgroups to a group.
@@ -245,4 +264,359 @@ public class GroupRestController {
 
         response.setStatus(SC_NO_CONTENT);
     }
+
+    //  I started with the POST, but I don't think it absolutely 
+    //  necessary I swiched to the GET below.  I could also test
+    //  the GET with the browser.
+    // @RequestMapping(method = POST, value="/subscribe2")
+    // //@PreAuthorize("hasPermission(#uuid, 'ITEM', 'ADD')")
+    // public void subscribeToStats2(HttpServletResponse response, HttpServletRequest request)
+    //         throws SQLException, AuthorizeException {    
+        
+    //     Context context = ContextUtil.obtainContext(request);
+        
+    //     EPerson currentUser = context.getCurrentUser();
+    //     String email = currentUser.getEmail();
+ 
+    //     //I have created this method.
+    //     currentUser.DeleteFromIndivStats( context, email);
+ 
+    //     // I have created this method.
+    //     currentUser.AddIndivStats ( context, email );
+
+    //     response.setStatus(HttpServletResponse.SC_OK);
+
+    //     return;
+    // }
+
+    // This code need further processing to handle if there is an exception, and return
+    // A failure Status.  IF there are any problems, just return internal server error.
+    @RequestMapping(method = GET, value="/subscribe")
+    //@PreAuthorize("hasPermission(#uuid, 'ITEM', 'ADD')")
+    public void subscribeToStats(HttpServletResponse response, HttpServletRequest request)
+            throws SQLException, AuthorizeException {    
+        try {
+          Context context = ContextUtil.obtainContext(request);
+        
+          EPerson currentUser = context.getCurrentUser();
+          String email = currentUser.getEmail();
+ 
+          log.info("JOSE: email is =" + email);
+
+          //I have created this method.
+          currentUser.DeleteFromIndivStats( context, email);
+ 
+          // I have created this method.
+          currentUser.AddIndivStats ( context, email );
+
+          log.info("JOSE: OK Response");
+          response.setStatus(HttpServletResponse.SC_OK);
+        } catch (Exception e) {
+
+                    log.info("JOSE: FAIL response");
+  
+          response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+
+        return;
+
+    }
+
+
+    @RequestMapping(method = GET, value="/unsubscribe")
+    //@PreAuthorize("hasPermission(#uuid, 'ITEM', 'ADD')")
+    public void unsubscribeToStats(HttpServletResponse response, HttpServletRequest request)
+            throws SQLException, AuthorizeException {    
+        try {
+          Context context = ContextUtil.obtainContext(request);
+        
+          EPerson currentUser = context.getCurrentUser();
+          String email = currentUser.getEmail();
+ 
+          log.info("JOSE: email is =" + email);
+
+          //I have created this method.
+          currentUser.DeleteFromIndivStats( context, email);
+
+          log.info("JOSE: OK Response");
+          response.setStatus(HttpServletResponse.SC_OK);
+        } catch (Exception e) {
+
+                    log.info("JOSE: FAIL response");
+  
+          response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+
+        return;
+
+    }
+
+    @RequestMapping(method = GET, value="/issubscribed")
+    //@PreAuthorize("hasPermission(#uuid, 'ITEM', 'ADD')")
+    public Boolean issubscribedToStats(HttpServletResponse response, HttpServletRequest request)
+            throws SQLException, AuthorizeException {     
+        try {
+
+
+          Context context = ContextUtil.obtainContext(request);
+log.info("NOT admin JOSE issub_amdin: here ");
+        
+          EPerson currentUser = context.getCurrentUser();
+log.info("NOT admin JOSE issub_amdin: here ");
+          String email = currentUser.getEmail();
+log.info("NOT admin JOSE issub_amdin: here email = " + email);
+ 
+
+          //I have created this method.
+          Boolean isSubs = currentUser.SendingIndivStats( context, email);
+log.info("NOT admin JOSE issub_amdin: is subscribed = " +  Boolean.toString(isSubs));
+
+          response.setStatus(HttpServletResponse.SC_OK);
+
+          return isSubs;
+
+        } catch (Exception e) {
+
+log.info("NOT admin JOSE: FAIL response");
+  
+          response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+          return false;
+        }
+
+    }
+
+
+
+
+    @RequestMapping(method = GET, value="/issubscribed_admin/{uuid}")
+    //@PreAuthorize("hasPermission(#uuid, 'ITEM', 'ADD')")
+    public Boolean issubscribedToAdminStats(@PathVariable String uuid, HttpServletResponse response, HttpServletRequest request)
+            throws SQLException, AuthorizeException {     
+        try {
+
+log.info("admin JOSE issub_amdin: here uuid= " + uuid);
+
+          Context context = ContextUtil.obtainContext(request);
+log.info("admin JOSE issub_amdin: here ");
+        
+          EPerson currentUser = context.getCurrentUser();
+log.info("admin JOSE issub_amdin: here ");
+          String email = currentUser.getEmail();
+log.info("admin JOSE issub_amdin: here email = " + email);
+ 
+          String collemail = uuid + " : " + email;
+log.info("admin JOSE issub_amdin: here email = " + collemail);
+          //I have created this method.
+          int count = collectionService.IsSubscribedToStats( context, collemail);
+log.info("admin JOSE issub_amdin: here count = " + String. valueOf(count));
+
+          Boolean isSubs = false;
+
+          if ( count > 0 )
+          {
+log.info("admin JOSE issub_amdin: here ");
+            isSubs = true;
+          }
+
+
+          response.setStatus(HttpServletResponse.SC_OK);
+
+log.info("admin JOSE: returning" + isSubs);
+
+          return isSubs;
+        } catch (Exception e) {
+
+log.info("admin JOSE: FAIL response");
+  
+          response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+          return false;
+        }
+
+    }
+
+
+
+    @RequestMapping(method = GET, value="/subscribe_admin/{uuid}")
+    //@PreAuthorize("hasPermission(#uuid, 'ITEM', 'ADD')")
+    public void subscribeToAdminStats(@PathVariable String uuid, HttpServletResponse response, HttpServletRequest request)
+            throws SQLException, AuthorizeException {  
+
+        try {
+
+          String collectionId = uuid;
+          Context context = ContextUtil.obtainContext(request);
+
+          EPerson currentUser = context.getCurrentUser();        
+
+          String email = currentUser.getEmail();       
+          String collemail = collectionId + " : " + email;         
+
+          //Mark the DB to do stats
+          collectionService.DeleteEmailFromStats(context, collemail);
+
+          //Mark the DB to do stats
+          collectionService.InsertEmailFromStats(context, collemail);
+
+          log.info("JOSE: OK Response collectionId = " + collectionId);
+          response.setStatus(HttpServletResponse.SC_OK);
+        } catch (Exception e) {
+
+                    log.info("JOSE: 123 FAIL response" + e);
+  
+          response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+
+        return;
+    }
+
+    @RequestMapping(method = GET, value="/unsubscribe_admin/{uuid}")
+    //@PreAuthorize("hasPermission(#uuid, 'ITEM', 'ADD')")
+    public void unsubscribeToAdminStats(@PathVariable String uuid, HttpServletResponse response, HttpServletRequest request)
+            throws SQLException, AuthorizeException {  
+
+        try {
+
+          String collectionId = uuid;
+          Context context = ContextUtil.obtainContext(request);
+
+          EPerson currentUser = context.getCurrentUser();        
+
+          String email = currentUser.getEmail();       
+          String collemail = collectionId+ " : " + email;         
+
+          //Mark the DB to do stats
+          collectionService.DeleteEmailFromStats(context, collemail);
+
+          log.info("JOSE: OK Response collectionId = " + collectionId);
+          response.setStatus(HttpServletResponse.SC_OK);
+        } catch (Exception e) {
+
+                    log.info("JOSE: 123 FAIL response" + e);
+  
+          response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+
+        return;
+    }
+
+
+
+    @RequestMapping(method = GET, value="/getmonthdatestats")
+    //@PreAuthorize("hasPermission(#uuid, 'ITEM', 'ADD')")
+    public String getMonthDateStats(HttpServletResponse response, HttpServletRequest request)
+            throws SQLException, AuthorizeException {  
+
+log.info("JOSE123:  Getting Month Date Stats");
+
+        try {
+
+          Context context = ContextUtil.obtainContext(request);
+
+        String colldt = itemService.findMaxCollDtFromStats(context);
+
+        if ( colldt == null )
+        {
+            colldt = "9999/01";
+        }
+
+
+
+          response.setStatus(HttpServletResponse.SC_OK);
+          return  colldt;
+        } catch (Exception e) {
+
+                    log.info("JOSE123: Date 123 FAIL response" + e);
+  
+          response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+
+        return "9999/01";
+    }
+
+
+
+    @RequestMapping(method = GET, value="/getmonthstats/{handle}")
+    //@PreAuthorize("hasPermission(#uuid, 'ITEM', 'ADD')")
+    public String getMonthStats(@PathVariable String handle, HttpServletResponse response, HttpServletRequest request)
+            throws SQLException, AuthorizeException {  
+
+log.info("JOSE123:  Getting Month Stats");
+
+        try {
+
+           handle = handle.replace("_", "/");
+
+          //String handle = handle;
+          log.info("JOSE123: the handle is" + handle);
+
+          Context context = ContextUtil.obtainContext(request);
+
+        String colldt = itemService.findMaxCollDtFromStats(context);
+
+        if ( colldt == null )
+        {
+            colldt = "9999/01";
+        }
+
+        int count = itemService.getMonthStat(context, handle, colldt, false);
+
+    log.info("JOSE123:month returning count =" + String.valueOf(count));
+
+          response.setStatus(HttpServletResponse.SC_OK);
+          return  String.valueOf(count);
+        } catch (Exception e) {
+
+                    log.info("JOSE123: 123 FAIL response" + e);
+  
+          response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+
+        return "0";
+    }
+
+    @RequestMapping(method = GET, value="/gettotalstats/{handle}")
+    //@PreAuthorize("hasPermission(#uuid, 'ITEM', 'ADD')")
+    public String getTotalStats(@PathVariable String handle, HttpServletResponse response, HttpServletRequest request)
+            throws SQLException, AuthorizeException {  
+
+log.info("JOSE123:  Getting Total Stats");
+
+        try {
+
+           handle = handle.replace("_", "/");
+
+          //String handle = handle;
+          log.info("JOSE123: the handle is" + handle);
+
+          Context context = ContextUtil.obtainContext(request);
+
+        String colldt = itemService.findMaxCollDtFromStats(context);
+
+        if ( colldt == null )
+        {
+            colldt = "9999/01";
+        }
+
+        int count = itemService.getMonthStat(context, handle, "2008/02", true);
+
+    
+
+          response.setStatus(HttpServletResponse.SC_OK);
+
+    log.info("JOSE123:total returning count =" + String.valueOf(count));
+
+          return  String.valueOf(count);
+        } catch (Exception e) {
+
+                    log.info("JOSE123: 123 FAIL response" + e);
+  
+          response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+
+        return "0";
+    }
+
+
+
+
 }

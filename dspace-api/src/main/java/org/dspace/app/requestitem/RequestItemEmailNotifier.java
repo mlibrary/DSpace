@@ -32,6 +32,8 @@ import org.dspace.eperson.EPerson;
 import org.dspace.handle.service.HandleService;
 import org.dspace.services.ConfigurationService;
 
+
+
 /**
  * Send item requests and responses by email.
  *
@@ -194,9 +196,10 @@ public class RequestItemEmailNotifier {
                     for (Bundle bundle : bundles) {
                         List<Bitstream> bitstreams = bundle.getBitstreams();
                         for (Bitstream bitstream : bitstreams) {
-                            if (!bitstream.getFormat(context).isInternal() &&
-                                    requestItemService.isRestricted(context,
-                                    bitstream)) {
+                           // I don't think this check is necessary for the files we have as Request Copy.
+                           // if (!bitstream.getFormat(context).isInternal() &&
+                           //         requestItemService.isRestricted(context,
+                           //         bitstream)) {
                                 // #8636 Anyone receiving the email can respond to the
                                 // request without authenticating into DSpace
                                 context.turnOffAuthorisationSystem();
@@ -205,7 +208,7 @@ public class RequestItemEmailNotifier {
                                         bitstream.getName(),
                                         bitstream.getFormat(context).getMIMEType());
                                 context.restoreAuthSystemState();
-                            }
+                          //  }
                         }
                     }
                 } else {

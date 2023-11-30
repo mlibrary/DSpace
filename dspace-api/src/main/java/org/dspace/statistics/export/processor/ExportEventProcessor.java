@@ -106,8 +106,12 @@ public abstract class ExportEventProcessor {
     protected String getBaseParameters(Item item)
             throws UnsupportedEncodingException {
 
+        // UM Change - carry over from 6.3
         //We have a valid url collect the rest of the data
-        String clientIP = request.getRemoteAddr();
+        //This change was done so that they could get legit ip addresses.
+        //String clientIP = request.getRemoteAddr();
+        String clientIP = request.getHeader("X-Forwarded-For");
+
         if (configurationService.getBooleanProperty("useProxies", false) && request
                 .getHeader("X-Forwarded-For") != null) {
             /* This header is a comma delimited list */

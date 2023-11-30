@@ -118,6 +118,13 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+import org.dspace.app.util.Restrict;
+import java.util.Calendar;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 
 /**
  * Import items into DSpace. The conventional use is upload files by copying
@@ -187,6 +194,7 @@ public class ItemImportServiceImpl implements ItemImportService, InitializingBea
     protected boolean useWorkflow = false;
     protected boolean useWorkflowSendEmail = false;
     protected boolean isQuiet = false;
+    protected boolean noDoi = false;
 
     //remember which folder item was imported from
     Map<String, Item> itemFolderMap = null;
@@ -738,13 +746,124 @@ public class ItemImportServiceImpl implements ItemImportService, InitializingBea
         WorkflowItem wfi = null;
 
         if (!isTest) {
+          // May need a creation here for the doi
+          if (noDoi)
+          {
+            log.info("DOI: create no doi being called.");
+            c.setNoDoiStatus ( true );
             wi = workspaceItemService.create(c, mycollections.iterator().next(), template);
+
             myitem = wi.getItem();
+          } else { // This is what it was originally
+            wi = workspaceItemService.create(c, mycollections.iterator().next(), template);
+            myitem = wi.getItem(); 
+          }
         }
 
         // now fill out dublin core for item
         loadMetadata(c, myitem, path + File.separatorChar + itemname
             + File.separatorChar);
+
+
+        // UM Change for PR and Embargo 
+        String restriction = itemService.getMetadataFirstValue(myitem, "dc", "date", "available", Item.ANY);
+        //log.warn(LogManager.getHeader(c, "restriction",
+        //                            "restriction" + restriction[0].value));
+
+        String um_restriction = itemService.getMetadataFirstValue(myitem, "dc", "restrict", "um", Item.ANY);
+
+        if ( ( restriction != null ) && restriction.equals("NO_RESTRICTION") )
+        {
+            itemService.clearMetadata(c, myitem, "dc", "date", "available", Item.ANY);
+        }
+
+
+        log.info("EMBARGO: about to check date restriction. restriction = " + restriction);
+
+        if ( ( restriction != null ) && ( um_restriction == null ) )
+        {
+          log.info("EMBARGO: checking if in yyyy-mm-dd format");
+
+          // checks for yyyyy-mm-dd
+          if (restriction.matches("([0-9]{4})-([0-9]{2})-([0-9]{2})"))
+          {
+            log.info("EMBARGO: restriction to this date " + restriction);
+            // apply the restrictions to the item
+            Restrict.applyByFullDate(c, myitem, restriction);
+          }
+        }
+
+
+
+        if ( restriction != null )
+        {
+          String withheldTemplate = "WITHHELD_.*_MONTHS";
+          Pattern withheldRegex = null;
+          withheldRegex = Pattern.compile(withheldTemplate);
+          Matcher matchRegex = null;
+
+          matchRegex = withheldRegex.matcher(restriction);
+
+          int restrictionValue = -1;
+          if (restriction.equals("WITHHELD_THREE_MONTHS"))
+          {
+            restrictionValue = 3;
+          }
+          else if (restriction.equals("WITHHELD_HALF_YEAR"))
+          {
+            restrictionValue = 6;
+          }
+          else if (restriction.equals("WITHHELD_ONE_YEAR"))
+          {
+            restrictionValue = 12;
+          }
+          else if (matchRegex.matches())
+          {
+            //Now get the months out.
+
+            int pos1 = restriction.indexOf("WITHHELD_");
+            int pos2 = restriction.indexOf("_MONTHS");
+
+            String months = restriction.substring (pos1 + 9, pos2 );
+
+            restrictionValue = Integer.parseInt ( months );
+
+          }    
+
+          if (restrictionValue != -1)
+          {   
+
+            // create a date object with the release date in it
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Calendar release = Calendar.getInstance();
+            release.setTime(new Date());
+            release.add(release.MONTH, restrictionValue);
+            Date releaseDate = release.getTime();
+
+            itemService.clearMetadata(c, myitem, "dc", "date", "available", Item.ANY);
+            itemService.addMetadata(c, myitem, "dc", "date", "available", "en", df.format(releaseDate));
+
+            // apply the restrictions to the item
+            Restrict.applyByMonth(c, myitem, restrictionValue);
+          }
+        }
+
+        //Do Collection Mapping here.
+        //Metadatum[] PeerReviewed = item.getDC("description","peerreviewed", Item.ANY);
+        String PeerReviewed = itemService.getMetadataFirstValue(myitem, "dc", "description", "peerreviewed", Item.ANY);
+
+        if ( PeerReviewed != null )
+        {
+            if ( PeerReviewed.equals("Peer Reviewed") )
+            {
+                String collection_id = configurationService.getProperty("pr.collectionid");
+                //Collection PR_Collection = Collection.find ( context, collection_id );
+                Collection PR_Collection = collectionService.find ( c, UUID.fromString(collection_id));
+                collectionService.addItem(c, PR_Collection, myitem);
+                collectionService.update(c, PR_Collection);
+                //PR_Collection.addItem ( item );
+            }
+        }
 
         // and the bitstreams from the contents file
         // process contents file, add bistreams and bundles, return any
@@ -2377,6 +2496,11 @@ public class ItemImportServiceImpl implements ItemImportService, InitializingBea
     @Override
     public void setHandler(DSpaceRunnableHandler handler) {
         this.handler = handler;
+    }
+
+    @Override
+    public void setDoi(boolean noDoi) {
+        this.noDoi = noDoi;
     }
 
     private void logInfo(String message) {
