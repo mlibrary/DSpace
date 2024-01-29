@@ -38,7 +38,6 @@ public class SubmissionFormRestRepository extends DSpaceRestRepository<Submissio
     private static Logger log = org.apache.logging.log4j.LogManager.getLogger(SubmissionFormRest.class);
 
     public SubmissionFormRestRepository() throws DCInputsReaderException {
-        log.info("PROX:  subcheck one");
         defaultInputReader = new DCInputsReader();
         Locale[] locales = I18nUtil.getSupportedLocales();
         inputReaders = new HashMap<Locale,DCInputsReader>();
@@ -51,32 +50,17 @@ public class SubmissionFormRestRepository extends DSpaceRestRepository<Submissio
     @Override
     public SubmissionFormRest findOne(Context context, String submitName)  {
         try {
-        log.info("PROX:  subcheck two");
-
-        defaultInputReader = new DCInputsReader();
-        Locale[] locales = I18nUtil.getSupportedLocales();
-        inputReaders = new HashMap<Locale,DCInputsReader>();
-        for (Locale locale : locales) {
-            inputReaders.put(locale, new DCInputsReader(I18nUtil.getInputFormsFileName(locale)));
-        }
-
-
-
             Locale currentLocale = context.getCurrentLocale();
             DCInputsReader inputReader = inputReaders.get(currentLocale);
-
-            inputReader = defaultInputReader;
-
+            if (inputReader == null) {
+                inputReader = defaultInputReader;
+            }
             DCInputSet subConfs = inputReader.getInputsByFormName(submitName);
             if (subConfs == null) {
-                 log.info("PROX:  subcheck two returning null");       
                 return null;
             }
-                    log.info("PROX:  subcheck two returning a valid value");
             return converter.toRest(subConfs, utils.obtainProjection());
         } catch (DCInputsReaderException e) {
-                 log.info("PROX:  subcheck two error =>" + e.getMessage()); 
-
             throw new IllegalStateException(e.getMessage(), e);
         }
     }
@@ -85,7 +69,6 @@ public class SubmissionFormRestRepository extends DSpaceRestRepository<Submissio
     @Override
     public Page<SubmissionFormRest> findAll(Context context, Pageable pageable) {
         try {
-                    log.info("PROX:  subcheck three");
             Locale currentLocale = context.getCurrentLocale();
             DCInputsReader inputReader;
             if (currentLocale != null) {
@@ -104,7 +87,6 @@ public class SubmissionFormRestRepository extends DSpaceRestRepository<Submissio
 
     @Override
     public Class<SubmissionFormRest> getDomainClass() {
-                log.info("PROX:  subcheck four");
         return SubmissionFormRest.class;
     }
 

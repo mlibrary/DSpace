@@ -51,8 +51,6 @@ public class DCInputSet {
             inputs[i] = new DCInput[fields.size()];
             for (int j = 0; j < inputs[i].length; j++) {
                 Map<String, String> field = rows.get(i).get(j);
-                log.info("DC-Setup: field, listMap=" + field + "=============>" + listMap);
-                                log.info("DC-Setup: ");
                 inputs[i][j] = new DCInput(field, listMap);
             }
         }

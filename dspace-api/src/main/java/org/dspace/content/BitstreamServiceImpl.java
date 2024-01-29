@@ -135,10 +135,20 @@ public class BitstreamServiceImpl extends DSpaceObjectServiceImpl<Bitstream> imp
 
         // Set the format to "unknown"
         Bitstream bitstream = find(context, bitstreamID);
+
+        log.info(LogHelper.getHeader(context, "DONE: with find create_bitstream",
+                                      "bitstream_id=" + bitstreamID));
+
         setFormat(context, bitstream, null);
+        log.info(LogHelper.getHeader(context, "DONE: with format creation",
+                                      "bitstream_id=" + bitstreamID));
+
 
         context.addEvent(
             new Event(Event.CREATE, Constants.BITSTREAM, bitstreamID, null, getIdentifiers(context, bitstream)));
+
+        log.info(LogHelper.getHeader(context, "DONE: with event",
+                                      "bitstream_id=" + bitstreamID));
 
         return bitstream;
     }
@@ -244,10 +254,14 @@ public class BitstreamServiceImpl extends DSpaceObjectServiceImpl<Bitstream> imp
 
     @Override
     public void update(Context context, Bitstream bitstream) throws SQLException, AuthorizeException {
-        // Check authorisation
+
+        log.info(LogHelper.getHeader(context, "update_bitstream before the auth check",
+                                      "bitstream_id=" + bitstream.getID()));
+
+
         authorizeService.authorizeAction(context, bitstream, Constants.WRITE);
 
-        log.info(LogHelper.getHeader(context, "update_bitstream",
+        log.info(LogHelper.getHeader(context, "update_bitstream after the auth check",
                                       "bitstream_id=" + bitstream.getID()));
         super.update(context, bitstream);
         if (bitstream.isModified()) {

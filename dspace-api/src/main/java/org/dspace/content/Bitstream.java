@@ -241,10 +241,6 @@ public class Bitstream extends DSpaceObject implements DSpaceObjectLegacySupport
     public Integer getFormatId() {
         return formatId;
     }
-
-    public void setFormatId(Integer formatId) {
-        this.formatId = formatId;
-    }
     // End
 
     /**
