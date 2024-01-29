@@ -78,12 +78,10 @@ import org.dspace.utils.DSpace;
 
 public class DCInputsReader {
 
-
     private static final Logger log = LoggerFactory.getLogger(DCInputsReader.class);
 
     private CollectionService collectionService =
         ContentServiceFactory.getInstance().getCollectionService();
-
 
     /**
      * The ID of the default collection. Will never be the ID of a named
@@ -135,20 +133,12 @@ public class DCInputsReader {
         String defsFile = DSpaceServicesFactory.getInstance().getConfigurationService().getProperty("dspace.dir")
             + File.separator + "config" + File.separator + FORM_DEF_FILE;
 
-log.info("PROX: building without a filename=" + defsFile);
-log.info("JOSEPROX: fileName one = " + defsFile);
-
         buildInputs(defsFile);
     }
 
 
     public DCInputsReader(String fileName)
-        throws DCInputsReaderException {
-
-log.info("PROX: building with a filename=" + fileName);   
-
-log.info("JOSEPROX: fileName two = " + fileName);
-
+        throws DCInputsReaderException {  
         buildInputs(fileName);
     }
 
@@ -157,9 +147,6 @@ log.info("JOSEPROX: fileName two = " + fileName);
         throws DCInputsReaderException {
         formDefns = new HashMap<String, List<List<Map<String, String>>>>();
         valuePairs = new HashMap<String, List<String>>();
-
-        log.info("PROX: filename of input beiong built =" + fileName);
-
 
         String uri = "file:" + new File(fileName).getAbsolutePath();
 
@@ -181,11 +168,119 @@ log.info("JOSEPROX: fileName two = " + fileName);
     }
 
     public Iterator<String> getPairsNameIterator() {
+        String defsFile = DSpaceServicesFactory.getInstance().getConfigurationService().getProperty("dspace.dir")
+            + File.separator + "config" + File.separator + FORM_DEF_FILE;
+
         return valuePairs.keySet().iterator();
     }
 
+    // There is code here to support proxy deposits and collection mapping 
+    // at  ingestion.
     public List<String> getPairs(String name) {
-        return valuePairs.get(name);
+        String defsFile = DSpaceServicesFactory.getInstance().getConfigurationService().getProperty("dspace.dir")
+            + File.separator + "config" + File.separator + FORM_DEF_FILE;
+
+        // UM Change - needed for mapping and proxy depositor logic.
+        Context c = ContextUtil.obtainCurrentRequestContext();
+
+        HttpServletRequest request = null;
+
+        RequestService requestService = new DSpace().getRequestService();
+
+        Request currentRequest = requestService.getCurrentRequest();
+        if ( currentRequest != null)
+        {
+          log.info("PROX: curretnRequest is not null");
+          request = currentRequest.getHttpServletRequest();
+        }
+
+        List<String> myList = new ArrayList<>();
+
+        if (name.equals("collection_mappings")) {
+        try
+        {
+            String pr_collection_id = DSpaceServicesFactory.getInstance().getConfigurationService()
+                                                            .getProperty("pr.collectionid");
+
+            List<Collection> collections = collectionService.findAuthorizedOptimized(c, Constants.ADD);
+            for (Collection t : collections) {
+                String handle = t.getHandle();
+                if ( handle != null )
+                {
+                    String nameUser = t.getName();
+                    UUID     id = t.getID();
+                    String the_id = id.toString();
+
+                    if ( !the_id.equals(pr_collection_id) )
+                    {
+                        myList.add(nameUser); 
+                        myList.add( the_id );
+                    }
+                }
+             }
+
+        }
+        catch (Exception exc)
+        {
+            log.info("PROX: ERROR but it may be OK, creating collection mapping context is null.");
+            myList.add("ERROR collmapping"); 
+            myList.add("ERROR collmapping");
+        }
+        } else if (name.startsWith("depositor")) {
+        try
+        {
+            // UM Change.
+            // Get the collection handle from the configuration.
+            // This is different from the way we did it in 6.3
+            // depositor_123456789_6
+            // 01234567890
+            String collectionHandle = name.substring(10).replace("_", "/");
+            log.info ("PROX: this is the coll=" + collectionHandle);
+
+            if ( c.getCurrentUser() != null )
+            {
+                //Get the eperson
+                EPerson ePerson = c.getCurrentUser();
+                UUID userid = ePerson.getID();
+
+                String nameMain = ePerson.getFullName();
+                String emailMain = ePerson.getEmail();
+
+                String labelMain = nameMain + ", " + emailMain;
+
+                myList.add(labelMain); 
+                myList.add("SELF");
+
+
+                EPerson[] Proxies = ePerson.getProxies ( c, userid, collectionHandle );
+
+                log.info ("PROX: processing request");
+                for (int k = 0; k < Proxies.length; k++)
+                {
+                 String nameFull = Proxies[k].getFullName();
+                 String email = Proxies[k].getEmail();
+                 UUID id = Proxies[k].getID();
+
+                 String label = nameFull + ", " + email;
+
+                 myList.add(label); 
+                 myList.add(id.toString());
+
+                }
+            }
+        }
+        catch (Exception exc2 )
+        {
+            log.info("PROX: ERROR but it may be OK, creating the depositor picklist for proxies, request is null==>" + exc2.toString());
+            myList.add ( "ERROR proxy depositor" );
+            myList.add ( "ERROR proxy depositor" );
+        }
+        } else {
+            myList = valuePairs.get(name);
+        }
+
+        return myList;
+
     }
 
     /**
@@ -198,7 +293,7 @@ log.info("JOSEPROX: fileName two = " + fileName);
      * @throws ServletException
      */
     public List<DCInputSet> getInputsByCollectionHandle(String collectionHandle)
-        throws DCInputsReaderException {
+        throws DCInputsReaderException {           
         SubmissionConfig config;
         try {
             config = new SubmissionConfigReader().getSubmissionConfigByCollection(collectionHandle);
@@ -251,19 +346,11 @@ log.info("JOSEPROX: fileName two = " + fileName);
     public DCInputSet getInputsByFormName(String formName)
         throws DCInputsReaderException {
 
-log.info("JOSEPROX: formName = " + formName);
-
-// Jose
-
         String defsFile = DSpaceServicesFactory.getInstance().getConfigurationService().getProperty("dspace.dir")
             + File.separator + "config" + File.separator + FORM_DEF_FILE;
 
-
-
         buildInputs(defsFile);
-
-
-
+        
         // check mini-cache, and return if match
         //    lastInputSet = null;
         //if (lastInputSet != null && lastInputSet.getFormName().equals(formName)) {
@@ -273,7 +360,7 @@ log.info("JOSEPROX: formName = " + formName);
         // cache miss - construct new DCInputSet
         List<List<Map<String, String>>> pages = formDefns.get(formName);
         if (pages == null) {
-            throw new DCInputsReaderException("Missing the " + formName + " form");
+            throw new DCInputsReaderException("Missing the " + formName + " form defsFile " + defsFile);
         }
         lastInputSet = new DCInputSet(formName,
                                       pages, valuePairs);
@@ -598,25 +685,6 @@ log.info("JOSEPROX: formName = " + formName);
      */
     private void processValuePairs(Node e)
         throws SAXException {
-
-        // UM Change - needed for mapping and proxy depositor logic.
-        Context c = ContextUtil.obtainCurrentRequestContext();
-
-        HttpServletRequest request = null;
-
-        RequestService requestService = new DSpace().getRequestService();
-
-        Request currentRequest = requestService.getCurrentRequest();
-        if ( currentRequest != null)
-        {
-          log.info("PROX: curretnRequest is not null");
-          request = currentRequest.getHttpServletRequest();
-        }
-
-
-
-        // End UM Change
-
         NodeList nl = e.getChildNodes();
         int len = nl.getLength();
         for (int i = 0; i < len; i++) {
@@ -656,146 +724,8 @@ log.info("JOSEPROX: formName = " + formName);
                                 }
                             } // ignore any children that aren't 'display' or 'storage'
                         }
-
-                        // UM Change
-                        if ( (pairsName.equals("collection_mappings")) && ( ( c != null ) && (request != null) ) ) {    
-                        try
-                        {
-
-                            pairs.add ( "None12345678" );
-                            pairs.add ( "-1" );
-
-                            pairs.add ( "Jose12345678" );
-                            pairs.add ( "-2" );
-
-
-                            String pr_collection_id = DSpaceServicesFactory.getInstance().getConfigurationService()
-                                                         .getProperty("pr.collectionid");
-
-                            List<Collection> collections = collectionService.findAuthorizedOptimized(c, Constants.ADD);
-                            for (Collection t : collections) {
-                            String handle = t.getHandle();
-                            if ( handle != null )
-                            {
-                                String name = t.getName();
-                                UUID     id = t.getID();
-                                String the_id = id.toString();
-
-                                if ( !the_id.equals(pr_collection_id) )
-                                {
-                                log.info ("PROX: mapping this is the label=" + name);
-                                log.info ("PROX: mapping this is the id=" + the_id);
-
-
-                                    pairs.add ( name );
-                                    pairs.add ( the_id );
-                                }
-                            }
-                        }
-
-
-                        }
-                        catch (Exception exc)
-                        {
-                            log.info("PROX: ERROR but it may be OK, creating collection mapping context is null.");
-                            //Do Nothing
-                        }
-                        }else if ( ( pairsName.startsWith("depositor") ) && ( ( c != null ) && (request != null)  ) ) {
-                        try
-                        {
-                            // UM Change.
-                            // Get the collection handle from the configuration.
-                            // This is different from the way we did it in 6.3
-                            // depositor_123456789_6
-                            // 01234567890
-                            String collectionHandle = pairsName.substring(10).replace("_", "/");
-                            log.info ("PROX: this is the coll=" + collectionHandle);
-
-                            pairs.add ( "abc" );
-                            pairs.add ( "-10" );
-
-
-                            pairs.add ( "def" );
-                            pairs.add ( "-100" );
-
-                            pairs.add ( "ghi" );
-                            pairs.add ( "SELF" );
-
-
-
-
-if ( c.getCurrentUser() == null )
-{
-                                log.info ("PROX: current user is null");
-}
-else {
- 
-                                 log.info ("PROX: current user is NOT null");
- 
-}
-
-
-                            if ( c.getCurrentUser() != null )
-                            {
-
-
-                            pairs.add ( "in the current User check" );
-                            pairs.add ( "current user check" );
-
-                              //Get the eperson
-                              EPerson ePerson = c.getCurrentUser();
-                              UUID userid = ePerson.getID();
-
-                              String nameMain = ePerson.getFullName();
-                              String emailMain = ePerson.getEmail();
-
-
-                              String labelMain = nameMain + ", " + emailMain;
-
-                              log.info ("PROX: proxy this is the label=" + labelMain);
-                              log.info ("PROX: proxy this is the id=" + "SELF");
-
-                              pairs.add ( labelMain );
-                              pairs.add ( "SELF" );
-
-                              EPerson[] Proxies = ePerson.getProxies ( c, userid, collectionHandle );
-
-                              log.info ("PROX: processing request");
-                              for (int k = 0; k < Proxies.length; k++)
-                              {
-                                String name = Proxies[k].getFullName();
-                                String email = Proxies[k].getEmail();
-                                UUID id = Proxies[k].getID();
-
-                                String label = name + ", " + email;
-
-                                log.info ("PROX: proxy this is the label=" + label);
-                                log.info ("PROX: proxy this is the id=" + id.toString());
-
-                                pairs.add ( label );
-                                pairs.add ( id.toString() );
-                              }
-                            }
-
-                        }
-                        catch (Exception exc2 )
-                        {
-                            log.info("PROX: ERROR but it may be OK jose, creating the depositor picklist for proxies, request is null==>" + exc2.toString());
-                            //Do Nothing
-                                pairs.add ( "test here" );
-                                pairs.add ( "test here value" );
-
-
-                        }
-                        }else{
-                                log.info ("PROX: default this is the label=" + display);
-                                log.info ("PROX: default this is the id=" + storage);
-
-                            pairs.add(display);
-                            pairs.add(storage);
-                        }
-                        // UM Change End
-
+                        pairs.add(display);
+                        pairs.add(storage);
                     } // ignore any children that aren't a 'pair'
                 }
             } // ignore any children that aren't a 'value-pair'
@@ -904,7 +834,7 @@ else {
     }
 
     public String getInputFormNameByCollectionAndField(Collection collection, String field)
-        throws DCInputsReaderException {
+        throws DCInputsReaderException {      
         List<DCInputSet> inputSets = getInputsByCollectionHandle(collection.getHandle());
         for (DCInputSet inputSet : inputSets) {
             String[] tokenized = Utils.tokenize(field);

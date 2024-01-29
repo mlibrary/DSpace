@@ -28,6 +28,9 @@ import org.dspace.core.Context;
 import org.hibernate.proxy.HibernateProxyHelper;
 
 import org.dspace.services.factory.DSpaceServicesFactory;
+
+import org.apache.logging.log4j.Logger;
+
 /**
  * Class representing bundles of bitstreams stored in the DSpace system
  * <P>
@@ -42,6 +45,9 @@ import org.dspace.services.factory.DSpaceServicesFactory;
 @Entity
 @Table(name = "bundle")
 public class Bundle extends DSpaceObject implements DSpaceObjectLegacySupport {
+
+    private static Logger log = org.apache.logging.log4j.LogManager.getLogger(Bundle.class);
+
     @Column(name = "bundle_id", insertable = false, updatable = false)
     private Integer legacyId;
 
@@ -145,8 +151,22 @@ public class Bundle extends DSpaceObject implements DSpaceObjectLegacySupport {
         String hidden_format = DSpaceServicesFactory.getInstance().getConfigurationService()
                                                  .getProperty("hidden.format");
 
-        for(Bitstream bit: bitstreamList) {
-            if( (bit.getFormatId() != null) &&  (bit.getFormatId() != Integer.valueOf(hidden_format) ) )  {
+        // When a bitstream is first uploaded using the UI, this method gets called.  At that 
+        // moment the getFormatId() is null, but you still need to retun hte list of bistreams.
+        // I had some code in here that would return an empty list of bits when the format was null.
+        // So in this case, when in the submission form, when the user picked the 1st bitstream it
+        // would report an error in the load.  Then when the user picked the next bit, it would 
+        // pass, but the bitstreams being reported on the bit section was the first. It always seemd 
+        // like we were off by one.                                          
+                                     
+
+        for(Bitstream bit: bitstreamList) {  
+            // This is the case at file creation.
+            if( (bit.getFormatId() == null) )
+            { 
+               bitstreamsNoHiddenFiles.add(bit); 
+            }else if (bit.getFormatId() != Integer.valueOf(hidden_format) ) 
+            {
                 bitstreamsNoHiddenFiles.add(bit); 
             }
         }
@@ -154,6 +174,7 @@ public class Bundle extends DSpaceObject implements DSpaceObjectLegacySupport {
         return bitstreamsNoHiddenFiles;
     }
 
+    // UM Change.  I created this method in case we need it. Presently not used.
     public List<Bitstream> getBitstreamsAll() {
         List<Bitstream> bitstreamList = new ArrayList<>(this.bitstreams);
         return bitstreamList;
