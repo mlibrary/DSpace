@@ -59,7 +59,7 @@
                     <dc-qualifier>depositor</dc-qualifier>
                     <repeatable>false</repeatable>
                     <label>Depositing as</label>
-                    <input-type value-pairs-name="depositor_123456789_2">dropdown</input-type>
+                    <input-type value-pairs-name="depositor_123456789_416">dropdown</input-type>
                     <hint>Deposit as yourself, or as a proxy for someone else.</hint>
                     <required></required>
                 </field>
@@ -2078,7 +2078,7 @@
       </pair>
    </value-pairs>
 
-   <value-pairs value-pairs-name="depositor_123456789_2" dc-term="description_depositor">
+   <value-pairs value-pairs-name="depositor_123456789_416" dc-term="description_depositor">
      <pair>
        <displayed-value>display_filler</displayed-value>
        <stored-value>value_filler</stored-value>
