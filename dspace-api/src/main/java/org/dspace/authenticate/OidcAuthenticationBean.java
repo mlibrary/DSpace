@@ -139,13 +139,17 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
                     }
                 else
                     {
-                        //Group notbioGroup = Group.findByName(context, "NotBio");
-                        Group notbioGroup = groupService.findByName(context, "NotBio");
-                        // Append to list of elligible groups
-                        bioId = notbioGroup.getID();
-                        count++;
+			// UM Change.  For now don't put people in the NotBio group
+			// This will guarantee that RequestItem files are requested to 
+			// everyone except the Admins.
 
-                        LOGGER.info ("OIDC: In: NotBio " + bioId.toString());
+                        //Group notbioGroup = Group.findByName(context, "NotBio");
+//                        Group notbioGroup = groupService.findByName(context, "NotBio");
+                        // Append to list of elligible groups
+//                        bioId = notbioGroup.getID();
+//                        count++;
+
+//                        LOGGER.info ("OIDC: In: NotBio " + bioId.toString());
 
                     }
 
