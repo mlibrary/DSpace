@@ -234,6 +234,17 @@ private static Logger log = org.apache.logging.log4j.LogManager.getLogger(EPerso
     }
 
     @Override
+    public List <EPerson> findProxiesForDepositorInCollectionByUUID(Context context, UUID depositor_id, String collectionUUID) throws SQLException {
+
+
+        Query query = createQuery(context,  "SELECT e FROM EPerson e WHERE e.id in (SELECT p.ePerson_proxy FROM Proxies p WHERE p.ePerson_depositor = :depositor_id AND p.uuid= :collectionUUID)");
+        query.setParameter("depositor_id", depositor_id);
+        query.setParameter("collectionUUID", collectionUUID);
+
+        return list(query);
+    }
+
+    @Override
     public int countIndivStats(Context context, String email) throws SQLException {
 
         org.hibernate.Query query = getHibernateSession(context).createSQLQuery("SELECT count(*) FROM individual_stats WHERE email=:email");

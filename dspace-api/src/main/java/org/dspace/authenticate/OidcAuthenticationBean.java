@@ -109,7 +109,12 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
 
                 GroupService groupService = EPersonServiceFactory.getInstance().getGroupService();
 
-                //Using this one for testing in docker
+		// UM Change
+                // The way swordv2 works now, the code will come here, and in that case request will be null.
+                if ( request == null )
+                {
+                    return Collections.emptyList();
+                }
                 String addr = request.getRemoteAddr();
 
                 // This is the one you should use on the live area.

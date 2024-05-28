@@ -262,6 +262,7 @@ public interface EPersonService extends DSpaceObjectService<EPerson>, DSpaceObje
 
     public List <EPerson> findProxiesForDepositorInCollection(Context context, UUID depositor_id, String collection_handle) throws SQLException;
 
+    public List <EPerson> findProxiesForDepositorInCollectionByUUID(Context context, UUID depositor_id, String collectionUUID) throws SQLException;
 
     public int countIndivStats(Context context, String email) throws SQLException;
 

@@ -5,18 +5,17 @@
 ## {2}  handle
 ## {3}  Identifier
 ##
-#set($subject = 'DSpace: Deep Blue: Submission Approved and Archived')
+#set($subject = 'Deep Blue: Submission Approved and Archived')
 
 ${params[0]}: ${params[1]}
 
 To collection: ${params[2]}
 
-Its identifier: ${params[3]}
+Deep Blue DOI: ${params[4]}
 
-Note: Please use this identifier in your citations to this work; you can use this identifier immediately in citations to your work, but it may take a
-few minutes for the the deposit to appear in Deep Blue Document's index.
+Note: Please use this identifier when citing your work; you can use it immediately, but it may take one to two (1-2) hours for the DOI to be activated as a clickable URL.
 
 Thank you!
 
-Deep Blue Documents
+Deep Blue
 

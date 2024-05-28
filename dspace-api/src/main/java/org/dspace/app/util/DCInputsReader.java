@@ -51,9 +51,6 @@ import org.dspace.services.RequestService;
 import org.dspace.services.model.Request;
 import org.dspace.utils.DSpace;
 
-// This gives and error.
-//import org.dspace.app.rest.utils.ContextUtil;
-
 /**
  * Submission form generator for DSpace. Reads and parses the installation
  * form definitions file, submission-forms.xml, from the configuration directory.
@@ -183,15 +180,22 @@ public class DCInputsReader {
         // UM Change - needed for mapping and proxy depositor logic.
         Context c = ContextUtil.obtainCurrentRequestContext();
 
-        HttpServletRequest request = null;
+        //HttpServletRequest request = null;
 
         RequestService requestService = new DSpace().getRequestService();
 
+        String collectionUUID = "NO_UUID"; // Default Value
+
+        // This code could be cleaned up.  From what I see the currentRequest is never null, 
+        // but I will leave it here for now.
         Request currentRequest = requestService.getCurrentRequest();
-        if ( currentRequest != null)
+        if ( currentRequest == null)
         {
-          log.info("PROX: curretnRequest is not null");
-          request = currentRequest.getHttpServletRequest();
+            log.info("COLL: owningCollectin=" + collectionUUID);
+        }
+        {
+            collectionUUID = ContextUtil.getCollectionUUID();
+            log.info("COLL: owningCollectin=" + collectionUUID);
         }
 
         List<String> myList = new ArrayList<>();
@@ -211,7 +215,7 @@ public class DCInputsReader {
                     UUID     id = t.getID();
                     String the_id = id.toString();
 
-                    if ( !the_id.equals(pr_collection_id) )
+                    if ( !the_id.equals(pr_collection_id) && !the_id.equals(collectionUUID) )
                     {
                         myList.add(nameUser); 
                         myList.add( the_id );
@@ -229,13 +233,15 @@ public class DCInputsReader {
         } else if (name.startsWith("depositor")) {
         try
         {
+            // This is the way I was doing it when I could not get the uuid or handle passed on.
+            // But found a way to get it passed to this method.
             // UM Change.
             // Get the collection handle from the configuration.
             // This is different from the way we did it in 6.3
             // depositor_123456789_6
             // 01234567890
-            String collectionHandle = name.substring(10).replace("_", "/");
-            log.info ("PROX: this is the coll=" + collectionHandle);
+            //String collectionHandle = name.substring(10).replace("_", "/");
+            //log.info ("PROX: this is the coll=" + collectionHandle);
 
             if ( c.getCurrentUser() != null )
             {
@@ -251,8 +257,7 @@ public class DCInputsReader {
                 myList.add(labelMain); 
                 myList.add("SELF");
 
-
-                EPerson[] Proxies = ePerson.getProxies ( c, userid, collectionHandle );
+                EPerson[] Proxies = ePerson.getProxiesByUUID ( c, userid, collectionUUID );
 
                 log.info ("PROX: processing request");
                 for (int k = 0; k < Proxies.length; k++)
@@ -293,7 +298,8 @@ public class DCInputsReader {
      * @throws ServletException
      */
     public List<DCInputSet> getInputsByCollectionHandle(String collectionHandle)
-        throws DCInputsReaderException {           
+        throws DCInputsReaderException {
+
         SubmissionConfig config;
         try {
             config = new SubmissionConfigReader().getSubmissionConfigByCollection(collectionHandle);
@@ -834,7 +840,8 @@ public class DCInputsReader {
     }
 
     public String getInputFormNameByCollectionAndField(Collection collection, String field)
-        throws DCInputsReaderException {      
+        throws DCInputsReaderException {
+
         List<DCInputSet> inputSets = getInputsByCollectionHandle(collection.getHandle());
         for (DCInputSet inputSet : inputSets) {
             String[] tokenized = Utils.tokenize(field);

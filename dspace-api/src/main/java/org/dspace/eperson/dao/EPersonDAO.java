@@ -55,6 +55,8 @@ public interface EPersonDAO extends DSpaceObjectDAO<EPerson>, DSpaceObjectLegacy
 
     public List<EPerson> findProxiesForDepositorInCollection(Context context, UUID depositor_id, String collection_handle) throws SQLException;
 
+    public List<EPerson> findProxiesForDepositorInCollectionByUUID(Context context, UUID depositor_id, String collectionUUID) throws SQLException;    
+
     public int countIndivStats(Context context, String email) throws SQLException;
 
     public void DeleteFromIndivStats(Context context, String email) throws SQLException;
