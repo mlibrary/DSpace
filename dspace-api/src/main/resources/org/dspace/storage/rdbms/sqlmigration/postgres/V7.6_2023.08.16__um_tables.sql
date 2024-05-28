@@ -7,7 +7,7 @@
 --
 
 CREATE SEQUENCE proxies_seq;
-create table proxies (proxies_id integer NOT NULL DEFAULT nextval('proxies_seq'), depositor_id uuid, proxy_id uuid, handle varchar(100));
+create table proxies (proxies_id integer NOT NULL DEFAULT nextval('proxies_seq'), depositor_id uuid, proxy_id uuid, handle varchar(100), uuid varchar(100));
 
 
 CREATE SEQUENCE umrestricted_seq;

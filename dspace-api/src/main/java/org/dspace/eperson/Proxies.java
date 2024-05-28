@@ -48,6 +48,10 @@ public class Proxies implements ReloadableEntity<Integer> {
     @Column(name = "handle", unique = false)
     private String handle;
 
+    @Column(name = "uuid", unique = false)
+    private String uuid;
+
+
     /**
      * Protected constructor, create object using:
      * {@link org.dspace.eperson.service.SubscribeService#subscribe(Context, EPerson, Collection)}
@@ -81,6 +85,10 @@ public class Proxies implements ReloadableEntity<Integer> {
 
     public String getHandle() {
         return handle;
+    }
+
+    public String getUUID() {
+        return uuid;
     }
 
     void setePerson(String handle) {

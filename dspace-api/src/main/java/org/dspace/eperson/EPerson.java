@@ -189,6 +189,28 @@ public class EPerson extends DSpaceObject implements DSpaceObjectLegacySupport {
         return epersonArray;
 
     }
+
+    public static EPerson[] getProxiesByUUID (Context context, UUID depositor_id, String collectionUUID) throws SQLException
+    {
+        List<EPerson> proxies = new ArrayList<EPerson>();
+
+        EPersonService ePersonService = EPersonServiceFactory.getInstance().getEPersonService();        
+        if (!collectionUUID.equals("NO_UUID") )
+        {
+            proxies = ePersonService.findProxiesForDepositorInCollectionByUUID(context, depositor_id, collectionUUID);
+        }
+        else
+        {
+            proxies = ePersonService.findProxiesForDepositor(context, depositor_id);
+        }
+
+        EPerson[] epersonArray = new EPerson[proxies.size()];
+        epersonArray = (EPerson[]) proxies.toArray(epersonArray);
+
+        return epersonArray;
+
+    }
+
     // End UM Change
 
     /**

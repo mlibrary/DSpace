@@ -83,6 +83,9 @@ import java.util.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
+import org.dspace.identifier.DOIIdentifierProvider;
+import org.dspace.content.DSpaceObject;
+
 /**
  * When an item is submitted and is somewhere in a workflow, it has a row in the
  * {@code cwf_workflowitem} table pointing to it.
@@ -806,6 +809,17 @@ public class XmlWorkflowServiceImpl implements XmlWorkflowService {
                 // Get the item handle to email to user
                 String handle = handleService.findHandle(context, item);
 
+                DOIIdentifierProvider doiIdentifierProvider = DSpaceServicesFactory.getInstance().getServiceManager()
+                    .getServiceByName("org.dspace.identifier.DOIIdentifierProvider", DOIIdentifierProvider.class);
+
+                DSpaceObject item_dso = (DSpaceObject) item;
+                String doi = doiIdentifierProvider.getDOIByObject(context, item_dso);
+
+                // what you get for doi: doi:10.33577/42
+                // what you want to send out in email:https://dx.doi.org/10.7302/22447
+                String doi_url = doi.replace("doi:", "https://dx.doi.org/"); 
+                log.info("DOIHERE is = " + doi_url);
+
                 // Get title
                 List<MetadataValue> titles = itemService
                     .getMetadata(item, MetadataSchemaEnum.DC.getName(), "title", null, Item.ANY);
@@ -850,6 +864,7 @@ public class XmlWorkflowServiceImpl implements XmlWorkflowService {
                 email.addArgument(title);
                 email.addArgument(coll.getName());
                 email.addArgument(handleService.getCanonicalForm(handle));
+                email.addArgument(doi_url);
 
                 email.send();
             }
