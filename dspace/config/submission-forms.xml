@@ -416,7 +416,7 @@
                      <dc-qualifier>ispartofseries</dc-qualifier>
                      <repeatable>true</repeatable>
                      <label>Series/Report No./Version</label>
-                     <input-type>onebox</input-type>
+                     <input-type>twobox</input-type>
                      <hint>Any series, number, version, or release assigned to this item.</hint>
                      <required></required>
                 </field>
@@ -485,7 +485,7 @@
                      <!-- An input-type of twobox MUST be marked as repeatable -->
                      <repeatable>true</repeatable>
                      <label>Subject Keywords</label>
-                     <input-type>onebox</input-type>
+                     <input-type>twobox</input-type>
                      <hint>Enter subject keywords or phrases here.</hint>
                      <required></required>
                 </field>
@@ -741,7 +741,7 @@
                      <!-- An input-type of twobox MUST be marked as repeatable -->
                      <repeatable>true</repeatable>
                      <label>Environment</label>
-                     <input-type>onebox</input-type>
+                     <input-type>twobox</input-type>
                      <hint>Enter environment (e.g. "Northern Hardwoods")</hint>
                      <required></required>
                 </field>
@@ -755,7 +755,7 @@
                      <!-- An input-type of twobox MUST be marked as repeatable -->
                      <repeatable>true</repeatable>
                      <label>Subject</label>
-                     <input-type>onebox</input-type>
+                     <input-type>twobox</input-type>
                      <hint>Enter subject here.</hint>
                      <required></required>
                 </field>
@@ -769,7 +769,7 @@
                      <!-- An input-type of twobox MUST be marked as repeatable -->
                      <repeatable>true</repeatable>
                      <label>Keywords</label>
-                     <input-type>onebox</input-type>
+                     <input-type>twobox</input-type>
                      <hint>Enter keywords or phrases here.</hint>
                      <required></required>
                 </field>
@@ -1064,7 +1064,7 @@
                      <dc-qualifier></dc-qualifier>
                      <repeatable>true</repeatable>
                      <label>Keywords or short phrases</label>
-                     <input-type>onebox</input-type>
+                     <input-type>twobox</input-type>
                      <hint>Up to six keywords/short phrases describing your thesis</hint>
                      <required></required>
                 </field>
@@ -1110,6 +1110,20 @@
                      <required>University, degree grantor is required</required>
                 </field>
             </row>
+
+            <row>
+                <field>
+                    <dc-schema>dc</dc-schema>
+                    <dc-element>description</dc-element>
+                    <dc-qualifier>mapping</dc-qualifier>
+                    <repeatable>true</repeatable>
+                    <label>Display in Other Collections</label>
+                    <input-type value-pairs-name="collection_mappings">dropdown</input-type>
+                    <hint>If you are also a depositor in another collection and you'd like to associate your work with it, you may select the collection(s) here (e.g. a thesis may be added to the general thesis collection as well as appear in the relevant departmental collection(s) ). This box will be blank if you are not a depositor in other collections</hint> 
+                    <required></required>
+                </field>
+            </row>
+
        </form>
 
 
@@ -1264,7 +1278,7 @@
                      <dc-qualifier>ispartofseries</dc-qualifier>
                      <repeatable>true</repeatable>
                      <label>Series/Report No./Version</label>
-                     <input-type>onebox</input-type>
+                     <input-type>twobox</input-type>
                      <hint>Any series, number, version, or release assigned to this item.</hint>
                      <required></required>
                 </field>
@@ -1318,7 +1332,7 @@
                      <!-- An input-type of twobox MUST be marked as repeatable -->
                      <repeatable>true</repeatable>
                      <label>Subject Keywords</label>
-                     <input-type>onebox</input-type>
+                     <input-type>twobox</input-type>
                      <hint>Enter subject keywords or phrases here.</hint>
                      <required></required>
                 </field>
@@ -1651,7 +1665,7 @@
                      <dc-qualifier></dc-qualifier>
                      <repeatable>true</repeatable>
                      <label>Keyword</label>
-                     <input-type>onebox</input-type>
+                     <input-type>twobox</input-type>
                      <hint>Req'd: Enter ONE word or phrase per text box, up to 9 keyword fields</hint>
                      <required>Three keywords are required</required>
                 </field>
@@ -2038,7 +2052,7 @@
                      <dc-qualifier></dc-qualifier>
                      <repeatable>true</repeatable>
                      <label>Keywords or short phrases</label>
-                     <input-type>onebox</input-type>
+                     <input-type>twobox</input-type>
                      <hint>Up to six keywords/short phrases describing your thesis</hint>
                      <required></required>
                 </field>
@@ -2530,7 +2544,7 @@
                       <!-- An input-type of twobox MUST be marked as repeatable -->
                       <repeatable>true</repeatable>
                       <label>Subject Keywords</label>
-                      <input-type>onebox</input-type>
+                      <input-type>twobox</input-type>
                       <hint>Enter subject keywords or phrases here.</hint>
                       <required></required>
                 </field>

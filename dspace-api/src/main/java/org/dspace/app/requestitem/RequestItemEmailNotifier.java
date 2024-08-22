@@ -32,7 +32,8 @@ import org.dspace.eperson.EPerson;
 import org.dspace.handle.service.HandleService;
 import org.dspace.services.ConfigurationService;
 
-
+// import org.dspace.content.service.ItemService;
+// import org.dspace.content.MetadataSchemaEnum;
 
 /**
  * Send item requests and responses by email.
@@ -61,6 +62,11 @@ public class RequestItemEmailNotifier {
     protected RequestItemService requestItemService;
 
     protected final RequestItemAuthorExtractor requestItemAuthorExtractor;
+
+
+    // @Inject
+    // protected ItemService itemService;
+
 
     @Inject
     public RequestItemEmailNotifier(RequestItemAuthorExtractor requestItemAuthorExtractor) {
@@ -165,8 +171,14 @@ public class RequestItemEmailNotifier {
             grantors = List.of();
         }
 
+        //Need Grantor name and email, this would be the following metadata requestitem.email and requestitem.name
+
         String grantorName;
         String grantorAddress;
+
+        //grantorAddress = itemService.getMetadataFirstValue(ri.getItem(), MetadataSchemaEnum.DC.getName(), "requestcopy", "email", Item.ANY);
+        //grantorName = itemService.getMetadataFirstValue(ri.getItem(), MetadataSchemaEnum.DC.getName(), "requestcopy", "name", Item.ANY);
+
         if (grantors.isEmpty()) {
             grantorName = configurationService.getProperty("mail.admin.name");
             grantorAddress = configurationService.getProperty("mail.admin");
@@ -221,6 +233,16 @@ public class RequestItemEmailNotifier {
                     context.restoreAuthSystemState();
                 }
                 email.send();
+
+                //Send email to grantor to let grantor know that email was sent out.
+                Email email_grantor = Email.getEmail(I18nUtil.getEmailFilename(context.getCurrentLocale(),
+                  "request_item.grantor" ));
+                //email_grantor.setSubject("Your email was sent out.");    
+                email_grantor.addRecipient(grantorAddress);
+                email_grantor.addArgument(ri.getReqName()); 
+                email_grantor.addArgument(ri.getReqEmail()); 
+                email_grantor.send();
+
             } else {
                 boolean sendRejectEmail = configurationService
                     .getBooleanProperty("request.item.reject.email", true);
@@ -228,6 +250,14 @@ public class RequestItemEmailNotifier {
                 // email. However, by default, the rejection email is sent back.
                 if (sendRejectEmail) {
                     email.send();
+
+                  Email email_grantor = Email.getEmail(I18nUtil.getEmailFilename(context.getCurrentLocale(),
+                    "request_item.grantor" ));
+                  //email_grantor.setSubject("Your email was sent out.");
+                  email_grantor.addRecipient(grantorAddress);
+                  email_grantor.addArgument(ri.getReqName()); 
+                  email_grantor.addArgument(ri.getReqEmail()); 
+                  email_grantor.send();
                 }
             }
         } catch (MessagingException | IOException | SQLException | AuthorizeException e) {

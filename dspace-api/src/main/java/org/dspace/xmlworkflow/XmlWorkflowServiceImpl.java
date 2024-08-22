@@ -834,6 +834,16 @@ public class XmlWorkflowServiceImpl implements XmlWorkflowService {
                 }
                 email.addRecipient(ep.getEmail());
 
+                // If configed, send email to Deep Blue that shows deposit 
+                // item was deposited.
+                boolean sendToAdmin = configurationService.getBooleanProperty(
+                                    "deposit.notify.admin", false);
+                if ( sendToAdmin )
+                {
+                    email.addRecipient(configurationService.getProperty("feedback.recipient"));
+                } 
+
+
                 // UM Change To find out if there was a proxy depositor.
                 // For Proxie depoist.
                 String SubmitterMsg = "You submitted";
