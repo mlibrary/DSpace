@@ -19,9 +19,11 @@
     <submission-map>
         <!-- Default submission process -->
         <name-map collection-handle="default"     submission-name="traditional"/>
+        <name-map collection-handle="123456789/109"  submission-name="traditionalCC_um" />
+
 <!--
 
-<name-map collection-handle="123456789/2"  submission-name="traditionalCC_um" />
+
 
    <name-map collection-handle="2027.42/64026"  submission-name="busadisp" />
    <name-map collection-handle="2027.42/49252"  submission-name="biostation" />
