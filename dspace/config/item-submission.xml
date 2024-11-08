@@ -18,24 +18,44 @@
     <!-- for handle "default". -->
     <submission-map>
         <!-- Default submission process -->
-        <name-map collection-handle="default"     submission-name="traditional"/>
-        <name-map collection-handle="123456789/109"  submission-name="traditionalCC_um" />
+        <name-map collection-handle="default"     submission-name="traditionalCC_um"/>
+   <!--     <name-map collection-handle="123456789/109"  submission-name="traditionalCC_um" /> -->
+
+
+
+   <name-map collection-handle="123456789/124"  submission-name="rossseniorthesis" /> <!-- busadisp -->
+   <name-map collection-handle="123456789/125" submission-name="rossseniorthesis" />
+   <name-map collection-handle="123456789/126"  submission-name="honorsthesis" />
+   <name-map collection-handle="123456789/127"  submission-name="meche" />
+   <name-map collection-handle="123456789/128"  submission-name="paleo" />
+   <name-map collection-handle="123456789/129"  submission-name="thesis" />   
+   <name-map collection-handle="123456789/130"  submission-name="umtri" />
+   <name-map collection-handle="123456789/131"  submission-name="biostation" />
+
+
+
 
 <!--
 
 
+Pick the one that has the most fields.
+COM   <name-map collection-handle="2027.42/64026"  submission-name="busadisp" />
+COM   <name-map collection-handle="2027.42/149471" submission-name="rossseniorthesis" />
 
-   <name-map collection-handle="2027.42/64026"  submission-name="busadisp" />
-   <name-map collection-handle="2027.42/49252"  submission-name="biostation" />
-   <name-map collection-handle="2027.42/57190"  submission-name="grocs" />
+
+
+GONE   <name-map collection-handle="2027.42/57190"  submission-name="grocs" />
+GONE   <name-map collection-handle="2027.42/35324"  submission-name="busadwp" />
+GONE   <name-map collection-handle="2027.42/21609"  submission-name="ipc" />
+
    <name-map collection-handle="2027.42/55461"  submission-name="honorsthesis" />
    <name-map collection-handle="2027.42/49548"  submission-name="meche" />
    <name-map collection-handle="2027.42/41251"  submission-name="paleo" />
-   <name-map collection-handle="2027.42/35324"  submission-name="busadwp" />
-   <name-map collection-handle="2027.42/21609"  submission-name="ipc" />
    <name-map collection-handle="2027.42/39366"  submission-name="thesis" />
+   
    <name-map collection-handle="2027.42/13914"  submission-name="umtri" />
-   <name-map collection-handle="2027.42/149471" submission-name="rossseniorthesis" />
+   <name-map collection-handle="2027.42/49252"  submission-name="biostation" />
+
 
    <name-map collection-handle="2027.42/40243" submission-name="traditionalCC_um" />
    <name-map collection-handle="2027.42/55277" submission-name="traditionalCC_um" />
