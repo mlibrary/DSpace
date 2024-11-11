@@ -418,7 +418,7 @@
                      <dc-qualifier>ispartofseries</dc-qualifier>
                      <repeatable>true</repeatable>
                      <label>Series/Report No./Version</label>
-                     <input-type>twobox</input-type>
+                     <input-type>onebox</input-type>
                      <hint>Any series, number, version, or release assigned to this item.</hint>
                      <required></required>
                 </field>
@@ -429,7 +429,6 @@
                     <dc-schema>dc</dc-schema>
                      <dc-element>identifier</dc-element>
                      <dc-qualifier></dc-qualifier>
-                     <!-- An input-type of qualdrop_value MUST be marked as repeatable -->
                      <repeatable>true</repeatable>
                      <label>Identifiers</label>
                      <input-type value-pairs-name="common_identifiers">qualdrop_value</input-type>
@@ -487,12 +486,11 @@
                      <!-- An input-type of twobox MUST be marked as repeatable -->
                      <repeatable>true</repeatable>
                      <label>Subject Keywords</label>
-                     <input-type>twobox</input-type>
+                     <input-type>onebox</input-type>
                      <hint>Enter subject keywords or phrases here.</hint>
                      <required></required>
                 </field>
             </row>
-
 
             <row>
                 <field>
@@ -532,6 +530,7 @@
                      <required></required>
                 </field>
             </row>
+
         </form>
 
         <form name="traditionalpageone_busadisp">
@@ -743,7 +742,7 @@
                      <!-- An input-type of twobox MUST be marked as repeatable -->
                      <repeatable>true</repeatable>
                      <label>Environment</label>
-                     <input-type>twobox</input-type>
+                     <input-type>onebox</input-type>
                      <hint>Enter environment (e.g. "Northern Hardwoods")</hint>
                      <required></required>
                 </field>
@@ -757,7 +756,7 @@
                      <!-- An input-type of twobox MUST be marked as repeatable -->
                      <repeatable>true</repeatable>
                      <label>Subject</label>
-                     <input-type>twobox</input-type>
+                     <input-type>onebox</input-type>
                      <hint>Enter subject here.</hint>
                      <required></required>
                 </field>
@@ -771,7 +770,7 @@
                      <!-- An input-type of twobox MUST be marked as repeatable -->
                      <repeatable>true</repeatable>
                      <label>Keywords</label>
-                     <input-type>twobox</input-type>
+                     <input-type>onebox</input-type>
                      <hint>Enter keywords or phrases here.</hint>
                      <required></required>
                 </field>
@@ -1066,7 +1065,7 @@
                      <dc-qualifier></dc-qualifier>
                      <repeatable>true</repeatable>
                      <label>Keywords or short phrases</label>
-                     <input-type>twobox</input-type>
+                     <input-type>onebox</input-type>
                      <hint>Up to six keywords/short phrases describing your thesis</hint>
                      <required></required>
                 </field>
@@ -1280,7 +1279,7 @@
                      <dc-qualifier>ispartofseries</dc-qualifier>
                      <repeatable>true</repeatable>
                      <label>Series/Report No./Version</label>
-                     <input-type>twobox</input-type>
+                     <input-type>onebox</input-type>
                      <hint>Any series, number, version, or release assigned to this item.</hint>
                      <required></required>
                 </field>
@@ -1334,7 +1333,7 @@
                      <!-- An input-type of twobox MUST be marked as repeatable -->
                      <repeatable>true</repeatable>
                      <label>Subject Keywords</label>
-                     <input-type>twobox</input-type>
+                     <input-type>onebox</input-type>
                      <hint>Enter subject keywords or phrases here.</hint>
                      <required></required>
                 </field>
@@ -1667,7 +1666,7 @@
                      <dc-qualifier></dc-qualifier>
                      <repeatable>true</repeatable>
                      <label>Keyword</label>
-                     <input-type>twobox</input-type>
+                     <input-type>onebox</input-type>
                      <hint>Req'd: Enter ONE word or phrase per text box, up to 9 keyword fields</hint>
                      <required>Three keywords are required</required>
                 </field>
@@ -2054,7 +2053,7 @@
                      <dc-qualifier></dc-qualifier>
                      <repeatable>true</repeatable>
                      <label>Keywords or short phrases</label>
-                     <input-type>twobox</input-type>
+                     <input-type>onebox</input-type>
                      <hint>Up to six keywords/short phrases describing your thesis</hint>
                      <required></required>
                 </field>
@@ -2546,7 +2545,7 @@
                       <!-- An input-type of twobox MUST be marked as repeatable -->
                       <repeatable>true</repeatable>
                       <label>Subject Keywords</label>
-                      <input-type>twobox</input-type>
+                      <input-type>onebox</input-type>
                       <hint>Enter subject keywords or phrases here.</hint>
                       <required></required>
                 </field>
