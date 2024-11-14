@@ -55,7 +55,8 @@
                 <!-- The default entry, DO NOT REMOVE the system requires this -->
                 <entry key="default" value-ref="defaultConfiguration" />
 
-                <entry key="123456789/2" value-ref="thesisConfiguration" />
+                <entry key="2027.42/39366" value-ref="thesisConfiguration"/>
+                <entry key="2027.42/55461" value-ref="thesisConfiguration"/>
 
 
                 <!-- Same as the "default" configuration, but does NOT filter out older versions of items -->
@@ -169,13 +170,17 @@
         <!--Which sidebar facets are to be displayed-->
         <property name="sidebarFacets">
             <list>
-                <ref bean="searchFilterAuthor" />                
- 
-
+               <ref bean="searchFilterAuthor" />                
+                <ref bean="searchFilterPeerReviewed" />
+                <ref bean="searchFilterDiscipline" />
+                <ref bean="searchFilterIdentifierSource" />
+                <ref bean="searchFilterSubjectTop" />
+                <ref bean="searchFilterSubjectSecond" />  
 
                 <ref bean="searchFilterIssued" />
                 <ref bean="searchFilterContentInOriginalBundle"/>
                 <ref bean="searchFilterEntityType"/>
+
             </list>
         </property>
         <!-- Set TagCloud configuration per discovery configuration -->
@@ -326,10 +331,9 @@
     <bean id="defaultConfiguration" class="org.dspace.discovery.configuration.DiscoveryConfiguration" scope="prototype">
         <!--Which sidebar facets are to be displayed-->
         <property name="sidebarFacets">
-            <list>
+            <list>               
                 <ref bean="searchFilterAuthor" />                
                 <ref bean="searchFilterPeerReviewed" />
-                <ref bean="searchFilterDiscipline" />
                 <ref bean="searchFilterIdentifierSource" />
                 <ref bean="searchFilterSubjectTop" />
                 <ref bean="searchFilterSubjectSecond" />  
@@ -348,7 +352,6 @@
                 <ref bean="searchFilterTitle" />
                 <ref bean="searchFilterAuthor" />                
                 <ref bean="searchFilterPeerReviewed" />
-                <ref bean="searchFilterDiscipline" />
                 <ref bean="searchFilterIdentifierSource" />                
                 <ref bean="searchFilterSubjectTop" />
                 <ref bean="searchFilterSubjectSecond" />                   
@@ -371,7 +374,9 @@
                     <list>
                         <ref bean="sortScore" />
                         <ref bean="sortTitle" />
+                        <ref bean="sortTitleDesc" />
                         <ref bean="sortDateIssued" />
+                        <ref bean="sortDateIssuedDesc" />
                         <ref bean="sortDateAccessioned"/>
                     </list>
                 </property>
@@ -3131,11 +3136,18 @@
         <property name="defaultSortOrder" value="asc"/>
     </bean>
 
+    <bean id="sortTitleDesc" class="org.dspace.discovery.configuration.DiscoverySortFieldConfiguration">
+        <property name="metadataField" value="dc.title"/>
+        <property name="defaultSortOrder" value="desc"/>
+    </bean>
+
+
     <bean id="sortDateIssued" class="org.dspace.discovery.configuration.DiscoverySortFieldConfiguration">
         <property name="metadataField" value="dc.date.issued"/>
         <property name="type" value="date"/>
-        <property name="defaultSortOrder" value="desc"/>
+        <property name="defaultSortOrder" value="asc"/>
     </bean>
+
     <bean id="sortDateAccessioned" class="org.dspace.discovery.configuration.DiscoverySortFieldConfiguration">
         <property name="metadataField" value="dc.date.accessioned"/>
         <property name="type" value="date"/>
