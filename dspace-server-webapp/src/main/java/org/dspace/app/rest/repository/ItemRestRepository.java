@@ -104,7 +104,6 @@ public class ItemRestRepository extends DSpaceObjectRestRepository<Item, ItemRes
     @Override
     @PreAuthorize("hasPermission(#id, 'ITEM', 'READ')")
     public ItemRest findOne(Context context, UUID id) {
-log.info("PERM: 1");
         Item item = null;
         try {
             item = itemService.find(context, id);
@@ -124,7 +123,6 @@ log.info("PERM: 1");
     @PreAuthorize("hasAuthority('ADMIN')")
     public Page<ItemRest> findAll(Context context, Pageable pageable) {
         try {
-log.info("PERM: 2");
             // This endpoint only returns archived items
             long total = itemService.countArchivedItems(context);
             Iterator<Item> it = itemService.findAll(context, pageable.getPageSize(),
@@ -143,7 +141,6 @@ log.info("PERM: 2");
     @PreAuthorize("hasPermission(#id, 'ITEM', #patch)")
     protected void patch(Context context, HttpServletRequest request, String apiCategory, String model, UUID id,
                          Patch patch) throws AuthorizeException, SQLException {
-log.info("PERM: 3");
         patchDSpaceObject(apiCategory, model, id, patch);
     }
 
@@ -155,7 +152,6 @@ log.info("PERM: 3");
     @Override
     @PreAuthorize("hasPermission(#id, 'ITEM', 'DELETE')")
     protected void delete(Context context, UUID id) throws AuthorizeException {
-log.info("PERM: 4");
         String[] copyVirtual =
             requestService.getCurrentRequest().getServletRequest()
                 .getParameterValues(REQUESTPARAMETER_COPYVIRTUALMETADATA);
@@ -196,7 +192,6 @@ log.info("PERM: 4");
      */
     private void deleteMultipleRelationshipsCopyVirtualMetadata(Context context, String[] copyVirtual, Item item)
         throws SQLException, AuthorizeException {
-log.info("PERM: 5");
 
         if (copyVirtual == null || copyVirtual.length == 0) {
             // Don't delete nor copy any metadata here if the "copyVirtualMetadata" parameter wasn't passed. The
@@ -242,7 +237,6 @@ log.info("PERM: 5");
     }
 
     private List<Integer> parseVirtualMetadataTypes(String[] copyVirtual) {
-log.info("PERM: 6");
         List<Integer> types = new ArrayList<>();
         for (String typeString : copyVirtual) {
             if (!StringUtils.isNumeric(typeString)) {
@@ -264,7 +258,6 @@ log.info("PERM: 6");
     private void deleteRelationshipCopyVirtualMetadata(Item itemToDelete, Relationship relationshipToDelete)
         throws SQLException, AuthorizeException {
 
-log.info("PERM: 7");
 
         boolean copyToLeft = relationshipToDelete.getRightItem().equals(itemToDelete);
         boolean copyToRight = relationshipToDelete.getLeftItem().equals(itemToDelete);
@@ -281,7 +274,6 @@ log.info("PERM: 7");
     @Override
     @PreAuthorize("hasAuthority('ADMIN')")
     protected ItemRest createAndReturn(Context context) throws AuthorizeException, SQLException {
-log.info("PERM: 8");
         HttpServletRequest req = getRequestService().getCurrentRequest().getHttpServletRequest();
         String owningCollectionUuidString = req.getParameter("owningCollection");
         ObjectMapper mapper = new ObjectMapper();
@@ -320,7 +312,6 @@ log.info("PERM: 8");
     protected ItemRest put(Context context, HttpServletRequest request, String apiCategory, String model, UUID uuid,
                            JsonNode jsonNode)
         throws RepositoryMethodNotImplementedException, SQLException, AuthorizeException {
-log.info("PERM: 9");
         HttpServletRequest req = getRequestService().getCurrentRequest().getHttpServletRequest();
         ObjectMapper mapper = new ObjectMapper();
         ItemRest itemRest = null;
@@ -355,7 +346,6 @@ log.info("PERM: 9");
      */
     public Bundle addBundleToItem(Context context, Item item, BundleRest bundleRest)
         throws SQLException, AuthorizeException {
-log.info("PERM: 10");
         if (item.getBundles(bundleRest.getName()).size() > 0) {
             throw new DSpaceBadRequestException("The bundle name already exists in the item");
         }
@@ -373,7 +363,6 @@ log.info("PERM: 10");
     @Override
     protected ItemRest createAndReturn(Context context, List<String> stringList)
         throws AuthorizeException, SQLException, RepositoryMethodNotImplementedException {
-log.info("PERM: 11");
 
         HttpServletRequest req = getRequestService().getCurrentRequest().getHttpServletRequest();
         Item item = uriListHandlerService.handle(context, req, stringList, Item.class);

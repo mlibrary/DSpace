@@ -301,20 +301,15 @@ private static Logger log = org.apache.logging.log4j.LogManager.getLogger(GroupR
           EPerson currentUser = context.getCurrentUser();
           String email = currentUser.getEmail();
  
-          log.info("JOSE: email is =" + email);
-
           //I have created this method.
           currentUser.DeleteFromIndivStats( context, email);
  
           // I have created this method.
           currentUser.AddIndivStats ( context, email );
 
-          log.info("JOSE: OK Response");
           response.setStatus(HttpServletResponse.SC_OK);
         } catch (Exception e) {
 
-                    log.info("JOSE: FAIL response");
-  
           response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
 
@@ -333,17 +328,12 @@ private static Logger log = org.apache.logging.log4j.LogManager.getLogger(GroupR
           EPerson currentUser = context.getCurrentUser();
           String email = currentUser.getEmail();
  
-          log.info("JOSE: email is =" + email);
-
           //I have created this method.
           currentUser.DeleteFromIndivStats( context, email);
 
-          log.info("JOSE: OK Response");
           response.setStatus(HttpServletResponse.SC_OK);
         } catch (Exception e) {
 
-                    log.info("JOSE: FAIL response");
-  
           response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
 
@@ -359,26 +349,17 @@ private static Logger log = org.apache.logging.log4j.LogManager.getLogger(GroupR
 
 
           Context context = ContextUtil.obtainContext(request);
-log.info("NOT admin JOSE issub_amdin: here ");
-        
           EPerson currentUser = context.getCurrentUser();
-log.info("NOT admin JOSE issub_amdin: here ");
           String email = currentUser.getEmail();
-log.info("NOT admin JOSE issub_amdin: here email = " + email);
  
-
           //I have created this method.
           Boolean isSubs = currentUser.SendingIndivStats( context, email);
-log.info("NOT admin JOSE issub_amdin: is subscribed = " +  Boolean.toString(isSubs));
-
           response.setStatus(HttpServletResponse.SC_OK);
 
           return isSubs;
 
         } catch (Exception e) {
 
-log.info("NOT admin JOSE: FAIL response");
-  
           response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
           return false;
         }
@@ -394,40 +375,25 @@ log.info("NOT admin JOSE: FAIL response");
             throws SQLException, AuthorizeException {     
         try {
 
-log.info("admin JOSE issub_amdin: here uuid= " + uuid);
-
           Context context = ContextUtil.obtainContext(request);
-log.info("admin JOSE issub_amdin: here ");
-        
           EPerson currentUser = context.getCurrentUser();
-log.info("admin JOSE issub_amdin: here ");
           String email = currentUser.getEmail();
-log.info("admin JOSE issub_amdin: here email = " + email);
- 
           String collemail = uuid + " : " + email;
-log.info("admin JOSE issub_amdin: here email = " + collemail);
           //I have created this method.
           int count = collectionService.IsSubscribedToStats( context, collemail);
-log.info("admin JOSE issub_amdin: here count = " + String. valueOf(count));
-
           Boolean isSubs = false;
 
           if ( count > 0 )
           {
-log.info("admin JOSE issub_amdin: here ");
             isSubs = true;
           }
 
 
           response.setStatus(HttpServletResponse.SC_OK);
 
-log.info("admin JOSE: returning" + isSubs);
-
           return isSubs;
         } catch (Exception e) {
 
-log.info("admin JOSE: FAIL response");
-  
           response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
           return false;
         }
@@ -457,12 +423,9 @@ log.info("admin JOSE: FAIL response");
           //Mark the DB to do stats
           collectionService.InsertEmailFromStats(context, collemail);
 
-          log.info("JOSE: OK Response collectionId = " + collectionId);
           response.setStatus(HttpServletResponse.SC_OK);
         } catch (Exception e) {
 
-                    log.info("JOSE: 123 FAIL response" + e);
-  
           response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
 
@@ -487,12 +450,9 @@ log.info("admin JOSE: FAIL response");
           //Mark the DB to do stats
           collectionService.DeleteEmailFromStats(context, collemail);
 
-          log.info("JOSE: OK Response collectionId = " + collectionId);
           response.setStatus(HttpServletResponse.SC_OK);
         } catch (Exception e) {
 
-                    log.info("JOSE: 123 FAIL response" + e);
-  
           response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
 
@@ -505,8 +465,6 @@ log.info("admin JOSE: FAIL response");
     //@PreAuthorize("hasPermission(#uuid, 'ITEM', 'ADD')")
     public String getMonthDateStats(HttpServletResponse response, HttpServletRequest request)
             throws SQLException, AuthorizeException {  
-
-log.info("JOSE123:  Getting Month Date Stats");
 
         try {
 
@@ -525,8 +483,6 @@ log.info("JOSE123:  Getting Month Date Stats");
           return  colldt;
         } catch (Exception e) {
 
-                    log.info("JOSE123: Date 123 FAIL response" + e);
-  
           response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
 
@@ -540,14 +496,11 @@ log.info("JOSE123:  Getting Month Date Stats");
     public String getMonthStats(@PathVariable String handle, HttpServletResponse response, HttpServletRequest request)
             throws SQLException, AuthorizeException {  
 
-log.info("JOSE123:  Getting Month Stats");
-
         try {
 
            handle = handle.replace("_", "/");
 
           //String handle = handle;
-          log.info("JOSE123: the handle is" + handle);
 
           Context context = ContextUtil.obtainContext(request);
 
@@ -560,14 +513,10 @@ log.info("JOSE123:  Getting Month Stats");
 
         int count = itemService.getMonthStat(context, handle, colldt, false);
 
-    log.info("JOSE123:month returning count =" + String.valueOf(count));
-
           response.setStatus(HttpServletResponse.SC_OK);
           return  String.valueOf(count);
         } catch (Exception e) {
 
-                    log.info("JOSE123: 123 FAIL response" + e);
-  
           response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
 
@@ -579,15 +528,11 @@ log.info("JOSE123:  Getting Month Stats");
     public String getTotalStats(@PathVariable String handle, HttpServletResponse response, HttpServletRequest request)
             throws SQLException, AuthorizeException {  
 
-log.info("JOSE123:  Getting Total Stats");
-
         try {
 
            handle = handle.replace("_", "/");
 
           //String handle = handle;
-          log.info("JOSE123: the handle is" + handle);
-
           Context context = ContextUtil.obtainContext(request);
 
         String colldt = itemService.findMaxCollDtFromStats(context);
@@ -603,13 +548,9 @@ log.info("JOSE123:  Getting Total Stats");
 
           response.setStatus(HttpServletResponse.SC_OK);
 
-    log.info("JOSE123:total returning count =" + String.valueOf(count));
-
           return  String.valueOf(count);
         } catch (Exception e) {
 
-                    log.info("JOSE123: 123 FAIL response" + e);
-  
           response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
 

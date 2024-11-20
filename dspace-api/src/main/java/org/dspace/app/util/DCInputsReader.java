@@ -195,7 +195,6 @@ public class DCInputsReader {
         }
         {
             collectionUUID = ContextUtil.getCollectionUUID();
-            log.info("COLL: owningCollectin=" + collectionUUID);
         }
 
         List<String> myList = new ArrayList<>();
@@ -226,7 +225,6 @@ public class DCInputsReader {
         }
         catch (Exception exc)
         {
-            log.info("PROX: ERROR but it may be OK, creating collection mapping context is null.");
             myList.add("ERROR collmapping"); 
             myList.add("ERROR collmapping");
         }
@@ -259,7 +257,6 @@ public class DCInputsReader {
 
                 EPerson[] Proxies = ePerson.getProxiesByUUID ( c, userid, collectionUUID );
 
-                log.info ("PROX: processing request");
                 for (int k = 0; k < Proxies.length; k++)
                 {
                  String nameFull = Proxies[k].getFullName();
@@ -433,7 +430,6 @@ public class DCInputsReader {
                 processDefinition(nd);
                 foundDefs = true;
             } else if (tagName.equals("form-value-pairs")) {
-                log.info("PROX:  calling processValuePairs");
                 processValuePairs(nd);
             }
             // Ignore unknown nodes
