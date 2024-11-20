@@ -400,7 +400,6 @@ public class Context implements AutoCloseable {
     public void complete() throws SQLException {
         // If Context is no longer open/valid, just note that it has already been closed
         if (!isValid()) {
-            log.info("complete() was called on a closed Context object. No changes to commit.");
             return;
         }
 
@@ -432,7 +431,6 @@ public class Context implements AutoCloseable {
     public void commit() throws SQLException {
         // If Context is no longer open/valid, just note that it has already been closed
         if (!isValid()) {
-            log.info("commit() was called on a closed Context object. No changes to commit.");
             return;
         }
 
@@ -564,7 +562,6 @@ public class Context implements AutoCloseable {
     public void rollback() throws SQLException {
         // If Context is no longer open/valid, just note that it has already been closed
         if (!isValid()) {
-            log.info("rollback() was called on a closed Context object. No changes to abort.");
             return;
         }
 
@@ -592,7 +589,6 @@ public class Context implements AutoCloseable {
     public void abort() {
         // If Context is no longer open/valid, just note that it has already been closed
         if (!isValid()) {
-            log.info("abort() was called on a closed Context object. No changes to abort.");
             return;
         }
 
