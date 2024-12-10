@@ -42,7 +42,7 @@
                     <repeatable>true</repeatable>
                     <label>Description</label>
                     <input-type>textarea</input-type>
-                    <hint>Enter a description for the file</hint>
+                    <hint>Please provide a brief description of the contents of this file, e.g. "Main article", or "Dataset".</hint>
                     <required></required>
                 </field>
             </row>
@@ -512,7 +512,7 @@
                      <dc-qualifier>sponsorship</dc-qualifier>
                      <repeatable>true</repeatable>
                      <label>Sponsors</label>
-                     <input-type>textarea</input-type>
+                     <input-type>onebox</input-type>
                      <hint>The names of any sponsors and/or funding codes.</hint>
                      <required></required>
                 </field>
@@ -796,7 +796,7 @@
                      <dc-qualifier>sponsorship</dc-qualifier>
                      <repeatable>false</repeatable>
                      <label>Sponsors</label>
-                     <input-type>textarea</input-type>
+                     <input-type>onebox</input-type>
                      <hint>The names of any sponsors and/or funding codes.</hint>
                      <required></required>
                 </field>
@@ -1361,7 +1361,7 @@
                      <dc-qualifier>sponsorship</dc-qualifier>
                      <repeatable>false</repeatable>
                      <label>Sponsors</label>
-                     <input-type>textarea</input-type>
+                     <input-type>onebox</input-type>
                      <hint>The names of any sponsors and/or funding codes.</hint>
                      <required></required>
                 </field>
