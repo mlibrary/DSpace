@@ -7,7 +7,7 @@
         <!-- Default log file directory for DSpace.
              NOTE: The value of 'dspace.dir' will be replaced by its value in
              your configuration when DSpace is installed. -->
-        <Property name='log.dir'>${log4j:configParentLocation}/../log</Property>
+        <Property name='log.dir'>${log4j:configParentLocation}/../data/log</Property>
 
         <!-- Log level for all DSpace-specific code (org.dspace.*)
              Possible values (from most to least info):
