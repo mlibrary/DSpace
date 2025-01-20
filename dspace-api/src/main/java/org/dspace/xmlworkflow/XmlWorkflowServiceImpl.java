@@ -815,9 +815,17 @@ public class XmlWorkflowServiceImpl implements XmlWorkflowService {
                 DSpaceObject item_dso = (DSpaceObject) item;
                 String doi = doiIdentifierProvider.getDOIByObject(context, item_dso);
 
+
+                String doi_url = "";
+                if (doi == null) {
+                    doi_url ="NO DOI CREATED";
+                } else {
+                    doi_url = doi.replace("doi:", "https://dx.doi.org/"); 
+                }
+
                 // what you get for doi: doi:10.33577/42
                 // what you want to send out in email:https://dx.doi.org/10.7302/22447
-                String doi_url = doi.replace("doi:", "https://dx.doi.org/"); 
+                //  String doi_url = doi.replace("doi:", "https://dx.doi.org/"); 
                 log.info("DOIHERE is = " + doi_url);
 
                 // Get title
