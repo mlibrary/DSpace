@@ -340,7 +340,7 @@ public class AIPTechMDCrosswalk implements IngestionCrosswalk, DisseminationCros
         // accumulate values for bitstream format in case we have to make one
         String bsfShortName = null;
         String bsfMIMEType = null;
-        int bsfSupport = BitstreamFormat.KNOWN;
+        int bsfSupport = BitstreamFormat.LIMITED;
         boolean bsfInternal = false;
 
         for (Element field : dimList) {
