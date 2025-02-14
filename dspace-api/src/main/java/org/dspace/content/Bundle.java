@@ -151,6 +151,8 @@ public class Bundle extends DSpaceObject implements DSpaceObjectLegacySupport {
         String hidden_format = DSpaceServicesFactory.getInstance().getConfigurationService()
                                                  .getProperty("hidden.format");
 
+	log.info("TEST hidden the value is => " + hidden_format);
+
         // When a bitstream is first uploaded using the UI, this method gets called.  At that 
         // moment the getFormatId() is null, but you still need to retun hte list of bistreams.
         // I had some code in here that would return an empty list of bits when the format was null.
