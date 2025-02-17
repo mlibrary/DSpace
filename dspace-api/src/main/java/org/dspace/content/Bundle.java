@@ -151,7 +151,21 @@ public class Bundle extends DSpaceObject implements DSpaceObjectLegacySupport {
         String hidden_format = DSpaceServicesFactory.getInstance().getConfigurationService()
                                                  .getProperty("hidden.format");
 
-	log.info("TEST hidden the value is => " + hidden_format);
+        String no_doi_email = DSpaceServicesFactory.getInstance().getConfigurationService()
+                                                 .getProperty("nodoi.email");
+
+        String handle_prefix = DSpaceServicesFactory.getInstance().getConfigurationService()
+                                                 .getProperty("handle.prefix");
+
+
+        log.info("TEST hidden the value is => " + hidden_format);
+        log.info("TEST nodoi.email => " + no_doi_email);
+        log.info("TEST handle.prefix => " + handle_prefix);
+
+
+
+
+
 
         // When a bitstream is first uploaded using the UI, this method gets called.  At that 
         // moment the getFormatId() is null, but you still need to retun hte list of bistreams.
