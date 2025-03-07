@@ -51,6 +51,8 @@ import org.dspace.storage.bitstore.factory.StorageServiceFactory;
 import org.dspace.storage.bitstore.service.BitstreamStorageService;
 import org.dspace.usage.UsageEvent;
 
+import org.dspace.content.Bundle;
+
 /**
  * @author Rostislav Novak (Computing and Information Centre, CTU in Prague)
  */
@@ -304,6 +306,18 @@ public class BitstreamResource extends Resource {
             context = createContext();
             org.dspace.content.Bitstream dspaceBitstream = findBitstream(context, bitstreamId,
                                                                          org.dspace.core.Constants.READ);
+            // Don't offer TEXT or THUMBNAIL bitstreams in the rest api
+            List<Bundle> bundles = dspaceBitstream.getBundles();
+            for (Bundle bundle : bundles) {
+                // Get the name of the bundle
+                String bundleName = bundle.getName();
+
+                // Check if the name is "TEXT" or "THUMBNAIL"
+                if ("TEXT".equalsIgnoreCase(bundleName) || "THUMBNAIL".equalsIgnoreCase(bundleName)) {
+                    // Throw an AuthorizeException if the bundle name matches
+                    throw new AuthorizeException("Access to bundle " + bundleName + " is not authorized.");
+                }
+            }
 
             writeStats(dspaceBitstream, UsageEvent.Action.VIEW, user_ip, user_agent, xforwardedfor, headers,
                        request, context);

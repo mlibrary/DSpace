@@ -4136,8 +4136,9 @@
    </value-pairs>
 
   <value-pairs value-pairs-name="peer_reviewed" dc-term="description_peerreviewed">
+
     <pair>
-      <displayed-value> </displayed-value>
+      <displayed-value>Not Peer Reviewed</displayed-value>
       <stored-value></stored-value>
     </pair>
     <pair>
