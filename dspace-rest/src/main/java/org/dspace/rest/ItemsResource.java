@@ -268,6 +268,23 @@ public class ItemsResource extends Resource {
         return metadata.toArray(new MetadataEntry[0]);
     }
 
+    // To not offer TEXT or THUMNAIL in rest api.
+    public static List<Bitstream> filterBitstreams(List<Bitstream> bitstreams) {
+        List<Bitstream> filteredBitstreams = new ArrayList<>();
+
+        for (Bitstream bitstream : bitstreams) {
+
+            String bundleName = bitstream.getBundleName();
+            if (!"TEXT".equalsIgnoreCase(bundleName) && !"THUMBNAIL".equalsIgnoreCase(bundleName)) {
+                filteredBitstreams.add(bitstream);
+            }
+
+        }
+
+        return filteredBitstreams;
+    }
+
+
     /**
      * Return array of bitstreams in item. It can be paged.
      *
@@ -310,8 +327,11 @@ public class ItemsResource extends Resource {
             writeStats(dspaceItem, UsageEvent.Action.VIEW, user_ip, user_agent, xforwardedfor, headers, request,
                        context);
 
-            List<Bitstream> itemBitstreams = new Item(dspaceItem, servletContext, "bitstreams", context)
+            List<Bitstream> allitemBitstreams = new Item(dspaceItem, servletContext, "bitstreams", context)
                 .getBitstreams();
+
+            // to filter out TEXT and THUMBNAIL bitstreams from the REST api
+            List<Bitstream> itemBitstreams = filterBitstreams(allitemBitstreams);
 
             if ((offset + limit) > (itemBitstreams.size() - offset)) {
                 bitstreams = itemBitstreams.subList(offset, itemBitstreams.size());
