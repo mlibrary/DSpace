@@ -130,11 +130,11 @@
                     <key><util:constant static-field="org.dspace.core.Constants.COMMUNITY"/></key>
                     <list>
                         <!--Introduction text-->
-                        <!--<value>dc.description</value>-->
+                        <value>dc.description</value>
                         <!--Short description-->
-                        <!--<value>dc.description.abstract</value>-->
+                        <value>dc.description.abstract</value>
                         <!--News-->
-                        <!--<value>dc.description.tableofcontents</value>-->
+                        <value>dc.description.tableofcontents</value>
                         <!--Copyright text-->
                         <value>dc.rights</value>
                         <!--Community name-->
@@ -145,11 +145,11 @@
                     <key><util:constant static-field="org.dspace.core.Constants.COLLECTION"/></key>
                     <list>
                         <!--Introduction text-->
-                        <!--<value>dc.description</value>-->
+                        <value>dc.description</value>
                         <!--Short description-->
-                        <!--<value>dc.description.abstract</value>-->
+                        <value>dc.description.abstract</value>
                         <!--News-->
-                        <!--<value>dc.description.tableofcontents</value>-->
+                        <value>dc.description.tableofcontents</value>
                         <!--Copyright text-->
                         <value>dc.rights</value>
                         <!--Collection name-->
