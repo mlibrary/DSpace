@@ -261,7 +261,7 @@
                      <dc-element>contributor</dc-element>
                      <dc-qualifier>author</dc-qualifier>
                      <repeatable>true</repeatable>
-                     <label>*Author(s)</label>
+                     <label>Author(s)</label>
                      <input-type>name</input-type>
                      <hint>Names of the author(s) of this item. (* required)</hint>
                      <required>At least one author is required.</required>
@@ -326,7 +326,7 @@
                      <dc-element>title</dc-element>
                      <dc-qualifier></dc-qualifier>
                      <repeatable>false</repeatable>
-                     <label>*Document or Item Title</label>
+                     <label>Document or Item Title</label>
                      <input-type>onebox</input-type>
                      <hint>Enter the main title of the item. (* required)</hint>
                      <required>You must enter a main title for this item.</required>
@@ -352,7 +352,7 @@
                      <dc-element>date</dc-element>
                      <dc-qualifier>issued</dc-qualifier>
                      <repeatable>false</repeatable>
-                     <label>*Date of Issue</label>
+                     <label>Date of Issue</label>
                      <input-type>date</input-type>
                      <hint>Use today's date if Deep Blue is this item's first place of publication. (* YYYY required)</hint>
                      <required>You must enter at least the year (YYYY). Day and month are not required.</required>
@@ -443,7 +443,7 @@
                      <dc-element>type</dc-element>
                      <dc-qualifier></dc-qualifier>
                      <repeatable>true</repeatable>
-                     <label>*Type</label>
+                     <label>Type</label>
                      <input-type value-pairs-name="common_types">dropdown</input-type>
                      <hint>To select more than one value in the list, you may have to hold down the "CTRL" or "Shift" key.</hint>
                      <required>Type is required</required>
@@ -623,7 +623,7 @@
                      <dc-element>contributor</dc-element>
                      <dc-qualifier>author</dc-qualifier>
                      <repeatable>true</repeatable>
-                     <label>*Author(s)</label>
+                     <label>Author(s)</label>
                      <input-type>name</input-type>
                      <hint>Names of the author(s) of this item. (* required)</hint>
                      <required>At least one author is required.</required>
@@ -675,7 +675,7 @@
                      <dc-element>title</dc-element>
                      <dc-qualifier></dc-qualifier>
                      <repeatable>false</repeatable>
-                     <label>*Title</label>
+                     <label>Title</label>
                      <input-type>onebox</input-type>
                      <hint>Enter the main title of the item. (* required)</hint>
                      <required>You must enter a main title for this item.</required>
@@ -701,7 +701,7 @@
                      <dc-element>date</dc-element>
                      <dc-qualifier>issued</dc-qualifier>
                      <repeatable>false</repeatable>
-                     <label>*Date of Issue</label>
+                     <label>Date of Issue</label>
                      <input-type>date</input-type>
                      <hint>Use today's date if Deep Blue is this item's first place of publication. (* YYYY required)</hint>
                      <required>You must enter at least the year (YYYY). Day and month are not required.</required>
@@ -823,7 +823,7 @@
                      <dc-element>type</dc-element>
                      <dc-qualifier></dc-qualifier>
                      <repeatable>true</repeatable>
-                     <label>*Type</label>
+                     <label>Type</label>
                      <input-type value-pairs-name="common_types">dropdown</input-type>
                      <hint>To select more than one value in the list, you may have to hold down the "CTRL" or "Shift" key.</hint>
                      <required>Type is required</required>
@@ -851,7 +851,7 @@
                      <dc-element>contributor</dc-element>
                      <dc-qualifier>author</dc-qualifier>
                      <repeatable>true</repeatable>
-                     <label>*Author(s)</label>
+                     <label>Author(s)</label>
                      <input-type>name</input-type>
                      <hint>Names of the author(s) of this item. Put "Project Name" in the "Last Name" field as first author, followed by individual contributors (*required)</hint>
                      <required>At least one author is required.</required>
@@ -864,7 +864,7 @@
                      <dc-element>title</dc-element>
                      <dc-qualifier></dc-qualifier>
                      <repeatable>false</repeatable>
-                     <label>*Item Title</label>
+                     <label>Item Title</label>
                      <input-type>onebox</input-type>
                      <hint>e.g. "Exhibition Panel:  Foundations" (* required)</hint>
                      <required>You must enter a main title for this item.</required>
@@ -890,7 +890,7 @@
                      <dc-element>date</dc-element>
                      <dc-qualifier>issued</dc-qualifier>
                      <repeatable>false</repeatable>
-                     <label>*Date of Issue</label>
+                     <label>Date of Issue</label>
                      <input-type>date</input-type>
                      <hint>Use April of the project's GROCS year if no specific date is attached (* YYYY required)</hint>
                      <required>You must enter at least the year (YYYY). Day and month are not required.</required>
@@ -903,7 +903,7 @@
                      <dc-element>type</dc-element>
                      <dc-qualifier></dc-qualifier>
                      <repeatable>true</repeatable>
-                     <label>*Type</label>
+                     <label>Type</label>
                      <input-type value-pairs-name="common_types">dropdown</input-type>
                      <hint>To select more than one value in the list, you may have to hold down the "CTRL" or "Shift" key.</hint>
                      <required>Type is required</required>
@@ -1135,7 +1135,7 @@
                      <dc-element>contributor</dc-element>
                      <dc-qualifier>author</dc-qualifier>
                      <repeatable>true</repeatable>
-                     <label>*Author(s)</label>
+                     <label>Author(s)</label>
                      <input-type>name</input-type>
                      <hint>Names of the author(s) of this item. (* required)</hint>
                      <required>At least one author is required.</required>
@@ -1200,7 +1200,7 @@
                      <dc-element>title</dc-element>
                      <dc-qualifier></dc-qualifier>
                      <repeatable>false</repeatable>
-                     <label>*Title</label>
+                     <label>Title</label>
                      <input-type>onebox</input-type>
                      <hint>Enter the main title of the item. (* required)</hint>
                      <required>You must enter a main title for this item.</required>
@@ -1226,7 +1226,7 @@
                      <dc-element>date</dc-element>
                      <dc-qualifier>issued</dc-qualifier>
                      <repeatable>false</repeatable>
-                     <label>*Date of Issue</label>
+                     <label>Date of Issue</label>
                      <input-type>date</input-type>
                      <hint>Use today's date if Deep Blue is this item's first place of publication. (* YYYY required)</hint>
                      <required>You must enter at least the year (YYYY). Day and month are not required.</required>
@@ -1305,7 +1305,7 @@
                      <dc-element>type</dc-element>
                      <dc-qualifier></dc-qualifier>
                      <repeatable>true</repeatable>
-                     <label>*Type</label>
+                     <label>Type</label>
                      <input-type value-pairs-name="common_types">dropdown</input-type>
                      <hint>To select more than one value in the list, you may have to hold down the "CTRL" or "Shift" key.</hint>
                      <required>Type is required</required>
@@ -1533,7 +1533,7 @@
                      <dc-element>type</dc-element>
                      <dc-qualifier></dc-qualifier>
                      <repeatable>true</repeatable>
-                     <label>*Type</label>
+                     <label>Type</label>
                      <input-type value-pairs-name="common_types">dropdown</input-type>
                      <hint>To select more than one value in the list, you may have to hold down the "CTRL" or "Shift" key.</hint>
                      <required>Type is required</required>
@@ -2413,7 +2413,7 @@
                       <dc-element>contributor</dc-element>
                       <dc-qualifier>author</dc-qualifier>
                       <repeatable>true</repeatable>
-                      <label>*Author(s)</label>
+                      <label>Author(s)</label>
                       <input-type>onebox</input-type>
                       <hint>Names of the author(s) of this item. (* required)</hint>
                       <required>At least one author is required.</required>
@@ -2452,7 +2452,7 @@
                       <dc-element>contributor</dc-element>
                       <dc-qualifier>advisor</dc-qualifier>
                       <repeatable>true</repeatable>
-                      <label>*Advisor(s)</label>
+                      <label>Advisor(s)</label>
                       <input-type>onebox</input-type>
                       <hint>Advisor is required</hint>
                       <required>true</required>
@@ -2465,7 +2465,7 @@
                       <dc-element>title</dc-element>
                       <dc-qualifier></dc-qualifier>
                       <repeatable>false</repeatable>
-                      <label>*Title</label>
+                      <label>Title</label>
                       <input-type>onebox</input-type>
                       <hint>Enter the main title of the item. (* required)</hint>
                       <required>You must enter a main title for this item.</required>
@@ -2491,7 +2491,7 @@
                       <dc-element>date</dc-element>
                       <dc-qualifier>issued</dc-qualifier>
                       <repeatable>false</repeatable>
-                      <label>*Date of Issue</label>
+                      <label>Date of Issue</label>
                       <input-type>date</input-type>
                       <hint>Use today's date if Deep Blue is this item's first place of publication. (* YYYY required)</hint>
                       <required>You must enter at least the year (YYYY). Day and month are not required.</required>
@@ -2504,7 +2504,7 @@
                       <dc-element>type</dc-element>
                       <dc-qualifier></dc-qualifier>
                       <repeatable>true</repeatable>
-                      <label>*Type</label>
+                      <label>Type</label>
                       <input-type value-pairs-name="common_types">dropdown</input-type>
                       <hint>To select more than one value in the list, you may have to hold down the "CTRL" or "Shift" key.</hint>
                       <required>Type is required</required>
@@ -2530,7 +2530,7 @@
                       <dc-element>subject</dc-element>
                       <dc-qualifier>classification</dc-qualifier>
                       <repeatable>true</repeatable>
-                      <label>*Department</label>
+                      <label>Department</label>
                       <input-type value-pairs-name="busadwp_department_types">dropdown</input-type>
                       <hint>Primary Ross School of Business department affiliation</hint>
                       <required>Department is required</required>
