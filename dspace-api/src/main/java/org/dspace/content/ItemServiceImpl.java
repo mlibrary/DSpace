@@ -1039,8 +1039,9 @@ public class ItemServiceImpl extends DSpaceObjectServiceImpl<Item> implements It
             authorizeService.removeAllPoliciesByDSOAndType(context, item, ResourcePolicy.TYPE_SUBMISSION);
             authorizeService.removeAllPoliciesByDSOAndType(context, item, ResourcePolicy.TYPE_WORKFLOW);
 
-// context.getCurrentUser()
-// Not sure this is available yet. item.getSubmitter()
+//UM Chnage I was trying out, but it screwed things up.  Leaving it here in case I need to revisit this issue, I'll have a starting point.
+//context.getCurrentUser()
+//Not sure this is available yet. item.getSubmitter()
 //        authorizeService.addPolicy(context, item, Constants.ADMIN, item.getSubmitter(), ResourcePolicy.TYPE_SUBMISSION);
 
 
