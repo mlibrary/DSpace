@@ -1,1 +1,0 @@
-ALTER TABLE proxies ADD COLUMN uuid VARCHAR(100);
