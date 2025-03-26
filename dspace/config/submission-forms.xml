@@ -155,9 +155,8 @@
                     </hint>
                     <required>You must enter at least the year.</required>
                 </field>
-</row>
-<row>
-
+            </row>
+            <row>
                 <field>
                     <dc-schema>dc</dc-schema>
                     <dc-element>publisher</dc-element>
@@ -475,9 +474,6 @@
                      <required></required>
                 </field>
             </row>
-        </form>
-
-        <form name="traditionalpagetwo_um">
             <row>
                 <field>
                     <dc-schema>dc</dc-schema>
@@ -530,7 +526,6 @@
                      <required></required>
                 </field>
             </row>
-
         </form>
 
         <form name="traditionalpageone_busadisp">
@@ -814,9 +809,7 @@
                      <required></required>
                 </field>
             </row>
-        </form>
 
-       <form name="traditionalpagetwo_biostation">
             <row>
                 <field>
                      <dc-schema>dc</dc-schema>
@@ -1083,9 +1076,7 @@
                      <required></required>
                 </field>
             </row>
-        </form>
 
-       <form name="traditionalpagetwo_honorsthesis">
             <row>
                 <field>
                      <dc-schema>dc</dc-schema>
@@ -1124,9 +1115,7 @@
                     <required></required>
                 </field>
             </row>
-
-       </form>
-
+        </form>
 
        <form name="traditionalpageone_meche">
             <row>
@@ -1351,9 +1340,7 @@
                      <required></required>
                 </field>
             </row>
-        </form>
 
-       <form name="traditionalpagetwo_meche">
             <row>
                 <field>
                      <dc-schema>dc</dc-schema>
@@ -1378,8 +1365,7 @@
                      <required></required>
                 </field>
             </row>
-       </form>
-
+        </form>
 
        <form name="traditionalpageone_paleo">
             <row>
@@ -1511,9 +1497,7 @@
                      <required></required>
                 </field>
             </row>
-        </form>
 
-       <form name="traditionalpagetwo_paleo">
             <row>
                 <field>
                      <dc-schema>dc</dc-schema>
@@ -1539,7 +1523,9 @@
                      <required>Type is required</required>
                 </field>
             </row>
-       </form>
+
+        </form>
+
 
        <form name="traditionalpageone_busadwp">
             <row>
@@ -2097,9 +2083,7 @@
                      <required>University, degree grantor is required</required>
                 </field>
             </row>
-        </form>        
 
-        <form name="traditionalpagetwo_thesis">
             <row>
                 <field>
                      <dc-schema>dc</dc-schema>
@@ -2125,7 +2109,7 @@
                      <required></required>
                 </field>
             </row>
-        </form>
+        </form>        
 
        <form name="traditionalpageone_umtri">
             <row>
@@ -2376,9 +2360,7 @@
                      <required></required>
                 </field>
             </row>
-        </form>
 
-       <form name="traditionalpagetwo_umtri">
             <row>
                 <field>
                      <dc-schema>dc</dc-schema>
@@ -2404,6 +2386,7 @@
                      <required></required>
                 </field>
             </row>
+
         </form>
 
         <form name="traditionalpageone_rossseniorthesis">
@@ -2550,9 +2533,7 @@
                       <required></required>
                 </field>
             </row>
-        </form>
 
-        <form name="traditionalpagetwo_rossseniorthesis">
             <row>
                 <field>
                       <dc-schema>dc</dc-schema>
@@ -2578,7 +2559,9 @@
                       <required></required>
                 </field>
             </row>
+
         </form>
+
         
 <!--  End UM Specific -->
 

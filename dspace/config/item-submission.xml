@@ -19,10 +19,6 @@
     <submission-map>
         <!-- Default submission process -->
         <name-map collection-handle="default"     submission-name="traditionalCC_um"/>
-   <!--     <name-map collection-handle="123456789/109"  submission-name="traditionalCC_um" /> -->
-
-
-
    <name-map collection-handle="123456789/124"  submission-name="rossseniorthesis" /> <!-- busadisp -->
    <name-map collection-handle="123456789/125" submission-name="rossseniorthesis" />
    <name-map collection-handle="123456789/126"  submission-name="honorsthesis" />
@@ -32,17 +28,25 @@
    <name-map collection-handle="123456789/130"  submission-name="umtri" />
    <name-map collection-handle="123456789/131"  submission-name="biostation" />
 
+<!-- For when we go live:
+
+   <name-map collection-handle="2027.42/64026"  submission-name="rossseniorthesis" />
+   <name-map collection-handle="2027.42/149471" submission-name="rossseniorthesis" />
+   <name-map collection-handle="2027.42/55461"  submission-name="honorsthesis" />
+   <name-map collection-handle="2027.42/49548"  submission-name="meche" />
+   <name-map collection-handle="2027.42/41251"  submission-name="paleo" />
+   <name-map collection-handle="2027.42/39366"  submission-name="thesis" />
+   <name-map collection-handle="2027.42/13914"  submission-name="umtri" />
+   <name-map collection-handle="2027.42/49252"  submission-name="biostation" />
+
+-->
 
 
 
-<!--
-
-
+<!-- working...
 Pick the one that has the most fields.
 COM   <name-map collection-handle="2027.42/64026"  submission-name="busadisp" />
 COM   <name-map collection-handle="2027.42/149471" submission-name="rossseniorthesis" />
-
-
 
 GONE   <name-map collection-handle="2027.42/57190"  submission-name="grocs" />
 GONE   <name-map collection-handle="2027.42/35324"  submission-name="busadwp" />
@@ -57,16 +61,11 @@ GONE   <name-map collection-handle="2027.42/21609"  submission-name="ipc" />
    <name-map collection-handle="2027.42/49252"  submission-name="biostation" />
 
 
-   <name-map collection-handle="2027.42/40243" submission-name="traditionalCC_um" />
+   <name-map collection-handle="2027.42/40243" submission-name="" />
    <name-map collection-handle="2027.42/55277" submission-name="traditionalCC_um" />
    <name-map collection-handle="2027.42/40241" submission-name="traditionalCC_um" />
    <name-map collection-handle="2027.42/78530" submission-name="traditionalCC_um" />
 -->
-
-
-
-
-
 
         <!-- Sample Entities Collection configuration based on the demo Entities dataset available at:
              https://github.com/DSpace-Labs/AIP-Files/releases/tag/demo-entities-data
@@ -116,8 +115,6 @@ GONE   <name-map collection-handle="2027.42/21609"  submission-name="ipc" />
          -->
 
     </submission-map>
-
-
 
     <!-- The 'step-definitions' allows you to define steps which you may wish -->
     <!-- to "share" amongst multiple submission-item definitions. In order to -->
@@ -218,49 +215,18 @@ GONE   <name-map collection-handle="2027.42/21609"  submission-name="ipc" />
             <type>submission-form</type>
         </step-definition> 
 
-
-
-
-
-
         <step-definition id="traditionalpagetwo" mandatory="true">
             <heading>submit.progressbar.describe.steptwo</heading>
             <processing-class>org.dspace.app.rest.submit.step.DescribeStep</processing-class>
             <type>submission-form</type>
         </step-definition>
-        <step-definition id="traditionalpagetwo_um" mandatory="true">
-            <heading>submit.progressbar.describe.steptwo</heading>
-            <processing-class>org.dspace.app.rest.submit.step.DescribeStep</processing-class>
-            <type>submission-form</type>
-        </step-definition>
-
 
         <step-definition id="traditionalpagetwo_busadisp" mandatory="true">
             <heading>submit.progressbar.describe.steptwo</heading>
             <processing-class>org.dspace.app.rest.submit.step.DescribeStep</processing-class>
             <type>submission-form</type>
         </step-definition>
-        <step-definition id="traditionalpagetwo_biostation" mandatory="true">
-            <heading>submit.progressbar.describe.steptwo</heading>
-            <processing-class>org.dspace.app.rest.submit.step.DescribeStep</processing-class>
-            <type>submission-form</type>
-        </step-definition>
         <step-definition id="traditionalpagetwo_grocs" mandatory="true">
-            <heading>submit.progressbar.describe.steptwo</heading>
-            <processing-class>org.dspace.app.rest.submit.step.DescribeStep</processing-class>
-            <type>submission-form</type>
-        </step-definition>
-        <step-definition id="traditionalpagetwo_honorsthesis" mandatory="true">
-            <heading>submit.progressbar.describe.steptwo</heading>
-            <processing-class>org.dspace.app.rest.submit.step.DescribeStep</processing-class>
-            <type>submission-form</type>
-        </step-definition>
-        <step-definition id="traditionalpagetwo_meche" mandatory="true">
-            <heading>submit.progressbar.describe.steptwo</heading>
-            <processing-class>org.dspace.app.rest.submit.step.DescribeStep</processing-class>
-            <type>submission-form</type>
-        </step-definition>
-        <step-definition id="traditionalpagetwo_paleo" mandatory="true">
             <heading>submit.progressbar.describe.steptwo</heading>
             <processing-class>org.dspace.app.rest.submit.step.DescribeStep</processing-class>
             <type>submission-form</type>
@@ -275,25 +241,6 @@ GONE   <name-map collection-handle="2027.42/21609"  submission-name="ipc" />
             <processing-class>org.dspace.app.rest.submit.step.DescribeStep</processing-class>
             <type>submission-form</type>
         </step-definition>
-         <step-definition id="traditionalpagetwo_thesis" mandatory="true">
-            <heading>submit.progressbar.describe.steptwo</heading>
-            <processing-class>org.dspace.app.rest.submit.step.DescribeStep</processing-class>
-            <type>submission-form</type>
-        </step-definition> 
-        <step-definition id="traditionalpagetwo_umtri" mandatory="true">
-            <heading>submit.progressbar.describe.steptwo</heading>
-            <processing-class>org.dspace.app.rest.submit.step.DescribeStep</processing-class>
-            <type>submission-form</type>
-        </step-definition>
-         <step-definition id="traditionalpagetwo_rossseniorthesis" mandatory="true">
-            <heading>submit.progressbar.describe.steptwo</heading>
-            <processing-class>org.dspace.app.rest.submit.step.DescribeStep</processing-class>
-            <type>submission-form</type>
-        </step-definition> 
-
-
-
-
 
         <step-definition id="publicationStep" mandatory="true">
             <heading>submit.progressbar.describe.stepone</heading>
@@ -508,8 +455,6 @@ GONE   <name-map collection-handle="2027.42/21609"  submission-name="ipc" />
             <step id="identifiers"/>
             <!--Step will be to Describe the item. -->
             <step id="traditionalpageone_um"/>
-            <step id="traditionalpagetwo_um"/>
-
 
             <!-- Uncomment this step to allow the user to embargo or access restrict the entire item -->
             <!-- <step id="itemAccessConditions"/> -->
@@ -529,7 +474,6 @@ GONE   <name-map collection-handle="2027.42/21609"  submission-name="ipc" />
             <step id="license"/>
         </submission-process>
 
-
          <submission-process name="traditionalCC_um">
             <!--Uncommment to display the SAMPLE step as your first step -->
             <!--<step id="sample"/> -->
@@ -540,7 +484,7 @@ GONE   <name-map collection-handle="2027.42/21609"  submission-name="ipc" />
             <step id="identifiers"/>
             <!--Step will be to Describe the item. -->
             <step id="traditionalpageone_um"/>
-            <step id="traditionalpagetwo_um"/>
+
 
             <!-- Uncomment this step to allow the user to embargo or access restrict the entire item -->
             <!-- <step id="itemAccessConditions"/> -->
@@ -603,7 +547,7 @@ GONE   <name-map collection-handle="2027.42/21609"  submission-name="ipc" />
             <step id="identifiers"/>
             <!--Step will be to Describe the item. -->
             <step id="traditionalpageone_biostation"/>
-            <step id="traditionalpagetwo_biostation"/>
+
 
             <!-- Uncomment this step to allow the user to embargo or access restrict the entire item -->
             <!-- <step id="itemAccessConditions"/> -->
@@ -652,8 +596,7 @@ GONE   <name-map collection-handle="2027.42/21609"  submission-name="ipc" />
                  that identifiers.cfg and identifier-service.xml are properly configured. -->
             <step id="identifiers"/>
             <!--Step will be to Describe the item. -->
-            <step id="traditionalpageone_honorsthesis"/>
-            <step id="traditionalpagetwo_honorsthesis"/>            
+            <step id="traditionalpageone_honorsthesis"/>          
 
             <!-- Uncomment this step to allow the user to embargo or access restrict the entire item -->
             <!-- <step id="itemAccessConditions"/> -->
@@ -678,7 +621,6 @@ GONE   <name-map collection-handle="2027.42/21609"  submission-name="ipc" />
             <step id="identifiers"/>
             <!--Step will be to Describe the item. -->
             <step id="traditionalpageone_meche"/>
-            <step id="traditionalpagetwo_meche"/>
 
             <!-- Uncomment this step to allow the user to embargo or access restrict the entire item -->
             <!-- <step id="itemAccessConditions"/> -->
@@ -703,7 +645,6 @@ GONE   <name-map collection-handle="2027.42/21609"  submission-name="ipc" />
             <step id="identifiers"/>
             <!--Step will be to Describe the item. -->
             <step id="traditionalpageone_paleo"/>
-            <step id="traditionalpagetwo_paleo"/>
 
             <!-- Uncomment this step to allow the user to embargo or access restrict the entire item -->
             <!-- <step id="itemAccessConditions"/> -->
@@ -778,7 +719,6 @@ GONE   <name-map collection-handle="2027.42/21609"  submission-name="ipc" />
             <step id="identifiers"/>
             <!--Step will be to Describe the item. -->
             <step id="traditionalpageone_thesis"/>
-            <step id="traditionalpagetwo_thesis"/>
 
             <!-- Uncomment this step to allow the user to embargo or access restrict the entire item -->
             <!-- <step id="itemAccessConditions"/> -->
@@ -802,8 +742,7 @@ GONE   <name-map collection-handle="2027.42/21609"  submission-name="ipc" />
                  that identifiers.cfg and identifier-service.xml are properly configured. -->
             <step id="identifiers"/>
             <!--Step will be to Describe the item. -->
-            <step id="traditionalpageone_umtri"/>
-            <step id="traditionalpagetwo_umtri"/>            
+            <step id="traditionalpageone_umtri"/>            
 
             <!-- Uncomment this step to allow the user to embargo or access restrict the entire item -->
             <!-- <step id="itemAccessConditions"/> -->
@@ -827,8 +766,7 @@ GONE   <name-map collection-handle="2027.42/21609"  submission-name="ipc" />
                  that identifiers.cfg and identifier-service.xml are properly configured. -->
             <step id="identifiers"/>
             <!--Step will be to Describe the item. -->
-            <step id="traditionalpageone_rossseniorthesis"/>
-            <step id="traditionalpagetwo_rossseniorthesis"/>            
+            <step id="traditionalpageone_rossseniorthesis"/>           
 
             <!-- Uncomment this step to allow the user to embargo or access restrict the entire item -->
             <!-- <step id="itemAccessConditions"/> -->

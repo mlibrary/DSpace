@@ -172,6 +172,7 @@
             <list>
                <ref bean="searchFilterAuthor" />                
                 <ref bean="searchFilterPeerReviewed" />
+                <ref bean="searchFilterTypeAll" />
                 <ref bean="searchFilterDiscipline" />
                 <ref bean="searchFilterIdentifierSource" />
                 <ref bean="searchFilterSubjectTop" />
@@ -191,6 +192,7 @@
                 <ref bean="searchFilterTitle" />
                 <ref bean="searchFilterAuthor" />                
                 <ref bean="searchFilterPeerReviewed" />
+                <ref bean="searchFilterTypeAll" />
                 <ref bean="searchFilterDiscipline" />
                 <ref bean="searchFilterIdentifierSource" />                
                 <ref bean="searchFilterSubjectTop" />
@@ -334,6 +336,7 @@
             <list>               
                 <ref bean="searchFilterAuthor" />                
                 <ref bean="searchFilterPeerReviewed" />
+                <ref bean="searchFilterTypeAll" />
                 <ref bean="searchFilterIdentifierSource" />
                 <ref bean="searchFilterSubjectTop" />
                 <ref bean="searchFilterSubjectSecond" />  
@@ -352,6 +355,7 @@
                 <ref bean="searchFilterTitle" />
                 <ref bean="searchFilterAuthor" />                
                 <ref bean="searchFilterPeerReviewed" />
+                <ref bean="searchFilterTypeAll" />
                 <ref bean="searchFilterIdentifierSource" />                
                 <ref bean="searchFilterSubjectTop" />
                 <ref bean="searchFilterSubjectSecond" />                   
@@ -487,6 +491,7 @@
         <property name="sidebarFacets">
             <list>
                 <ref bean="searchFilterPeerReviewed" />
+                <ref bean="searchFilterTypeAll" />
                 <ref bean="searchFilterDiscipline" />
                 <ref bean="searchFilterIdentifierSource" />                
                 <ref bean="searchFilterSubjectTop" />
@@ -503,6 +508,7 @@
             <list>
                 <ref bean="searchFilterTitle" />
                 <ref bean="searchFilterPeerReviewed" />
+                <ref bean="searchFilterTypeAll" />
                 <ref bean="searchFilterDiscipline" />
                 <ref bean="searchFilterIdentifierSource" />
                 <ref bean="searchFilterSubjectTop" />
@@ -632,6 +638,7 @@
         <property name="sidebarFacets">
             <list>
                 <ref bean="searchFilterPeerReviewed" />
+                <ref bean="searchFilterTypeAll" />
                 <ref bean="searchFilterDiscipline" />
                 <ref bean="searchFilterIdentifierSource" />                
                 <ref bean="searchFilterSubjectTop" />
@@ -648,6 +655,7 @@
             <list>
                 <ref bean="searchFilterTitle" />
                 <ref bean="searchFilterPeerReviewed" />
+                <ref bean="searchFilterTypeAll" />
                 <ref bean="searchFilterDiscipline" />
                 <ref bean="searchFilterIdentifierSource" />                
                 <ref bean="searchFilterSubjectTop" />
@@ -778,6 +786,7 @@
                 <ref bean="searchFilterDiscoverable" />
                 <ref bean="searchFilterWithdrawn" />
                 <ref bean="searchFilterPeerReviewed" />
+                <ref bean="searchFilterTypeAll" />
                 <ref bean="searchFilterDiscipline" />
                 <ref bean="searchFilterIdentifierSource" />                
                 <ref bean="searchFilterSubjectTop" />
@@ -796,6 +805,7 @@
                 <ref bean="searchFilterWithdrawn" />
                 <ref bean="searchFilterTitle" />
                 <ref bean="searchFilterPeerReviewed" />
+                <ref bean="searchFilterTypeAll" />
                 <ref bean="searchFilterDiscipline" />
                 <ref bean="searchFilterIdentifierSource" />                
                 <ref bean="searchFilterSubjectTop" />
@@ -1300,6 +1310,7 @@
         <property name="sidebarFacets">
             <list>
                 <ref bean="searchFilterPeerReviewed" />
+                <ref bean="searchFilterTypeAll" />
                 <ref bean="searchFilterDiscipline" />
                 <ref bean="searchFilterIdentifierSource" />                
                 <ref bean="searchFilterSubjectTop" />
@@ -1316,6 +1327,7 @@
             <list>
                 <ref bean="searchFilterTitle" />
                 <ref bean="searchFilterPeerReviewed" />
+                <ref bean="searchFilterTypeAll" />
                 <ref bean="searchFilterDiscipline" />
                 <ref bean="searchFilterIdentifierSource" />                
                 <ref bean="searchFilterSubjectTop" />
@@ -1376,6 +1388,7 @@
         <property name="sidebarFacets">
             <list>
                 <ref bean="searchFilterPeerReviewed" />
+                <ref bean="searchFilterTypeAll" />
                 <ref bean="searchFilterDiscipline" />
                 <ref bean="searchFilterIdentifierSource" />                
                 <ref bean="searchFilterSubjectTop" />
@@ -1392,6 +1405,7 @@
             <list>
                 <ref bean="searchFilterTitle" />
                 <ref bean="searchFilterPeerReviewed" />
+                <ref bean="searchFilterTypeAll" />
                 <ref bean="searchFilterDiscipline" />
                 <ref bean="searchFilterIdentifierSource" />                
                 <ref bean="searchFilterSubjectTop" />
@@ -2515,6 +2529,22 @@
         <property name="pageSize" value="10"/>
         <property name="exposeMinAndMaxValue" value="true"/>
     </bean>
+
+    <bean id="searchFilterTypeAll" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
+        <property name="indexFieldName" value="type"/>
+        <property name="metadataFields">
+            <list>
+                <value>dc.type</value>
+            </list>
+        </property>
+        <property name="facetLimit" value="5"/>
+        <property name="sortOrderSidebar" value="COUNT"/>
+        <property name="sortOrderFilterPage" value="COUNT"/>
+        <property name="isOpenByDefault" value="true"/>
+        <property name="pageSize" value="10"/>
+        <property name="exposeMinAndMaxValue" value="true"/>
+    </bean>
+
 
 
     <bean id="searchFilterDiscipline" class="org.dspace.discovery.configuration.DiscoverySearchFilterFacet">
