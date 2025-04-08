@@ -113,7 +113,7 @@
                     <repeatable>true</repeatable>
                     <label>Author</label>
                     <input-type>name</input-type>
-                    <hint>Enter the author's name (Family name, Given names).</hint>
+                    <hint>Enter the author's name (Family name, Given names). Add additional by clicking + Add more. (* required)</hint>
                     <required></required>
                 </field>
             </row>
@@ -262,7 +262,7 @@
                      <repeatable>true</repeatable>
                      <label>Author(s)</label>
                      <input-type>name</input-type>
-                     <hint>Names of the author(s) of this item. (* required)</hint>
+                     <hint>Names of the author(s) of this work.  Add additional by clicking + Add more.  (* required)</hint>
                      <required>At least one author is required.</required>
                 </field>
             </row>
@@ -275,7 +275,7 @@
                      <repeatable>true</repeatable>
                      <label>ORCID iD</label>
                      <input-type>onebox</input-type>
-                     <hint>ORCID iD(s) for author(s) of this item.</hint>
+                     <hint>ORCID iD(s) for author(s) of this work in this format: https://orcid.org/XXXX-XXXX-XXXX-XXXX (For example: https://orcid.org/0000-0002-2771-9344). Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -288,7 +288,7 @@
                      <repeatable>true</repeatable>
                      <label>U-M Author Affiliation</label>
                      <input-type>onebox</input-type>
-                     <hint>U-M Author's affiliation(s)</hint>
+                     <hint>U-M Author's affiliation(s).  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -301,7 +301,7 @@
                      <repeatable>true</repeatable>
                      <label>Other Author Affiliation, non-U-M</label>
                      <input-type>onebox</input-type>
-                     <hint>Author's affiliation(s), non-U-M</hint>
+                     <hint>Author's affiliation(s), non-U-M.  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -314,7 +314,7 @@
                      <repeatable>false</repeatable>
                      <label>U-M Campus</label>
                      <input-type value-pairs-name="um_campus">dropdown</input-type>
-                     <hint> </hint>
+                     <hint>(* required)</hint>
                      <required>true</required>
                 </field>
             </row>
@@ -325,10 +325,10 @@
                      <dc-element>title</dc-element>
                      <dc-qualifier></dc-qualifier>
                      <repeatable>false</repeatable>
-                     <label>Document or Item Title</label>
+                     <label>Document or Work Title</label>
                      <input-type>onebox</input-type>
-                     <hint>Enter the main title of the item. (* required)</hint>
-                     <required>You must enter a main title for this item.</required>
+                     <hint>Enter the main title of the work. (* required)</hint>
+                     <required>You must enter a main title for this work.</required>
                 </field>
             </row>
 
@@ -338,9 +338,9 @@
                      <dc-element>title</dc-element>
                      <dc-qualifier>alternative</dc-qualifier>
                      <repeatable>true</repeatable>
-                     <label>Other Document or Item Titles</label>
+                     <label>Other Document or Work Titles</label>
                      <input-type>onebox</input-type>
-                     <hint>If the item has any alternate titles, please enter them.</hint>
+                     <hint>If the work has any alternate titles, please enter them.  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -353,7 +353,7 @@
                      <repeatable>false</repeatable>
                      <label>Date of Issue</label>
                      <input-type>date</input-type>
-                     <hint>Use today's date if Deep Blue is this item's first place of publication. (* YYYY required)</hint>
+                     <hint>Use today's date if Deep Blue is this work's first place of publication. (* YYYY required)</hint>
                      <required>You must enter at least the year (YYYY). Day and month are not required.</required>
                 </field>
             </row>
@@ -392,7 +392,7 @@
                      <repeatable>false</repeatable>
                      <label>Peer Reviewed</label>
                      <input-type value-pairs-name="peer_reviewed">dropdown</input-type>
-                     <hint>Select "Peer Reviewed" if item is peer reviewed.</hint>
+                     <hint>Select "Peer Reviewed" if work is peer reviewed. Selecting "Peer Reviewed" will allow this Work to be discovered as part of a specific "Peer reviewed Works" collection.</hint>
                      <required></required>
                 </field>
             </row>
@@ -405,7 +405,7 @@
                      <repeatable>false</repeatable>
                      <label>Citation</label>
                      <input-type>onebox</input-type>
-                     <hint>The citation for this item's previous publication. (e.g. Journal of X, vol. Y, no. Z, year, pp. m-n)</hint>
+                     <hint>The citation for this work's previous publication. (e.g. Journal of X, vol. Y, no. Z, year, pp. m-n)</hint>
                      <required></required>
                 </field>
             </row>
@@ -418,7 +418,7 @@
                      <repeatable>true</repeatable>
                      <label>Series/Report No./Version</label>
                      <input-type>onebox</input-type>
-                     <hint>Any series, number, version, or release assigned to this item.</hint>
+                     <hint>Any series, number, version, or release assigned to this work.  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -429,9 +429,9 @@
                      <dc-element>identifier</dc-element>
                      <dc-qualifier></dc-qualifier>
                      <repeatable>true</repeatable>
-                     <label>Identifiers</label>
+                     <label>Existing Identifiers</label>
                      <input-type value-pairs-name="common_identifiers">qualdrop_value</input-type>
-                     <hint>If the item has existing identification numbers/codes associated with it, please select the type(s) and enter them.</hint>
+                     <hint>If the work has existing identification numbers/codes associated with it, please select the type(s) and enter them.  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -444,7 +444,7 @@
                      <repeatable>true</repeatable>
                      <label>Type</label>
                      <input-type value-pairs-name="common_types">dropdown</input-type>
-                     <hint>Select the type(s) of content of the item.</hint>
+                     <hint>Select the type(s) of content of the work.  Add additional by clicking + Add more. (* required)</hint>
                      <required>Type is required</required>
                 </field>
             </row>
@@ -470,7 +470,7 @@
                      <repeatable>true</repeatable>
                      <label>Display in Other Collections</label>
                      <input-type value-pairs-name="collection_mappings">dropdown</input-type>
-                     <hint>If you are also a depositor in another collection and you'd like to associate your work with it, you may select the collection(s) here (e.g. a thesis may be added to the general thesis collection as well as appear in the relevant departmental collection(s) ). This box will be blank if you are not a depositor in other collections</hint>
+                     <hint>If you are also a depositor in another collection and you'd like to associate your work with it, you may select the collection(s) here (e.g. a thesis may be added to the general thesis collection as well as appear in the relevant departmental collection(s)). This box will be blank if you are not a depositor in other collections.  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -483,7 +483,7 @@
                      <repeatable>true</repeatable>
                      <label>Subject Keywords</label>
                      <input-type>onebox</input-type>
-                     <hint>Enter subject keyword or phrase, one per textbox. Add additional keywords by clicking + Add More.</hint>
+                     <hint>Enter subject keyword or phrase, one per textbox. Add additional by clicking + Add More.</hint>
                      <required></required>
                 </field>
             </row>
@@ -496,7 +496,7 @@
                      <repeatable>false</repeatable>
                      <label>Abstract</label>
                      <input-type>textarea</input-type>
-                     <hint>Enter the abstract of the item below.</hint>
+                     <hint>Enter the abstract of the work below.</hint>
                      <required></required>
                 </field>
             </row>
@@ -509,7 +509,7 @@
                      <repeatable>true</repeatable>
                      <label>Sponsors</label>
                      <input-type>onebox</input-type>
-                     <hint>The names of any sponsors and/or funding codes.</hint>
+                     <hint>The names of any sponsors and/or funding codes.  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -522,7 +522,7 @@
                      <repeatable>true</repeatable>
                      <label>Description</label>
                      <input-type>textarea</input-type>
-                     <hint>Any additional descriptive information or comments.</hint>
+                     <hint>Any additional descriptive information or comments.  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -537,7 +537,7 @@
                      <repeatable>true</repeatable>
                      <label>Student Name</label>
                      <input-type>name</input-type>
-                     <hint>Req'd: Student Name, as it appears on the project</hint>
+                     <hint>Req'd: Student Name, as it appears on the project.  Add additional by clicking + Add more. (* required)</hint>
                      <required>Student name is required</required>
                 </field>
             </row>
@@ -550,7 +550,7 @@
                      <repeatable>true</repeatable>
                      <label>Sponsoring Faculty Name</label>
                      <input-type>name</input-type>
-                     <hint>Req'd: Sponsoring Faculty Name</hint>
+                     <hint>Req'd: Sponsoring Faculty Name.  Add additional by clicking + Add more. (* required)</hint>
                      <required>Sponsor's name is required</required>
                 </field>
             </row>
@@ -563,7 +563,7 @@
                      <repeatable>true</repeatable>
                      <label>Department</label>
                      <input-type value-pairs-name="busadwp_department_types">dropdown</input-type>
-                     <hint>Primary Ross School of Business department affiliation</hint>
+                     <hint>Primary Ross School of Business department affiliation.  Add additional by clicking + Add more. (* required)</hint>
                      <required>Department is required</required>
                 </field>
             </row>
@@ -576,7 +576,7 @@
                      <repeatable>false</repeatable>
                      <label>Course Number</label>
                      <input-type>onebox</input-type>
-                     <hint>Course number (either 399 or 750)</hint>
+                     <hint>Course number (either 399 or 750). (* required)</hint>
                      <required>Course number is required</required>
                 </field>
             </row>
@@ -591,7 +591,7 @@
                      <repeatable>false</repeatable>
                      <label>Title of Project</label>
                      <input-type>onebox</input-type>
-                     <hint>Req'd: Title of project exactly as it appears on the cover or title page</hint>
+                     <hint>Req'd: Title of project exactly as it appears on the cover or title page. (* required)</hint>
                      <required>Title is required</required>
                 </field>
             </row>
@@ -604,7 +604,7 @@
                      <repeatable>false</repeatable>
                      <label>Date</label>
                      <input-type>date</input-type>
-                     <hint>Req'd: Please give the date of publication.</hint>
+                     <hint>Req'd: Please give the date of publication. (* required)</hint>
                      <required>You must enter at least the year (YYYY).</required>
                 </field>
             </row>
@@ -620,7 +620,7 @@
                      <repeatable>true</repeatable>
                      <label>Author(s)</label>
                      <input-type>name</input-type>
-                     <hint>Names of the author(s) of this item. (* required)</hint>
+                     <hint>Names of the author(s) of this work.  Add additional by clicking + Add more.  (* required)</hint>
                      <required>At least one author is required.</required>
                 </field>
             </row>
@@ -633,7 +633,7 @@
                      <repeatable>true</repeatable>
                      <label>U-M Author Affiliation</label>
                      <input-type>onebox</input-type>
-                     <hint>U-M Author's affiliation(s)</hint>
+                     <hint>U-M Author's affiliation(s).  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -646,7 +646,7 @@
                      <repeatable>true</repeatable>
                      <label>Other Author Affiliation, non-U-M</label>
                      <input-type>onebox</input-type>
-                     <hint>Author's affiliation(s), non-U-M</hint>
+                     <hint>Author's affiliation(s), non-U-M.  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -659,7 +659,7 @@
                      <repeatable>false</repeatable>
                      <label>U-M Campus</label>
                      <input-type value-pairs-name="um_campus">dropdown</input-type>
-                     <hint> </hint>
+                     <hint>(* required)</hint>
                      <required>true</required>
                 </field>
             </row>
@@ -672,8 +672,8 @@
                      <repeatable>false</repeatable>
                      <label>Title</label>
                      <input-type>onebox</input-type>
-                     <hint>Enter the main title of the item. (* required)</hint>
-                     <required>You must enter a main title for this item.</required>
+                     <hint>Enter the main title of the work. (* required)</hint>
+                     <required>You must enter a main title for this work.</required>
                 </field>
             </row>
 
@@ -685,7 +685,7 @@
                      <repeatable>true</repeatable>
                      <label>Other Titles</label>
                      <input-type>onebox</input-type>
-                     <hint>If the item has any alternate titles, please enter them.</hint>
+                     <hint>If the work has any alternate titles, please enter them.  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>           
@@ -698,7 +698,7 @@
                      <repeatable>false</repeatable>
                      <label>Date of Issue</label>
                      <input-type>date</input-type>
-                     <hint>Use today's date if Deep Blue is this item's first place of publication. (* YYYY required)</hint>
+                     <hint>Use today's date if Deep Blue is this work's first place of publication. (* YYYY required)</hint>
                      <required>You must enter at least the year (YYYY). Day and month are not required.</required>
                 </field>
             </row>
@@ -711,7 +711,7 @@
                      <repeatable>true</repeatable>
                      <label>Series/Report No./Version</label>
                      <input-type>onebox</input-type>
-                     <hint>Any series, number, version, or release assigned to this item.</hint>
+                     <hint>Any series, number, version, or release assigned to this work.  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -724,7 +724,7 @@
                      <repeatable>true</repeatable>
                      <label>Location</label>
                      <input-type>onebox</input-type>
-                     <hint>Enter location of study (e.g. "Douglas Lake")</hint>
+                     <hint>Enter location of study (e.g. "Douglas Lake").  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -738,7 +738,7 @@
                      <repeatable>true</repeatable>
                      <label>Environment</label>
                      <input-type>onebox</input-type>
-                     <hint>Enter environment (e.g. "Northern Hardwoods")</hint>
+                     <hint>Enter environment (e.g. "Northern Hardwoods").  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -752,7 +752,7 @@
                      <repeatable>true</repeatable>
                      <label>Subject</label>
                      <input-type>onebox</input-type>
-                     <hint>Enter subject here.</hint>
+                     <hint>Enter subject here.  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -766,7 +766,7 @@
                      <repeatable>true</repeatable>
                      <label>Keywords</label>
                      <input-type>onebox</input-type>
-                     <hint>Enter keywords or phrases here.</hint>
+                     <hint>Enter keywords or phrases here.  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -779,7 +779,7 @@
                      <repeatable>false</repeatable>
                      <label>Abstract</label>
                      <input-type>textarea</input-type>
-                     <hint>Enter the abstract of the item below.</hint>
+                     <hint>Enter the abstract of the work below.</hint>
                      <required></required>
                 </field>
             </row>
@@ -818,7 +818,7 @@
                      <repeatable>true</repeatable>
                      <label>Type</label>
                      <input-type value-pairs-name="common_types">dropdown</input-type>
-                     <hint>Select the type(s) of content of the item.</hint>
+                     <hint>Select the type(s) of content of the work.  Add additional by clicking + Add more. (* required)</hint>
                      <required>Type is required</required>
                 </field>
             </row>
@@ -846,7 +846,7 @@
                      <repeatable>true</repeatable>
                      <label>Author(s)</label>
                      <input-type>name</input-type>
-                     <hint>Names of the author(s) of this item. Put "Project Name" in the "Last Name" field as first author, followed by individual contributors (*required)</hint>
+                     <hint>Names of the author(s) of this work. Put "Project Name" in the "Last Name" field as first author, followed by individual contributors.  Add additional by clicking + Add more. (* required)</hint>
                      <required>At least one author is required.</required>
                 </field>
             </row>
@@ -857,10 +857,10 @@
                      <dc-element>title</dc-element>
                      <dc-qualifier></dc-qualifier>
                      <repeatable>false</repeatable>
-                     <label>Item Title</label>
+                     <label>Work Title</label>
                      <input-type>onebox</input-type>
                      <hint>e.g. "Exhibition Panel:  Foundations" (* required)</hint>
-                     <required>You must enter a main title for this item.</required>
+                     <required>You must enter a main title for this work.</required>
                 </field>
             </row>
 
@@ -872,8 +872,8 @@
                      <repeatable>true</repeatable>
                      <label>Other Title(s)</label>
                      <input-type>onebox</input-type>
-                     <hint>Enter other titles for the item</hint>
-                     <required>You must enter a main title for this item.</required>
+                     <hint>If the work has any alternate titles, please enter them.  Add additional by clicking + Add more. (* required)</hint>
+                     <required>You must enter a main title for this work.</required>
                 </field>
             </row>
 
@@ -898,7 +898,7 @@
                      <repeatable>true</repeatable>
                      <label>Type</label>
                      <input-type value-pairs-name="common_types">dropdown</input-type>
-                     <hint>Select the type(s) of content of the item.</hint>
+                     <hint>Select the type(s) of content of the work.  Add additional by clicking + Add more. (* required)</hint>
                      <required>Type is required</required>
                 </field>
             </row>
@@ -911,7 +911,7 @@
                      <repeatable>false</repeatable>
                      <label>Project Abstract</label>
                      <input-type>textarea</input-type>
-                     <hint>Enter the abstract of the item below.</hint>
+                     <hint>Enter the abstract of the work below.</hint>
                      <required></required>
                 </field>
             </row>
@@ -926,7 +926,7 @@
                      <repeatable>true</repeatable>
                      <label>Sponsor(s)</label>
                      <input-type>onebox</input-type>
-                     <hint>The names of any sponsors and/or funding codes.</hint>
+                     <hint>The names of any sponsors and/or funding codes.  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -937,7 +937,7 @@
                      <dc-element>description</dc-element>
                      <dc-qualifier></dc-qualifier>
                      <repeatable>false</repeatable>
-                     <label>Item Description</label>
+                     <label>Work Description</label>
                      <input-type>textarea</input-type>
                      <hint>e.g.,  "One of 6 panels displayed in an exhibition at the Duderstadt Center Gallery..."</hint>
                      <required></required>
@@ -955,7 +955,7 @@
                      <repeatable>false</repeatable>
                      <label>Title</label>
                      <input-type>onebox</input-type>
-                     <hint>Thesis title, identical to how it appears on the title page</hint>
+                     <hint>Thesis title, identical to how it appears on the title page. (* required)</hint>
                      <required>Title is required</required>
                 </field>
             </row>
@@ -968,7 +968,7 @@
                      <repeatable>true</repeatable>
                      <label>Student name(s)</label>
                      <input-type>name</input-type>
-                     <hint>Student's names, identical to how it/they appear on the title page</hint>
+                     <hint>Student's names, identical to how it/they appear on the title page.  Add additional by clicking + Add more. (* required)</hint>
                      <required>Author is required</required>
                 </field>
             </row>
@@ -981,7 +981,7 @@
                      <repeatable>true</repeatable>
                      <label>Program name</label>
                      <input-type>onebox</input-type>
-                     <hint>Program granting the degree</hint>
+                     <hint>Program granting the degree.  Add additional by clicking + Add more. (* required)</hint>
                      <required>Program name is required</required>
                 </field>
             </row>
@@ -994,7 +994,7 @@
                      <repeatable>false</repeatable>
                      <label>U-M Campus</label>
                      <input-type value-pairs-name="um_campus">dropdown</input-type>
-                     <hint> </hint>
+                     <hint>(* required)</hint>
                      <required>true</required>
                 </field>
             </row>
@@ -1007,7 +1007,7 @@
                      <repeatable>false</repeatable>
                      <label>Year degree awarded</label>
                      <input-type>date</input-type>
-                     <hint>Date appearing on the title page of the thesis, dissertation, or Opus.  Omit day and/or month if they don't apply.</hint>
+                     <hint>Date appearing on the title page of the thesis, dissertation, or Opus.  Omit day and/or month if they don't apply.  (* required)</hint>
                      <required>You must enter at least the year (YYYY).</required>
                 </field>
             </row>
@@ -1020,7 +1020,7 @@
                      <repeatable>true</repeatable>
                      <label>Thesis Advisor/Chair</label>
                      <input-type>name</input-type>
-                     <hint>Name(s) of the advisor/chair of the committee</hint>
+                     <hint>Name(s) of the advisor/chair of the committee.  Add additional by clicking + Add more. (* required)</hint>
                      <required>Advisor/chair is required</required>
                 </field>
             </row>
@@ -1033,7 +1033,7 @@
                      <repeatable>true</repeatable>
                      <label>Committee Member(s)</label>
                      <input-type>name</input-type>
-                     <hint>Names of the Committee Members</hint>
+                     <hint>Names of the Committee Members.  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -1059,7 +1059,7 @@
                      <repeatable>true</repeatable>
                      <label>Keywords or short phrases</label>
                      <input-type>onebox</input-type>
-                     <hint>Up to six keywords/short phrases describing your thesis</hint>
+                     <hint>Up to six keywords/short phrases describing your thesis.  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -1072,7 +1072,7 @@
                      <repeatable>true</repeatable>
                      <label>Subject category</label>
                      <input-type>onebox</input-type>
-                     <hint> </hint>
+                     <hint>Enter subject catetory.  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -1098,7 +1098,7 @@
                      <repeatable>false</repeatable>
                      <label>University, degree grantor</label>
                      <input-type>onebox</input-type>
-                     <hint> </hint>
+                     <hint>(* required)</hint>
                      <required>University, degree grantor is required</required>
                 </field>
             </row>
@@ -1111,7 +1111,7 @@
                     <repeatable>true</repeatable>
                     <label>Display in Other Collections</label>
                     <input-type value-pairs-name="collection_mappings">dropdown</input-type>
-                    <hint>If you are also a depositor in another collection and you'd like to associate your work with it, you may select the collection(s) here (e.g. a thesis may be added to the general thesis collection as well as appear in the relevant departmental collection(s) ). This box will be blank if you are not a depositor in other collections</hint> 
+                    <hint>If you are also a depositor in another collection and you'd like to associate your work with it, you may select the collection(s) here (e.g. a thesis may be added to the general thesis collection as well as appear in the relevant departmental collection(s)). This box will be blank if you are not a depositor in other collections.  Add additional by clicking + Add more.</hint> 
                     <required></required>
                 </field>
             </row>
@@ -1126,7 +1126,7 @@
                      <repeatable>true</repeatable>
                      <label>Author(s)</label>
                      <input-type>name</input-type>
-                     <hint>Names of the author(s) of this item. (* required)</hint>
+                     <hint>Names of the author(s) of this work.  Add additional by clicking + Add more.  (* required)</hint>
                      <required>At least one author is required.</required>
                 </field>
             </row>
@@ -1139,7 +1139,7 @@
                      <repeatable>true</repeatable>
                      <label>ORCID iD</label>
                      <input-type>onebox</input-type>
-                     <hint>ORCID iD(s) for author(s) of this item.</hint>
+                     <hint>ORCID iD(s) for author(s) of this work in this format: https://orcid.org/XXXX-XXXX-XXXX-XXXX (For example: https://orcid.org/0000-0002-2771-9344).  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -1152,7 +1152,7 @@
                      <repeatable>true</repeatable>
                      <label>U-M Author Affiliation</label>
                      <input-type>onebox</input-type>
-                     <hint>U-M Author's affiliation(s)</hint>
+                     <hint>U-M Author's affiliation(s). Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -1165,7 +1165,7 @@
                      <repeatable>true</repeatable>
                      <label>Other Author Affiliation</label>
                      <input-type>onebox</input-type>
-                     <hint>Author's affiliation(s), non-U-M</hint>
+                     <hint>Author's affiliation(s), non-U-M.  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -1178,7 +1178,7 @@
                      <repeatable>true</repeatable>
                      <label>Instructor/Advisor</label>
                      <input-type>name</input-type>
-                     <hint>U-M Instructor or Advisor (for student projects)</hint>
+                     <hint>U-M Instructor or Advisor (for student projects).  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -1191,8 +1191,8 @@
                      <repeatable>false</repeatable>
                      <label>Title</label>
                      <input-type>onebox</input-type>
-                     <hint>Enter the main title of the item. (* required)</hint>
-                     <required>You must enter a main title for this item.</required>
+                     <hint>Enter the main title of the work. (* required)</hint>
+                     <required>You must enter a main title for this work.</required>
                 </field>
             </row>
 
@@ -1204,7 +1204,7 @@
                      <repeatable>true</repeatable>
                      <label>Other Titles</label>
                      <input-type>onebox</input-type>
-                     <hint>If the item has any alternate titles, please enter them.</hint>
+                     <hint>If the work has any alternate titles, please enter them.  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -1217,7 +1217,7 @@
                      <repeatable>false</repeatable>
                      <label>Date of Issue</label>
                      <input-type>date</input-type>
-                     <hint>Use today's date if Deep Blue is this item's first place of publication. (* YYYY required)</hint>
+                     <hint>Use today's date if Deep Blue is this work's first place of publication. (* YYYY required)</hint>
                      <required>You must enter at least the year (YYYY). Day and month are not required.</required>
                 </field>
             </row>
@@ -1243,7 +1243,7 @@
                      <repeatable>false</repeatable>
                      <label>Peer Reviewed</label>
                      <input-type value-pairs-name="peer_reviewed">dropdown</input-type>
-                     <hint>Select "Peer Reviewed" if item is peer reviewed.</hint>
+                     <hint>Select "Peer Reviewed" if work is peer reviewed.  Selecting "Peer Reviewed" will allow this Work to be discovered as part of a specific "Peer reviewed Works" collection.</hint>
                      <required></required>
                 </field>
             </row>
@@ -1256,7 +1256,7 @@
                      <repeatable>false</repeatable>
                      <label>Citation</label>
                      <input-type>onebox</input-type>
-                     <hint>The citation for this item's previous publication. (e.g. Journal of X, vol. Y, no. Z, year, pp. m-n)</hint>
+                     <hint>The citation for this work's previous publication. (e.g. Journal of X, vol. Y, no. Z, year, pp. m-n)</hint>
                      <required></required>
                 </field>
             </row>
@@ -1269,7 +1269,7 @@
                      <repeatable>true</repeatable>
                      <label>Series/Report No./Version</label>
                      <input-type>onebox</input-type>
-                     <hint>Any series, number, version, or release assigned to this item.</hint>
+                     <hint>Any series, number, version, or release assigned to this work.  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -1281,9 +1281,9 @@
                      <dc-qualifier></dc-qualifier>
             <!-- An input-type of qualdrop_value MUST be marked as repeatable -->
                      <repeatable>true</repeatable>
-                     <label>Identifiers</label>
+                     <label>Existing Identifiers</label>
                      <input-type value-pairs-name="common_identifiers">qualdrop_value</input-type>
-                     <hint>If the item has existing identification numbers/codes associated with it, please select the type(s) and enter them.</hint>
+                     <hint>If the work has existing identification numbers/codes associated with it, please select the type(s) and enter them.  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -1296,7 +1296,7 @@
                      <repeatable>true</repeatable>
                      <label>Type</label>
                      <input-type value-pairs-name="common_types">dropdown</input-type>
-                     <hint>Select the type(s) of content of the item.</hint>
+                     <hint>Select the type(s) of content of the work.  Add additional by clicking + Add more. (* required)</hint>
                      <required>Type is required</required>
                 </field>
             </row>
@@ -1309,7 +1309,7 @@
                      <repeatable>true</repeatable>
                      <label>Language</label>
                      <input-type value-pairs-name="common_iso_languages">dropdown</input-type>
-                     <hint>The language of the main content. If the content does not really have a language (e.g. datasets or images) please select 'N/A'. See hint above for selecting more than one language.</hint>
+                     <hint>The language of the main content. If the content does not really have a language (e.g. datasets or images) please select 'N/A'. See hint above for selecting more than one language.  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -1323,7 +1323,7 @@
                      <repeatable>true</repeatable>
                      <label>Subject Keywords</label>
                      <input-type>onebox</input-type>
-                     <hint>Enter subject keywords or phrases here.</hint>
+                     <hint>Enter subject keywords or phrases here.  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -1336,7 +1336,7 @@
                      <repeatable>false</repeatable>
                      <label>Abstract</label>
                      <input-type>textarea</input-type>
-                     <hint>Enter the abstract of the item below.</hint>
+                     <hint>Enter the abstract of the work below.</hint>
                      <required></required>
                 </field>
             </row>
@@ -1358,6 +1358,7 @@
                 <field>
                      <dc-schema>dc</dc-schema>
                      <dc-element>description</dc-element>
+                     <dc-qualifier></dc-qualifier>
                      <repeatable>false</repeatable>
                      <label>Description</label>
                      <input-type>textarea</input-type>
@@ -1376,7 +1377,7 @@
                      <repeatable>true</repeatable>
                      <label>Author(s)</label>
                      <input-type>name</input-type>
-                     <hint>Names of the author(s) of this item. (* required)</hint>
+                     <hint>Names of the author(s) of this work.  Add additional by clicking + Add more. (* required)</hint>
                      <required>At least one author is required.</required>
                 </field>
             </row>
@@ -1389,7 +1390,7 @@
                      <repeatable>true</repeatable>
                      <label>U-M Author's Affiliation</label>
                      <input-type>onebox</input-type>
-                     <hint>U-M Author's Affiliation (e.g. Museum of Paleontology, University of Michigan)</hint>
+                     <hint>U-M Author's Affiliation (e.g. Museum of Paleontology, University of Michigan).  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -1402,7 +1403,7 @@
                      <repeatable>true</repeatable>
                      <label>Other Authors' Affiliation</label>
                      <input-type>onebox</input-type>
-                     <hint>Other Authors' Affiliation</hint>
+                     <hint>Author's affiliation(s), non-U-M.  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -1415,8 +1416,8 @@
                      <repeatable>false</repeatable>
                      <label>Title</label>
                      <input-type>onebox</input-type>
-                     <hint>Enter the main title of the item. (* required)</hint>
-                     <required>You must enter a main title for this item.</required>
+                     <hint>Enter the main title of the work. (* required)</hint>
+                     <required>You must enter a main title for this work.</required>
                 </field>
             </row>
 
@@ -1428,7 +1429,7 @@
                      <repeatable>false</repeatable>
                      <label>Date of Issue</label>
                      <input-type>date</input-type>
-                     <hint>Use today's date if Deep Blue is this item's first place of publication. (* YYYY required)</hint>
+                     <hint>Use today's date if Deep Blue is this work's first place of publication. (* YYYY required)</hint>
                      <required>You must enter at least the year (YYYY). Day and month are not required.</required>
                 </field>
             </row>
@@ -1441,7 +1442,7 @@
                      <repeatable>false</repeatable>
                      <label>Peer Reviewed</label>
                      <input-type value-pairs-name="peer_reviewed">dropdown</input-type>
-                     <hint>Select "Peer Reviewed" if item is peer reviewed.</hint>
+                     <hint>Select "Peer Reviewed" if work is peer reviewed. Selecting "Peer Reviewed" will allow this Work to be discovered as part of a specific "Peer reviewed Works" collection.</hint>
                      <required></required>
                 </field>
             </row>
@@ -1467,7 +1468,7 @@
                      <repeatable>true</repeatable>
                      <label>Category</label>
                      <input-type value-pairs-name="paleo_category">dropdown</input-type>
-                     <hint>The series this publication belongs to</hint>
+                     <hint>Any series, number, version, or release assigned to this work.  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -1519,7 +1520,7 @@
                      <repeatable>true</repeatable>
                      <label>Type</label>
                      <input-type value-pairs-name="common_types">dropdown</input-type>
-                     <hint>Select the type(s) of content of the item.</hint>
+                     <hint>Select the type(s) of content of the work.  Add additional by clicking + Add more. (* required)</hint>
                      <required>Type is required</required>
                 </field>
             </row>
@@ -1536,7 +1537,7 @@
                      <repeatable>true</repeatable>
                      <label>U-M Author</label>
                      <input-type>name</input-type>
-                     <hint>Req'd: List U-M authors in the order they are listed on the document</hint>
+                     <hint>Req'd: List U-M authors in the order they are listed on the document.  Add additional by clicking + Add more. (* required)</hint>
                      <required>Author is required</required>
                 </field>
             </row>
@@ -1549,7 +1550,7 @@
                      <repeatable>true</repeatable>
                      <label>ORCID iD</label>
                      <input-type>onebox</input-type>
-                     <hint>ORCID iD(s) for author(s) of this item.</hint>
+                     <hint>ORCID iD(s) for author(s) of this work in this format: https://orcid.org/XXXX-XXXX-XXXX-XXXX (For example: https://orcid.org/0000-0002-2771-9344).  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -1562,7 +1563,7 @@
                      <repeatable>true</repeatable>
                      <label>U-M Author's Affiliation</label>
                      <input-type>onebox</input-type>
-                     <hint>Enter U-M affiliation</hint>
+                     <hint>U-M Author's affiliation(s).  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -1575,7 +1576,7 @@
                      <repeatable>true</repeatable>
                      <label>Other Authors</label>
                      <input-type>name</input-type>
-                     <hint>Enter personal names in the format 'LastName, FirstName'.  Also enter corporate or conference bodies that contribute to the content or development of this work.</hint>
+                     <hint>Enter personal names in the format 'LastName, FirstName'.  Also enter corporate or conference bodies that contribute to the content or development of this work.  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -1588,7 +1589,7 @@
                      <repeatable>true</repeatable>
                      <label>Other Author's Affiliation</label>
                      <input-type>onebox</input-type>
-                     <hint>Enter non-Ross author affiliations, if they apply.</hint>
+                     <hint>Enter non-Ross author affiliations, if they apply.  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -1601,7 +1602,7 @@
                      <repeatable>false</repeatable>
                      <label>Title</label>
                      <input-type>onebox</input-type>
-                     <hint>Req'd: Enter title exactly as it appears on the cover or title page</hint>
+                     <hint>Req'd: Enter title exactly as it appears on the cover or title page.  (* required)</hint>
                      <required>Title is required</required>
                 </field>
             </row>
@@ -1614,7 +1615,7 @@
                      <repeatable>true</repeatable>
                      <label>Alternative Titles</label>
                      <input-type>onebox</input-type>
-                     <hint>Enter additional or variant titles you think will be useful</hint>
+                     <hint>If the work has any alternate titles, please enter them.  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -1627,7 +1628,7 @@
                      <repeatable>false</repeatable>
                      <label>Abstract</label>
                      <input-type>textarea</input-type>
-                     <hint>Req'd</hint>
+                     <hint>Req'd.  (* required)</hint>
                      <required>Abstract is required</required>
                 </field>
             </row>
@@ -1640,7 +1641,7 @@
                      <repeatable>true</repeatable>
                      <label>Department</label>
                      <input-type value-pairs-name="busadwp_department_types">dropdown</input-type>
-                     <hint>Select primary Ross School of Business affiliation</hint>
+                     <hint>Select primary Ross School of Business affiliation.  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -1653,7 +1654,7 @@
                      <repeatable>true</repeatable>
                      <label>Keyword</label>
                      <input-type>onebox</input-type>
-                     <hint>Req'd: Enter ONE word or phrase per text box, up to 9 keyword fields</hint>
+                     <hint>Req'd: Enter ONE word or phrase per text box, up to 9 keyword fields.  Add additional by clicking + Add more.  (* required)</hint>
                      <required>Three keywords are required</required>
                 </field>
             </row>
@@ -1679,7 +1680,7 @@
                      <repeatable>false</repeatable>
                      <label>Date of Issue</label>
                      <input-type>date</input-type>
-                     <hint>Req'd: Please give the date of previous publication or public distribution below.  You can leave out the day and/or month if they aren't applicable.</hint>
+                     <hint>Req'd: Please give the date of previous publication or public distribution below.  You can leave out the day and/or month if they aren't applicable.  (* required)</hint>
                      <required>You must enter at least the year (YYYY).</required>
                 </field>
             </row>
@@ -1692,7 +1693,7 @@
                      <repeatable>true</repeatable>
                      <label>Deep Blue Subject</label>
                      <input-type value-pairs-name="ross_second_level">dropdown</input-type>
-                     <hint>Specific subject for Deep Blue's browse function</hint>
+                     <hint>Specific subject for Deep Blue's browse function.  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -1707,7 +1708,7 @@
                      <repeatable>false</repeatable>
                      <label>Publisher</label>
                      <input-type>onebox</input-type>
-                     <hint>Req'd: Enter the name of the publisher of the previously issued instance of this item.</hint>
+                     <hint>Req'd: Enter the name of the publisher of the previously issued instance of this work.</hint>
                      <required></required>
                 </field>
             </row>
@@ -1720,7 +1721,7 @@
                      <repeatable>false</repeatable>
                      <label>Citation</label>
                      <input-type>onebox</input-type>
-                     <hint>Enter the standard citation for the previously issued instance of this item.</hint>
+                     <hint>Enter the standard citation for the previously issued instance of this work.</hint>
                      <required></required>
                 </field>
             </row>
@@ -1735,7 +1736,7 @@
                      <repeatable>false</repeatable>
                      <label>Title</label>
                      <input-type>onebox</input-type>
-                     <hint>Title of your paper (required)</hint>
+                     <hint>Title of your paper (* required)</hint>
                      <required>Title is required</required>
                 </field>
             </row>
@@ -1748,7 +1749,7 @@
                      <repeatable>true</repeatable>
                      <label>Author</label>
                      <input-type>name</input-type>
-                     <hint>Author name(s)</hint>
+                     <hint>Names of the author(s) of this work.  Add additional by clicking + Add more.  (* required)</hint>
                      <required>At least one author is required</required>
                 </field>
             </row>
@@ -1761,7 +1762,7 @@
                      <repeatable>true</repeatable>
                      <label>ORCID iD</label>
                      <input-type>onebox</input-type>
-                     <hint>ORCID iD(s) for author(s) of this item.</hint>
+                     <hint>ORCID iD(s) for author(s) of this work in this format: https://orcid.org/XXXX-XXXX-XXXX-XXXX (For example: https://orcid.org/0000-0002-2771-9344).  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -1775,8 +1776,8 @@
                      <repeatable>true</repeatable>
                      <label>Author Affiliation</label>
                      <input-type>onebox</input-type>
-                     <hint>Authors' affiliation(s)</hint>
-                     <required>At least one U-M college/school affiliation is required</required>
+                     <hint>U-M Author's affiliation(s).  Add additional by clicking + Add more. (* required)</hint>
+                     <required>At least one U-M college/school affiliation is required. </required>
                 </field>
             </row>
 
@@ -1788,7 +1789,7 @@
                      <repeatable>true</repeatable>
                      <label>Author Affiliation (non-U-M)</label>
                      <input-type>onebox</input-type>
-                     <hint>non-U-M Authors' affiliation(s)</hint>
+                     <hint>Author's affiliation(s), non-U-M.  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -1801,7 +1802,7 @@
                      <repeatable>false</repeatable>
                      <label>Date</label>
                      <input-type>date</input-type>
-                     <hint>The date appearing on the working paper</hint>
+                     <hint>The date appearing on the working paper. (* required)</hint>
                      <required>You must enter at least the year (YYYY).</required>
                 </field>
             </row>
@@ -1827,7 +1828,7 @@
                      <repeatable>true</repeatable>
                      <label>JEL Classification(s)</label>
                      <input-type>onebox</input-type>
-                     <hint>JEL classification number</hint>
+                     <hint>JEL classification number.  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -1840,7 +1841,7 @@
                      <repeatable>true</repeatable>
                      <label>Working Paper Series No.</label>
                      <input-type>onebox</input-type>
-                     <hint>IPC Working Paper Series No.</hint>
+                     <hint>IPC Working Paper Series No.  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -1855,7 +1856,7 @@
                      <repeatable>true</repeatable>
                      <label>Keywords</label>
                      <input-type>onebox</input-type>
-                     <hint> </hint>
+                     <hint>Keywords.  Add additional by clicking + Add more. (* required)</hint>
                      <required>At least one keyword is required</required>
                 </field>
             </row>
@@ -1883,7 +1884,7 @@
                      <repeatable>false</repeatable>
                      <label>Title</label>
                      <input-type>onebox</input-type>
-                     <hint>Thesis, Dissertation, or Opus title, identical to how it appears on the title page</hint>
+                     <hint>Thesis, Dissertation, or Opus title, identical to how it appears on the title page.  (* required)</hint>
                      <required>Title is required</required>
                 </field>
             </row>
@@ -1896,7 +1897,7 @@
                      <repeatable>true</repeatable>
                      <label>Student name(s)</label>
                      <input-type>name</input-type>
-                     <hint>Student's names, identical to how it/they appear on the title page</hint>
+                     <hint>Student's names, identical to how it/they appear on the title page.  Add additional by clicking + Add more. (* required)</hint>
                      <required>Author is required</required>
                 </field>
             </row>
@@ -1909,7 +1910,7 @@
                      <repeatable>true</repeatable>
                      <label>EmplID or uniqname</label>
                      <input-type>onebox</input-type>
-                     <hint>Student's EmplID (e.g. 1234 5678) or uniqname</hint>
+                     <hint>Student's EmplID (e.g. 1234 5678) or uniqname.  Add additional by clicking + Add more. (* required)</hint>
                      <required>At least one student EmplID or uniqname is required</required>
                 </field>
             </row>
@@ -1922,7 +1923,7 @@
                      <repeatable>true</repeatable>
                      <label>ORCID iD</label>
                      <input-type>onebox</input-type>
-                     <hint>ORCID iD(s) for author(s) of this item.</hint>
+                     <hint>ORCID iD(s) for author(s) of this work in this format: https://orcid.org/XXXX-XXXX-XXXX-XXXX (For example: https://orcid.org/0000-0002-2771-9344).  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -1935,7 +1936,7 @@
                      <repeatable>false</repeatable>
                      <label>Degree awarded</label>
                      <input-type value-pairs-name="thesis_degree">dropdown</input-type>
-                     <hint> </hint>
+                     <hint>(* required)</hint>
                      <required>Degree is required</required>
                 </field>
             </row>
@@ -1948,7 +1949,7 @@
                      <repeatable>false</repeatable>
                      <label>Type</label>
                      <input-type value-pairs-name="dissertation_type">dropdown</input-type>
-                     <hint></hint>
+                     <hint>Select the type(s) of content of the work. (* required)</hint>
                      <required>Type is required</required>
                 </field>
             </row>
@@ -1961,7 +1962,7 @@
                      <repeatable>true</repeatable>
                      <label>Program name</label>
                      <input-type>onebox</input-type>
-                     <hint>Program granting the degree</hint>
+                     <hint>Program granting the degree.  Add additional by clicking + Add more. (* required)</hint>
                      <required>Program name is required</required>
                 </field>
             </row>
@@ -1974,7 +1975,7 @@
                      <repeatable>false</repeatable>
                      <label>Year degree awarded</label>
                      <input-type>date</input-type>
-                     <hint>Date appearing on the title page of the thesis, dissertation, or Opus.  Omit day and/or month if they don't apply.</hint>
+                     <hint>Date appearing on the title page of the thesis, dissertation, or Opus.  Omit day and/or month if they don't apply. (* required)</hint>
                      <required>You must enter at least the year (YYYY).</required>
                 </field>
             </row>
@@ -1988,7 +1989,7 @@
                      <repeatable>false</repeatable>
                      <label>Year manuscript completed</label>
                      <input-type>date</input-type>
-                     <hint>Date the manuscript was completed. Omit day and/or month if they don't apply.</hint>
+                     <hint>Date the manuscript was completed. Omit day and/or month if they don't apply. (* required)</hint>
                      <required>You must enter at least the year (YYYY).</required>
                 </field>
             </row>
@@ -2001,7 +2002,7 @@
                      <repeatable>true</repeatable>
                      <label>Thesis Advisor/Chair</label>
                      <input-type>name</input-type>
-                     <hint>Name(s) of the advisor/chair of the committee</hint>
+                     <hint>Name(s) of the advisor/chair of the committee.  Add additional by clicking + Add more. (* required)</hint>
                      <required>Advisor/chair is required</required>
                 </field>
             </row>
@@ -2014,7 +2015,7 @@
                      <repeatable>true</repeatable>
                      <label>Committee Member(s)</label>
                      <input-type>name</input-type>
-                     <hint>Names of the Committee Members</hint>
+                     <hint>Names of the Committee Members.  Add additional by clicking + Add more. (* required)</hint>
                      <required>Committee Members are required</required>
                 </field>
             </row>
@@ -2027,7 +2028,7 @@
                      <repeatable>false</repeatable>
                      <label>Abstract</label>
                      <input-type>textarea</input-type>
-                     <hint>Exactly as it appears in the dissertation</hint>
+                     <hint>Exactly as it appears in the dissertation.  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -2040,7 +2041,7 @@
                      <repeatable>true</repeatable>
                      <label>Keywords or short phrases</label>
                      <input-type>onebox</input-type>
-                     <hint>Up to six keywords/short phrases describing your thesis</hint>
+                     <hint>Up to six keywords/short phrases describing your thesis.  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -2053,7 +2054,7 @@
                      <repeatable>true</repeatable>
                      <label>Subject category</label>
                      <input-type>onebox</input-type>
-                     <hint> </hint>
+                     <hint>Subject.  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -2079,7 +2080,7 @@
                      <repeatable>false</repeatable>
                      <label>University, degree grantor</label>
                      <input-type>onebox</input-type>
-                     <hint> </hint>
+                     <hint>(* required)</hint>
                      <required>University, degree grantor is required</required>
                 </field>
             </row>
@@ -2105,7 +2106,7 @@
                      <repeatable>true</repeatable>
                      <label>Display in Other Collections</label>
                      <input-type value-pairs-name="collection_mappings">dropdown</input-type>
-                     <hint>If you are also a depositor in another collection and you'd like to associate your work with it, you may select the collection(s) here (e.g. a thesis may be added to the general thesis collection as well as appear in the relevant departmental collection(s) ). This box will be blank if you are not a depositor in other collections</hint>
+                     <hint>If you are also a depositor in another collection and you'd like to associate your work with it, you may select the collection(s) here (e.g. a thesis may be added to the general thesis collection as well as appear in the relevant departmental collection(s)). This box will be blank if you are not a depositor in other collections.  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -2133,7 +2134,7 @@
                      <repeatable>true</repeatable>
                      <label>Other Identifiers</label>
                      <input-type>onebox</input-type>
-                     <hint>Other refers to Report, Contract, Order, Grant, or Project Number.</hint>
+                     <hint>Other refers to Report, Contract, Order, Grant, or Project Number.  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -2146,7 +2147,7 @@
                      <repeatable>true</repeatable>
                      <label>Author(s)</label>
                      <input-type>name</input-type>
-                     <hint>Enter as "Last name, First name"</hint>
+                     <hint>Names of the author(s) of this work.  Add additional by clicking + Add more. (* required)</hint>
                      <required>Author is required</required>
                 </field>
             </row>
@@ -2159,7 +2160,7 @@
                      <repeatable>true</repeatable>
                      <label>ORCID iD</label>
                      <input-type>onebox</input-type>
-                     <hint>ORCID iD(s) for author(s) of this item.</hint>
+                     <hint>ORCID iD(s) for author(s) of this work in this format: https://orcid.org/XXXX-XXXX-XXXX-XXXX (For example: https://orcid.org/0000-0002-2771-9344).  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -2172,7 +2173,7 @@
                      <repeatable>true</repeatable>
                      <label>Other Collaborators</label>
                      <input-type>onebox</input-type>
-                     <hint>Other Collaborators refers to Corporate, Source, or Conference.</hint>
+                     <hint>Other Collaborators refers to Corporate, Source, or Conference.  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -2185,7 +2186,7 @@
                      <repeatable>false</repeatable>
                      <label>Title</label>
                      <input-type>onebox</input-type>
-                     <hint> </hint>
+                     <hint>(* required)</hint>
                      <required>Title is required</required>
                 </field>
             </row>
@@ -2198,7 +2199,7 @@
                      <repeatable>true</repeatable>
                      <label>Alternative Titles</label>
                      <input-type>onebox</input-type>
-                     <hint> </hint>
+                     <hint>If the work has any alternate titles, please enter them.  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -2213,7 +2214,7 @@
                      <input-type>date</input-type>
                      <hint>Please give the date of previous publication or public distribution
                                     below.  You can leave out the day and/or month if they aren't
-                                    applicable.</hint>
+                                    applicable. (* required)</hint>
                      <required>You must enter at least the year (YYYY).</required>
                 </field>
             </row>
@@ -2226,7 +2227,7 @@
                      <repeatable>false</repeatable>
                      <label>Abstract</label>
                      <input-type>textarea</input-type>
-                     <hint> Enter the abstract of the item below. </hint>
+                     <hint> Enter the abstract of the work below. </hint>
                      <required></required>
                 </field>
             </row>
@@ -2239,7 +2240,7 @@
                      <repeatable>false</repeatable>
                      <label>Publisher</label>
                      <input-type>onebox</input-type>
-                     <hint>Enter the name of the publisher of the previously issued instance of this item.</hint>
+                     <hint>Enter the name of the publisher of the previously issued instance of this work. (* required)</hint>
                      <required>Publisher is required</required>
                 </field>
             </row>
@@ -2252,7 +2253,7 @@
                      <repeatable>false</repeatable>
                      <label>Citation</label>
                      <input-type>onebox</input-type>
-                     <hint>Enter the standard citation for the previously issued instance of this item.</hint>
+                     <hint>Enter the standard citation for the previously issued instance of this work.</hint>
                      <required></required>
                 </field>
             </row>
@@ -2291,7 +2292,7 @@
                      <repeatable>true</repeatable>
                      <label>Series</label>
                      <input-type>onebox</input-type>
-                     <hint> </hint>
+                     <hint>Any series, number, version, or release assigned to this work.  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -2304,7 +2305,7 @@
                      <repeatable>true</repeatable>
                      <label>Sponsor</label>
                      <input-type>onebox</input-type>
-                     <hint> </hint>
+                     <hint>The names of any sponsors and/or funding codes.  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -2317,7 +2318,7 @@
                      <repeatable>true</repeatable>
                      <label>Description</label>
                      <input-type>onebox</input-type>
-                     <hint>Enter Notes, Full text, Journal, and Reference information.</hint>
+                     <hint>Enter Notes, Full text, Journal, and Reference information.  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -2330,7 +2331,7 @@
                      <repeatable>true</repeatable>
                      <label>Personal or Corporate Subject</label>
                      <input-type>onebox</input-type>
-                     <hint> </hint>
+                     <hint>Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -2343,7 +2344,7 @@
                      <repeatable>true</repeatable>
                      <label>Subject</label>
                      <input-type>onebox</input-type>
-                     <hint> </hint>
+                     <hint>Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -2382,7 +2383,7 @@
                      <repeatable>true</repeatable>
                      <label>Display in Other Collections</label>
                      <input-type value-pairs-name="collection_mappings">dropdown</input-type>
-                     <hint>If you are also a depositor in another collection and you'd like to associate your work with it, you may select the collection(s) here (e.g. a thesis may be added to the general thesis collection as well as appear in the relevant departmental collection(s) ). This box will be blank if you are not a depositor in other collections</hint>
+                     <hint>If you are also a depositor in another collection and you'd like to associate your work with it, you may select the collection(s) here (e.g. a thesis may be added to the general thesis collection as well as appear in the relevant departmental collection(s)). This box will be blank if you are not a depositor in other collections.  Add additional by clicking + Add more.</hint>
                      <required></required>
                 </field>
             </row>
@@ -2398,7 +2399,7 @@
                       <repeatable>true</repeatable>
                       <label>Author(s)</label>
                       <input-type>onebox</input-type>
-                      <hint>Names of the author(s) of this item. (* required)</hint>
+                      <hint>Names of the author(s) of this work.  Add additional by clicking + Add more. (* required)</hint>
                       <required>At least one author is required.</required>
                 </field>
             </row>
@@ -2411,7 +2412,7 @@
                       <repeatable>true</repeatable>
                       <label>ORCID iD</label>
                       <input-type>onebox</input-type>
-                      <hint>ORCID iD(s) for author(s) of this item.</hint>
+                      <hint>ORCID iD(s) for author(s) of this work in this format: https://orcid.org/XXXX-XXXX-XXXX-XXXX (For example: https://orcid.org/0000-0002-2771-9344).  Add additional by clicking + Add more.</hint>
                       <required></required>
                 </field>
             </row>
@@ -2424,7 +2425,7 @@
                       <repeatable>true</repeatable>
                       <label>U-M Author Affiliation</label>
                       <input-type>onebox</input-type>
-                      <hint>U-M Author's affiliation(s)</hint>
+                      <hint>U-M Author's affiliation(s).  Add additional by clicking + Add more.</hint>
                       <required></required>
                 </field>
             </row>
@@ -2437,7 +2438,7 @@
                       <repeatable>true</repeatable>
                       <label>Advisor(s)</label>
                       <input-type>onebox</input-type>
-                      <hint>Advisor is required</hint>
+                      <hint>Advisor is required.  Add additional by clicking + Add more. (* required)</hint>
                       <required>true</required>
                 </field>
             </row>
@@ -2450,8 +2451,8 @@
                       <repeatable>false</repeatable>
                       <label>Title</label>
                       <input-type>onebox</input-type>
-                      <hint>Enter the main title of the item. (* required)</hint>
-                      <required>You must enter a main title for this item.</required>
+                      <hint>Enter the main title of the work. (* required)</hint>
+                      <required>You must enter a main title for this work.</required>
                 </field>
             </row>
 
@@ -2463,7 +2464,7 @@
                       <repeatable>false</repeatable>
                       <label>Course Name and number</label>
                       <input-type>onebox</input-type>
-                      <hint>Course number (e.g. BA 380, BA 480)</hint>
+                      <hint>Course number (e.g. BA 380, BA 480). (* required)</hint>
                       <required>Course number is required</required>
                 </field>
             </row>
@@ -2476,7 +2477,7 @@
                       <repeatable>false</repeatable>
                       <label>Date of Issue</label>
                       <input-type>date</input-type>
-                      <hint>Use today's date if Deep Blue is this item's first place of publication. (* YYYY required)</hint>
+                      <hint>Use today's date if Deep Blue is this work's first place of publication. (* YYYY required)</hint>
                       <required>You must enter at least the year (YYYY). Day and month are not required.</required>
                 </field>
             </row>
@@ -2489,7 +2490,7 @@
                       <repeatable>true</repeatable>
                       <label>Type</label>
                       <input-type value-pairs-name="common_types">dropdown</input-type>
-                      <hint>Select the type(s) of content of the item.</hint>
+                      <hint>Select the type(s) of content of the work.  Add additional by clicking + Add more. (* required)</hint>
                       <required>Type is required</required>
                 </field>
             </row>
@@ -2515,7 +2516,7 @@
                       <repeatable>true</repeatable>
                       <label>Department</label>
                       <input-type value-pairs-name="busadwp_department_types">dropdown</input-type>
-                      <hint>Primary Ross School of Business department affiliation</hint>
+                      <hint>Primary Ross School of Business department affiliation.  Add additional by clicking + Add more. (* required)</hint>
                       <required>Department is required</required>
                 </field>
             </row>
@@ -2529,7 +2530,7 @@
                       <repeatable>true</repeatable>
                       <label>Subject Keywords</label>
                       <input-type>onebox</input-type>
-                      <hint>Enter subject keywords or phrases here.</hint>
+                      <hint>Enter subject keywords or phrases here. Add additional by clicking + Add more.</hint>
                       <required></required>
                 </field>
             </row>
@@ -2542,7 +2543,7 @@
                       <repeatable>false</repeatable>
                       <label>Abstract</label>
                       <input-type>textarea</input-type>
-                      <hint>Enter the abstract of the item below.</hint>
+                      <hint>Enter the abstract of the work below.</hint>
                       <required></required>
                 </field>
             </row>
@@ -2555,7 +2556,7 @@
                       <repeatable>true</repeatable>
                       <label>Description</label>
                       <input-type>textarea</input-type>
-                      <hint>Any additional descriptive information or comments.</hint>
+                      <hint>Any additional descriptive information or comments.  Add additional by clicking + Add more.</hint>
                       <required></required>
                 </field>
             </row>
@@ -2601,7 +2602,7 @@
                     <repeatable>false</repeatable>
                     <label>Sponsors</label>
                     <input-type>textarea</input-type>
-                    <hint>Enter the names of any sponsors and/or funding codes in the box.</hint>
+                    <hint>The names of any sponsors and/or funding codes.</hint>
                     <required></required>
                 </field>
             </row>
@@ -2728,7 +2729,7 @@
                     <dc-qualifier></dc-qualifier>
                     <!-- An input-type of qualdrop_value MUST be marked as repeatable -->
                     <repeatable>true</repeatable>
-                    <label>Identifiers</label>
+                    <label>Existing Identifiers</label>
                     <input-type value-pairs-name="common_identifiers">qualdrop_value</input-type>
                     <hint>If the item has any exisiting identification numbers or codes associated with
                         it, please enter the types and the actual numbers or codes.

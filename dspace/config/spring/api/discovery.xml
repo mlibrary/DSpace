@@ -177,11 +177,9 @@
                 <ref bean="searchFilterIdentifierSource" />
                 <ref bean="searchFilterSubjectTop" />
                 <ref bean="searchFilterSubjectSecond" />  
-
                 <ref bean="searchFilterIssued" />
                 <ref bean="searchFilterContentInOriginalBundle"/>
                 <ref bean="searchFilterEntityType"/>
-
             </list>
         </property>
         <!-- Set TagCloud configuration per discovery configuration -->
@@ -216,7 +214,9 @@
                     <list>
                         <ref bean="sortScore" />
                         <ref bean="sortTitle" />
+                        <ref bean="sortTitleDesc" />
                         <ref bean="sortDateIssued" />
+                        <ref bean="sortDateIssuedDesc" />
                         <ref bean="sortDateAccessioned"/>
                     </list>
                 </property>
@@ -829,7 +829,9 @@
                     <list>
                         <ref bean="sortScore" />
                         <ref bean="sortTitle" />
+                        <ref bean="sortTitleDesc" />
                         <ref bean="sortDateIssued" />
+                        <ref bean="sortDateIssuedDesc" />
                         <ref bean="sortDateAccessioned"/>
                     </list>
                 </property>
@@ -949,6 +951,7 @@
             </list>
         </property>
         <!--The sort filters for the discovery search-->
+        <!-- This is for the My Deposit Page -->
         <property name="searchSortConfiguration">
             <bean class="org.dspace.discovery.configuration.DiscoverySortConfiguration">
                 <!--The default sort filter to use for the initial workspace loading-->
@@ -958,7 +961,10 @@
                         <ref bean="sortLastModified" />
                         <ref bean="sortScore" />
                         <ref bean="sortTitle" />
+                        <ref bean="sortTitleDesc" />
                         <ref bean="sortDateIssued" />
+                        <ref bean="sortDateIssuedDesc" />
+                        <ref bean="sortDateAccessioned"/>
                     </list>
                 </property>
             </bean>

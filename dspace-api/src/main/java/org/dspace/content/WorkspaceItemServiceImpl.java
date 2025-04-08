@@ -222,6 +222,9 @@ public class WorkspaceItemServiceImpl implements WorkspaceItemService {
 
     }
 
+// You want to remove the uri from the item metadata, so it does not show up on the the item page.
+itemService.clearMetadata(context, item, "dc", "identifier", "uri", Item.ANY);
+
         workspaceItem.setItem(item);
 
         log.info(LogHelper.getHeader(context, "create_workspace_item",
