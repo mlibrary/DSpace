@@ -109,16 +109,17 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
 
                 GroupService groupService = EPersonServiceFactory.getInstance().getGroupService();
 
-		// UM Change
+		        // UM Change
                 // The way swordv2 works now, the code will come here, and in that case request will be null.
                 if ( request == null )
                 {
                     return Collections.emptyList();
                 }
-                String addr = request.getRemoteAddr();
+                // This is what you should do on local machine.
+                //String addr = request.getRemoteAddr();
 
                 // This is the one you should use on the live area.
-                //String addr = request.getHeader("X-Forwarded-For");
+                String addr = request.getHeader("X-Forwarded-For");
 
                 LOGGER.info ("OIDC: checking the addr = " + addr);
                 //addr = null;
@@ -132,38 +133,35 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
 
                 if ( isBioUser( request ) )
                     {
-
-                        LOGGER.error("OICD:  it's in BIO USER");
                         Group bioGroup = groupService.findByName(context, "Bio Users");
                         //Group bioGroup = Group.findByName(context, "Bio Users");
                         // Append to list of elligible groups
                         bioId = bioGroup.getID();
                         count++;
 
-                        LOGGER.info ("OIDC: In: Bio Users " + bioId.toString());
+                        LOGGER.info ("OIDC: it's in Bio Users " + bioId.toString());
                     }
-                else
-                    {
-			// UM Change.  For now don't put people in the NotBio group
-			// This will guarantee that RequestItem files are requested to 
-			// everyone except the Admins.
+                // else
+                //     {
+			    //         // UM Change.  For now don't put people in the NotBio group
+			    //         // This will guarantee that RequestItem files are requested to 
+			    //         // everyone except the Admins.
 
-                        //Group notbioGroup = Group.findByName(context, "NotBio");
-//                        Group notbioGroup = groupService.findByName(context, "NotBio");
-                        // Append to list of elligible groups
-//                        bioId = notbioGroup.getID();
-//                        count++;
+                //         //Group notbioGroup = Group.findByName(context, "NotBio");
+                //         //Group notbioGroup = groupService.findByName(context, "NotBio");
+                //         // Append to list of elligible groups
+                //         //bioId = notbioGroup.getID();
+                //         //count++;
+                //         //LOGGER.info ("OIDC: In: NotBio " + bioId.toString());
 
-//                        LOGGER.info ("OIDC: In: NotBio " + bioId.toString());
-
-                    }
+                //     }
 
                 // Put everyone in the Request Copy Group
                 //Group rcGroup = Group.findByName(context, "RequestCopy Users");
                 Group rcGroup = groupService.findByName(context, "RequestCopy Users");
                 // Append to list of elligible groups
                 rcId = rcGroup.getID();
-                LOGGER.info ("OIDC: In: RequestCopy Users " + rcId.toString());
+                LOGGER.info ("OIDC: it's in RequestCopy Users " + rcId.toString());
                 count++;
 
                 if ( isBentleyUser( context, request ) )
@@ -173,7 +171,7 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
                         // Append to list of elligible groups
                         bentId = bentGroup.getID();
                         count++;
-                        LOGGER.info ("OIDC: In: Bentley Users " + bentId.toString());
+                        LOGGER.info ("OIDC: it's in Bentley Users " + bentId.toString());
                     }
 
                 if ( isBentleyOnlyUser( context, request ) )
@@ -184,7 +182,7 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
                         bentOnlyId = bentOnlyGroup.getID();
                         count++;
 
-                        LOGGER.info("OIDC: In: Bentley Only Users " + bentOnlyId.toString());
+                        LOGGER.info("OIDC: it's in Bentley Only Users " + bentOnlyId.toString());
                     }
 
                 // If logged in and has access.
@@ -198,7 +196,7 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
                         // Append to list of elligible groups
                         umId = umGroup.getID();
                         count++;
-                        LOGGER.info("OIDC: In: UM User " + umId.toString());
+                        LOGGER.info("OIDC: it's in UM User " + umId.toString());
 
                     }
 
@@ -271,12 +269,13 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
 
        String ips = DSpaceServicesFactory.getInstance().getConfigurationService()
                                                  .getProperty("ip.umIPs");
-       LOGGER.info ("JOSEAUTHips: the ips from config = " + ips);
+       LOGGER.info ("OIDC: isUMUser addr = " + addr);
+       LOGGER.info ("OIDC-ips: the um ips from config = " + ips);
        final String[] umIPs = ips.split("\\|");
 
        for (int i = 0; i < umIPs.length; i++)
        {
-            LOGGER.info ("JOSEAUTH: umIPs= " + umIPs[i]);
+            LOGGER.info ("OIDC-ips: umIPs= " + umIPs[i]);
        }
 
         if ( addr == null )
@@ -297,19 +296,18 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
 
      public static boolean isBioUser(HttpServletRequest request)
     {
-        //String addr = request.getRemoteAddr();
-        String addr = request.getHeader("X-Forwarded-For");
+       //String addr = request.getRemoteAddr();
+       String addr = request.getHeader("X-Forwarded-For");
 
-        LOGGER.info ( "OIDC:  in isBioUser The addr is (IP) value " + addr );
-
+       LOGGER.info ("OIDC: isBioUser addr = " + addr);
        String ips = DSpaceServicesFactory.getInstance().getConfigurationService()
                                                  .getProperty("ip.bioIPs");
-       LOGGER.info ("JOSEAUTHips: the ips from config = " + ips);
+       LOGGER.info ("OIDC-ips: the ips from config = " + ips);
        final String[] bioIPs = ips.split("\\|");
 
        for (int i = 0; i < bioIPs.length; i++)
        {
-            LOGGER.info ("JOSEAUTH: bioIPs = " + bioIPs[i]);
+            LOGGER.info ("OIDC-ips: bioIPs = " + bioIPs[i]);
        }
 
         if ( addr == null )
@@ -333,8 +331,7 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
         //String addr = request.getRemoteAddr();
         String addr = request.getHeader("X-Forwarded-For");
 
-////  Just for testing
-
+        ////  Just for testing
        // String ips = DSpaceServicesFactory.getInstance().getConfigurationService()
        //                                           .getProperty("ip.MusicFullIPs");
        // LOGGER.info ("JOSEAUTHips: the ips from config = " + ips);
@@ -368,6 +365,8 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
 
 ////  Just for testing ends.
 
+       LOGGER.info ("OIDC: isBentleyUser addr = " + addr);
+
         if ( addr == null )
         {
             return false;
@@ -376,12 +375,12 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
 
        String ips = DSpaceServicesFactory.getInstance().getConfigurationService()
                                                  .getProperty("ip.MusicFullIPs");
-       LOGGER.info ("JOSEAUTHips: the ips from config = " + ips);
+       LOGGER.info ("OIDC-ips: the ips from config = " + ips);
        final String[] MusicFullIPs = ips.split("\\|");
 
        for (int i = 0; i < MusicFullIPs.length; i++)
        {
-            LOGGER.info ("JOSEAUTH: MusicFullIPs = " + MusicFullIPs[i]);
+            LOGGER.info ("OIDC-ips: MusicFullIPs = " + MusicFullIPs[i]);
        }
 
         for (int i = 0; i < MusicFullIPs.length; i++)
@@ -394,12 +393,12 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
 
        ips = DSpaceServicesFactory.getInstance().getConfigurationService()
                                                  .getProperty("ip.MusicLowerHalfIPs");
-       LOGGER.info ("JOSEAUTHips: the ips from config = " + ips);
+       LOGGER.info ("OIDC-ips: the ips from config = " + ips);
        final String[] MusicLowerHalfIPs = ips.split("\\|");
 
        for (int i = 0; i < MusicLowerHalfIPs.length; i++)
        {
-            LOGGER.info ("JOSEAUTH: MusicLowerHalfIPs = " + MusicLowerHalfIPs[i]);
+            LOGGER.info ("OIDC-ips: MusicLowerHalfIPs = " + MusicLowerHalfIPs[i]);
        }
 
         int count = 1;
@@ -417,21 +416,21 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
         }
 
 
-        ips = DSpaceServicesFactory.getInstance().getConfigurationService()
+       ips = DSpaceServicesFactory.getInstance().getConfigurationService()
                                                   .getProperty("ip.MusicUpperHalfIPs");
 
-       LOGGER.info ("JOSEAUTHips: the ips from config = " + ips);
+       LOGGER.info ("OIDC-ips: the ips from config = " + ips);
        final String[] MusicUpperHalfIPs = ips.split("\\|");
 
         for (int i = 0; i < MusicUpperHalfIPs.length; i++)
         {
-            LOGGER.info ("JOSEAUTH: MusicUpperHalfIPs = " + MusicUpperHalfIPs[i]);
+            LOGGER.info ("OIDC-ips: MusicUpperHalfIPs = " + MusicUpperHalfIPs[i]);
         }
 
         count = 129;
         for (int i = 0; i < MusicUpperHalfIPs.length; i++)
         {
-             LOGGER.info ("JOSEAUTH: the Upper Half IPS = " + MusicUpperHalfIPs[i]);
+             LOGGER.info ("OIDC-ips: the Upper Half IPS = " + MusicUpperHalfIPs[i]);
              while ( count < 255 )
              {
                  if (addr.equals( MusicUpperHalfIPs[i] + Integer.toString(count) ) )
@@ -450,18 +449,20 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
 
    public static boolean isBentleyOnlyUser(Context context, HttpServletRequest request)
     {
-        //String addr = request.getRemoteAddr();
-        String addr = request.getHeader("X-Forwarded-For");
+       //String addr = request.getRemoteAddr();
+       String addr = request.getHeader("X-Forwarded-For");
+
+       LOGGER.info ("OIDC: isBentleyOnlyUser addr = " + addr);
 
        String ips = DSpaceServicesFactory.getInstance().getConfigurationService()
                                                   .getProperty("ip.BentleyOnlyIPs");
 
-       LOGGER.info ("JOSEAUTHips: the ips from config = " + ips);
+       LOGGER.info ("OIDC-ips: the ips from config = " + ips);
        final String[] BentleyOnlyIPs = ips.split("\\|");
 
         for (int i = 0; i < BentleyOnlyIPs.length; i++)
         {
-            LOGGER.info ("JOSEAUTH: BentleyOnlyIPs = " + BentleyOnlyIPs[i]);
+            LOGGER.info ("OIDC-ips: BentleyOnlyIPs = " + BentleyOnlyIPs[i]);
         }
 
         if ( addr == null )
@@ -555,12 +556,12 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
                         if ( ( posUM > 0 ) || ( posFL > 0 ) || ( posDB > 0 ) )
                         {
                             // Has UM permissions
-                            LOGGER.info ("API: UM Person");
+                            LOGGER.info ("OIDC: UM Person");
                             return true;
                         }
                         else
                         {
-                            LOGGER.info ("API: Not a UM Person");
+                            LOGGER.info ("OIDC: Not a UM Person");
                             return false;
                         }
                     }
@@ -576,7 +577,7 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
             System.err.println ("I/O Error - " + ioe);
         }
 
-        LOGGER.info ("API: at the end");
+        LOGGER.info ("OIDC: does not have UM Priviledges");
         return false;
     }
 
@@ -678,7 +679,7 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
         }
 
         try {
-            LOGGER.warn("AUTHJOSE: LOGIN ==> " + format(LOGIN_PAGE_URL_FORMAT, authorizeUrl, clientId, scopes, encode(redirectUri, "UTF-8")));
+            LOGGER.warn("OIDC: LOGIN ==> " + format(LOGIN_PAGE_URL_FORMAT, authorizeUrl, clientId, scopes, encode(redirectUri, "UTF-8")));
             return format(LOGIN_PAGE_URL_FORMAT, authorizeUrl, clientId, scopes, encode(redirectUri, "UTF-8"));
         } catch (UnsupportedEncodingException e) {
             LOGGER.error(e.getMessage(), e);
@@ -733,7 +734,7 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
         try {
 
 
-            LOGGER.error("AUTHJOSE:  Trying to get oidc access token with this code = " + code);
+            LOGGER.error("OIDC:  Trying to get oidc access token with this code = " + code);
             return oidcClient.getAccessToken(code);
         } catch (Exception ex) {
             LOGGER.error("An error occurs retriving the OIDC access_token", ex);
