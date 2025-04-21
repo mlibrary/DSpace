@@ -2,7 +2,7 @@
  * The contents of this file are subject to the license and copyright
  * detailed in the LICENSE and NOTICE files at the root of the source
  * tree and available online at
- *
+ *In: RequestCopy
  * http://www.dspace.org/license/
  */
 package org.dspace.authenticate;
@@ -116,10 +116,10 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
                     return Collections.emptyList();
                 }
                 // This is what you should do on local machine.
-                //String addr = request.getRemoteAddr();
+                String addr = request.getRemoteAddr();
 
                 // This is the one you should use on the live area.
-                String addr = request.getHeader("X-Forwarded-For");
+                //String addr = request.getHeader("X-Forwarded-For");
 
                 LOGGER.info ("OIDC: checking the addr = " + addr);
                 //addr = null;
@@ -131,7 +131,7 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
 
                 }
 
-                if ( isBioUser( request ) )
+                if ( isBioUser( request, addr ) )
                     {
                         Group bioGroup = groupService.findByName(context, "Bio Users");
                         //Group bioGroup = Group.findByName(context, "Bio Users");
@@ -164,7 +164,7 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
                 LOGGER.info ("OIDC: it's in RequestCopy Users " + rcId.toString());
                 count++;
 
-                if ( isBentleyUser( context, request ) )
+                if ( isBentleyUser( context, request, addr ) )
                     {
                         //Group bentGroup = Group.findByName(context, "Bentley Users");
                         Group bentGroup = groupService.findByName(context, "Bentley Users");
@@ -174,7 +174,7 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
                         LOGGER.info ("OIDC: it's in Bentley Users " + bentId.toString());
                     }
 
-                if ( isBentleyOnlyUser( context, request ) )
+                if ( isBentleyOnlyUser( context, request, addr ) )
                     {
                         //Group bentOnlyGroup = Group.findByName(context, "Bentley Only Users");
                         Group bentOnlyGroup = groupService.findByName(context, "Bentley Only Users");
@@ -187,7 +187,7 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
 
                 // If logged in and has access.
                 // OR is at a UM Address
-                if (hasUMPriviledges(context) || isUMUser(request))
+                if (hasUMPriviledges(context) || isUMUser(request, addr))
                     {
 
                         // add the user to the special group "UM Users"
@@ -262,10 +262,10 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
     }
 
 
-    public static boolean isUMUser(HttpServletRequest request)
+    public static boolean isUMUser(HttpServletRequest request, String addr)
     {
+       //String addr = request.getHeader("X-Forwarded-For");
        //String addr = request.getRemoteAddr();
-       String addr = request.getHeader("X-Forwarded-For");
 
        String ips = DSpaceServicesFactory.getInstance().getConfigurationService()
                                                  .getProperty("ip.umIPs");
@@ -294,10 +294,10 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
         return false;
     }
 
-     public static boolean isBioUser(HttpServletRequest request)
+     public static boolean isBioUser(HttpServletRequest request, String addr)
     {
        //String addr = request.getRemoteAddr();
-       String addr = request.getHeader("X-Forwarded-For");
+       //String addr = request.getHeader("X-Forwarded-For");
 
        LOGGER.info ("OIDC: isBioUser addr = " + addr);
        String ips = DSpaceServicesFactory.getInstance().getConfigurationService()
@@ -326,10 +326,10 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
         return false;
     }
     
-   public static boolean isBentleyUser(Context context, HttpServletRequest request)
+   public static boolean isBentleyUser(Context context, HttpServletRequest request, String addr)
     {
         //String addr = request.getRemoteAddr();
-        String addr = request.getHeader("X-Forwarded-For");
+        //String addr = request.getHeader("X-Forwarded-For");
 
         ////  Just for testing
        // String ips = DSpaceServicesFactory.getInstance().getConfigurationService()
@@ -447,10 +447,10 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
     }
 
 
-   public static boolean isBentleyOnlyUser(Context context, HttpServletRequest request)
+   public static boolean isBentleyOnlyUser(Context context, HttpServletRequest request, String addr)
     {
        //String addr = request.getRemoteAddr();
-       String addr = request.getHeader("X-Forwarded-For");
+       //String addr = request.getHeader("X-Forwarded-For");
 
        LOGGER.info ("OIDC: isBentleyOnlyUser addr = " + addr);
 
