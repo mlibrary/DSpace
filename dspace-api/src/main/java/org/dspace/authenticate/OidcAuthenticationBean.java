@@ -501,9 +501,11 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
         if ( eperson != null )
             {
                 email = eperson.getEmail ();
+                LOGGER.info ("OIDC: hasUMPriviledges getting email; eamil=" + email);
             }
         else
             {
+                LOGGER.info ("OIDC: hasUMPriviledges(false) email not found; email =" + email);
                 return false;
             }
 
@@ -541,7 +543,7 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
                 int pos2 = ResponseValue.indexOf("Error in Verification");
                 if ( pos2 > 0 )
                     {
-                        LOGGER.info ("OIDC: isues with verification...Error with verification");
+                        LOGGER.info ("OIDC: hasUMPriviledges(false) ERROR with verification; email =" + email);
                         return false;
                     }
                 else
@@ -556,12 +558,12 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
                         if ( ( posUM > 0 ) || ( posFL > 0 ) || ( posDB > 0 ) )
                         {
                             // Has UM permissions
-                            LOGGER.info ("OIDC: UM Person");
+                            LOGGER.info ("OIDC: hasUMPriviledges(true) UM Person; email =" + email);
                             return true;
                         }
                         else
                         {
-                            LOGGER.info ("OIDC: Not a UM Person");
+                            LOGGER.info ("OIDC: hasUMPriviledges(false) Not a UM Person; email =" + email);
                             return false;
                         }
                     }
@@ -570,14 +572,16 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
         }
         catch (MalformedURLException mue)
         {
+            LOGGER.info ("OIDC: hasUMPriviledges Invalid URL");
             System.err.println ("Invalid URL");
         }
         catch (IOException ioe)
         {
+            LOGGER.info ("OIDC: hasUMPriviledges I/O Error");
             System.err.println ("I/O Error - " + ioe);
         }
 
-        LOGGER.info ("OIDC: does not have UM Priviledges");
+        LOGGER.info ("OIDC: hasUMPriviledges(false) does not have UM Priviledges");
         return false;
     }
 
