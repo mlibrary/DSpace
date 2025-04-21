@@ -69,7 +69,7 @@
                 company as well. We have to ensure to use URIs of our prefix
                 as primary identifiers only.
             -->
-            <xsl:apply-templates select="//dspace:field[@mdschema='dc' and @element='identifier' and @qualifier and (contains(., $prefix))]" />
+            <xsl:apply-templates select="//dspace:field[@mdschema='dc' and @element='identifier' and @qualifier='doi' and (contains(., $prefix))]" />
 
             <!--
                 DataCite (2)
@@ -332,7 +332,7 @@
         company as well. We have to ensure to use URIs of our prefix
         as primary identifiers only.
     -->
-    <xsl:template match="dspace:field[@mdschema='dc' and @element='identifier' and @qualifier and (contains(., $prefix))]">
+    <xsl:template match="dspace:field[@mdschema='dc' and @element='identifier' and @qualifier='doi' and (contains(., $prefix))]">
         <identifier identifierType="DOI">
             <xsl:if test="starts-with(string(text()), 'https://doi.org/')">
                 <xsl:value-of select="substring(., 17)"/>
