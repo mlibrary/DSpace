@@ -115,10 +115,10 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
                 {
                     return Collections.emptyList();
                 }
-                // This is what you should do on local machine.
+                // This is what you should use on production.
                 String addr = request.getRemoteAddr();
 
-                // This is the one you should use on the live area.
+                // This is the one you should use local machine.
                 //String addr = request.getHeader("X-Forwarded-For");
 
                 LOGGER.info ("OIDC: checking the addr = " + addr);
@@ -126,7 +126,7 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
 
                 if ( addr == null )
                 {
-                    LOGGER.error("OICD:  returning and empty list because address is null");
+                    LOGGER.error("OICD: group: returning and empty list because address is null");
                     return Collections.emptyList();
 
                 }
@@ -139,7 +139,7 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
                         bioId = bioGroup.getID();
                         count++;
 
-                        LOGGER.info ("OIDC: it's in Bio Users " + bioId.toString());
+                        LOGGER.info ("OIDC: group: in Bio Users " + bioId.toString());
                     }
                 // else
                 //     {
@@ -161,7 +161,7 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
                 Group rcGroup = groupService.findByName(context, "RequestCopy Users");
                 // Append to list of elligible groups
                 rcId = rcGroup.getID();
-                LOGGER.info ("OIDC: it's in RequestCopy Users " + rcId.toString());
+                LOGGER.info ("OIDC: in RequestCopy Users " + rcId.toString());
                 count++;
 
                 if ( isBentleyUser( context, request, addr ) )
@@ -171,7 +171,7 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
                         // Append to list of elligible groups
                         bentId = bentGroup.getID();
                         count++;
-                        LOGGER.info ("OIDC: it's in Bentley Users " + bentId.toString());
+                        LOGGER.info ("OIDC: group: in Bentley Users " + bentId.toString());
                     }
 
                 if ( isBentleyOnlyUser( context, request, addr ) )
@@ -182,7 +182,7 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
                         bentOnlyId = bentOnlyGroup.getID();
                         count++;
 
-                        LOGGER.info("OIDC: it's in Bentley Only Users " + bentOnlyId.toString());
+                        LOGGER.info("OIDC: group: in Bentley Only Users " + bentOnlyId.toString());
                     }
 
                 // If logged in and has access.
@@ -196,7 +196,7 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
                         // Append to list of elligible groups
                         umId = umGroup.getID();
                         count++;
-                        LOGGER.info("OIDC: it's in UM User " + umId.toString());
+                        LOGGER.info("OIDC: group: in UM User " + umId.toString());
 
                     }
 
@@ -204,7 +204,7 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
                 if ( (bioId.compareTo(UUID.fromString(defaultUUID))==1) && (umId.compareTo(UUID.fromString(defaultUUID))==1) && (bentId.compareTo(UUID.fromString(defaultUUID))==1) && (bentOnlyId.compareTo(UUID.fromString(defaultUUID))==1) && (rcId.compareTo(UUID.fromString(defaultUUID))==1) )
                     {
 
-                        LOGGER.info("OIDC: Missing Groups.  Admin needs to create them: Bio, Um, Bent Only, Request Copy");
+                        LOGGER.info("OIDC: group: Missing in Groups.  Admin needs to create them: Bio, Um, Bent Only, Request Copy");
 
                         //return ListUtils.EMPTY_LIST;
                         return Collections.emptyList();
@@ -240,7 +240,7 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
                 List<Group> specialGroups = new ArrayList<Group>();
                 for(int i = 0; i < groupIds.length; i++)
                 {
-                        LOGGER.info("OIDC: Group Found and returning " + groupIds[i].toString());
+                        LOGGER.info("OIDC: Group Found and returning " + groupIds[i].toString() + " addr=" + addr);
 
                         Group g =  EPersonServiceFactory.getInstance().getGroupService().find(context, groupIds[i]);;
                         specialGroups.add ( g );
