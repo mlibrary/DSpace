@@ -119,7 +119,7 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
                 String addr = request.getRemoteAddr();
 
                 // This is the one you should use local machine.
-                //String addr = request.getHeader("X-Forwarded-For");
+                String addr2 = request.getHeader("X-Forwarded-For");
 
                 LOGGER.info ("OIDC: checking the addr = " + addr);
                 //addr = null;
@@ -240,7 +240,7 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
                 List<Group> specialGroups = new ArrayList<Group>();
                 for(int i = 0; i < groupIds.length; i++)
                 {
-                        LOGGER.info("OIDC: Group Found and returning " + groupIds[i].toString() + " addr=" + addr);
+                        LOGGER.info("OIDC: Group Found and returning " + groupIds[i].toString() + " addr=" + addr + " addr2=" + addr2);
 
                         Group g =  EPersonServiceFactory.getInstance().getGroupService().find(context, groupIds[i]);;
                         specialGroups.add ( g );
