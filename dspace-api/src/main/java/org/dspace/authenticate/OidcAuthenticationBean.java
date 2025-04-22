@@ -45,6 +45,8 @@ import org.dspace.eperson.factory.EPersonServiceFactory;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import org.dspace.core.factory.CoreServiceFactory;
+import org.dspace.service.ClientInfoService;
 
 /**
  * OpenID Connect Authentication for DSpace.
@@ -57,6 +59,8 @@ import java.util.Collections;
  * @author Luca Giamminonni (luca.giamminonni at 4science.it)
  */
 public class OidcAuthenticationBean implements AuthenticationMethod {
+
+    protected ClientInfoService clientInfoService;
 
     public static final String OIDC_AUTH_ATTRIBUTE = "oidc";
 
@@ -98,6 +102,8 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
     public List<Group> getSpecialGroups(Context context, HttpServletRequest request) throws SQLException {
       try
             {
+        clientInfoService = CoreServiceFactory.getInstance().getClientInfoService();
+
                 LOGGER.info ("OIDC: start getSpecialGroups");
                 String defaultUUID = "00000000-0000-1000-a000-000000000000";
                 UUID bioId = UUID.fromString(defaultUUID);
@@ -119,7 +125,11 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
                 String addr = request.getRemoteAddr();
 
                 // This is the one you should use local machine.
-                String addr2 = request.getHeader("X-Forwarded-For");
+                //String addr2 = request.getHeader("X-Forwarded-For");
+
+        // Get the user's IP address
+        String addr2 = clientInfoService.getClientIp(request);
+
 
                 LOGGER.info ("OIDC: checking the addr = " + addr);
                 //addr = null;
