@@ -58,25 +58,29 @@ public class ClientInfoServiceImpl implements ClientInfoService {
     public String getClientIp(String remoteIp, String xForwardedForHeaderValue) {
         String ip = remoteIp;
 
+log.info("OIDC-prox: xForwardedForHeaderValue=" + xForwardedForHeaderValue);
+
         if (isUseProxiesEnabled()) {
             String xForwardedForIp = getXForwardedForIpValue(remoteIp, xForwardedForHeaderValue);
-
+log.info("OIDC-prox: xForwardedForIp=" + xForwardedForIp);
+log.info("OIDC-prox: remotePIp=" + remoteIp);
             if (StringUtils.isNotBlank(xForwardedForIp) && isRequestFromTrustedProxy(ip)) {
                 ip = xForwardedForIp;
+ log.info("OIDC-prox: truested. xForwardedForIp=" + xForwardedForIp);               
             }
 
         } else if (StringUtils.isNotBlank(xForwardedForHeaderValue)) {
             log.warn("X-Forwarded-For header sent from client, but useProxies is not enabled. " +
                          "To trust X-Forwarded-For headers, set useProxies=true.");
         }
-
+log.info("OIDC-prox: ip here=" + ip);
         if (isIPv4Address(ip)) {
             int ipAnonymizationBytes = getIpAnonymizationBytes();
             if (ipAnonymizationBytes > 0) {
                 ip = anonymizeIpAddress(ip, ipAnonymizationBytes);
             }
         }
-
+log.info("OIDC-prox: ip last=" + ip);
         return ip;
     }
 

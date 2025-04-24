@@ -131,6 +131,9 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
         String addr2 = clientInfoService.getClientIp(request);
 
 
+String referer = request.getHeader("referer");
+LOGGER.info ("OIDC: referer " + referer + " addr=" + addr + " addr2=" + addr2 + " addr3=" + addr3);
+
                 LOGGER.info ("OIDC: checking the addr = " + addr);
                 //addr = null;
 
