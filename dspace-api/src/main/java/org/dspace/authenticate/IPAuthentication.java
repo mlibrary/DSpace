@@ -65,7 +65,6 @@ public class IPAuthentication implements AuthenticationMethod {
     protected GroupService groupService;
     protected ClientInfoService clientInfoService;
 
-
     /**
      * Maps IPMatchers to group names when we don't know group DB ID yet. When
      * the DB ID is known, the IPMatcher is moved to ipMatcherGroupIDs and then
@@ -161,13 +160,19 @@ public class IPAuthentication implements AuthenticationMethod {
     @Override
     public List<Group> getSpecialGroups(Context context, HttpServletRequest request)
         throws SQLException {
+
+        // Get the user's IP address
+        String addr = clientInfoService.getClientIp(request);
+
+log.info ("OIDC: in IPAuth addr=" + addr);
+
         if (request == null) {
             return Collections.EMPTY_LIST;
         }
         List<Group> groups = new ArrayList<Group>();
 
-        // Get the user's IP address
-        String addr = clientInfoService.getClientIp(request);
+
+
 
         for (IPMatcher ipm : ipMatchers) {
             try {
