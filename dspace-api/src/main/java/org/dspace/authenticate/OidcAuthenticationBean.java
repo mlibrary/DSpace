@@ -134,6 +134,17 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
 String referer = request.getHeader("referer");
 LOGGER.info ("OIDC: referer " + referer + " addr=" + addr + " addr2=" + addr2 + " addr3=" + addr3);
 
+
+        // Define the IP address that should trigger an error
+        String problematicIpAddress = "10.255.12.30";
+        
+        // Check if the client's IP address matches the problematic IP
+        if (problematicIpAddress.equals(addr)) {
+            // Throw a runtime exception to generate a stack trace
+            throw new RuntimeException("Access attempt from problematic IP address: " + addr);
+        }
+
+
                 LOGGER.info ("OIDC: checking the addr = " + addr);
                 //addr = null;
 
