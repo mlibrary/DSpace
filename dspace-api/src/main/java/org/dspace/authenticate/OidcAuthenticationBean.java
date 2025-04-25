@@ -141,7 +141,7 @@ LOGGER.info ("OIDC: referer " + referer + " addr=" + addr + " addr2=" + addr2 + 
         // Check if the client's IP address matches the problematic IP
         if (problematicIpAddress.equals(addr)) {
             // Throw a runtime exception to generate a stack trace
-            throw new RuntimeException("Access attempt from problematic IP address: " + addr);
+            //throw new RuntimeException("Access attempt from problematic IP address: " + addr);
         }
 
 
