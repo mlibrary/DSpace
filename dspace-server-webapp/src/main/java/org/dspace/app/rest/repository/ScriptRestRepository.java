@@ -112,6 +112,7 @@ public class ScriptRestRepository extends DSpaceRestRepository<ScriptRest, Strin
         } catch (IllegalArgumentException e) {
             throw new DSpaceBadRequestException("Illegal argoument " + e.getMessage(), e);
         }
+        log.info("OIDC: getSpecialGroups startProcess");
         RestDSpaceRunnableHandler restDSpaceRunnableHandler = new RestDSpaceRunnableHandler(
             context.getCurrentUser(), scriptToExecute.getName(), dSpaceCommandLineParameters,
             new HashSet<>(context.getSpecialGroups()));
