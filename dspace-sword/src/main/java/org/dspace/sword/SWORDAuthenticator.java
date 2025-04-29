@@ -292,6 +292,7 @@ public class SWORDAuthenticator {
                 if (ep != null) {
                     authenticated = true;
                     sc.setAuthenticated(ep);
+                    log.info("OIDC: getSpecialGroups Swordv2 here");
                     // Set any special groups - invoke the authentication mgr.
                     List<Group> groups = authenticationService
                         .getSpecialGroups(context, null);
@@ -319,6 +320,7 @@ public class SWORDAuthenticator {
                         sc.setOnBehalfOf(epObo);
                         Context oboContext = this.constructContext(ip);
                         oboContext.setCurrentUser(epObo);
+                        log.info("OIDC: getSpecialGroups here again Swordv2");
                         // Set any special groups - invoke the authentication mgr.
                         List<Group> groups = authenticationService
                             .getSpecialGroups(oboContext, null);

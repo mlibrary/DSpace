@@ -119,6 +119,7 @@ public class AuthenticationRestController implements InitializingBean {
         if (context.getCurrentUser() != null) {
             ePersonRest = converter.toRest(context.getCurrentUser(), projection);
         }
+        log.info ("OIDC: getSpecialGroups in StatusResource");
         List<GroupRest> groupList = context.getSpecialGroups().stream()
                 .map(g -> (GroupRest) converter.toRest(g, projection)).collect(Collectors.toList());
 
@@ -156,6 +157,7 @@ public class AuthenticationRestController implements InitializingBean {
         Context context = ContextUtil.obtainContext(request);
         Projection projection = utils.obtainProjection();
 
+        log.info("OIDC: getSpecialGroups retrieveSpecialGroups here");
         List<GroupRest> groupList = context.getSpecialGroups().stream()
                 .map(g -> (GroupRest) converter.toRest(g, projection)).collect(Collectors.toList());
         Page<GroupRest> groupPage = (Page<GroupRest>) utils.getPage(groupList, page);

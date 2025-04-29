@@ -154,6 +154,7 @@ public class ContextUtil {
          AuthenticationUtil.resumeLogin(context, request);
 
          // Set any special groups - invoke the authentication mgr.
+         log.info("OIDC: getSpecialGroups in initializeContext");
          int[] groupIDs = AuthenticationManager.getSpecialGroups(context, request);
 
          for (int i = 0; i < groupIDs.length; i++)
