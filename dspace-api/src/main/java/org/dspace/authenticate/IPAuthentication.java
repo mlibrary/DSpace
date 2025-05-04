@@ -161,17 +161,16 @@ public class IPAuthentication implements AuthenticationMethod {
     public List<Group> getSpecialGroups(Context context, HttpServletRequest request)
         throws SQLException {
 
-        // Get the user's IP address
-        String addr = clientInfoService.getClientIp(request);
-
-log.info ("OIDC: in IPAuth addr=" + addr);
 
         if (request == null) {
             return Collections.EMPTY_LIST;
         }
         List<Group> groups = new ArrayList<Group>();
 
+        // Get the user's IP address
+        String addr = clientInfoService.getClientIp(request);
 
+log.info ("OIDC: in IPAuth addr=" + addr);
 
 
         for (IPMatcher ipm : ipMatchers) {
