@@ -45,6 +45,9 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.web.filter.ForwardedHeaderFilter;
+
 /**
  * Define the Spring Boot Application settings itself. This class takes the place
  * of a web.xml file, and configures all Filters/Listeners as methods (see below).
@@ -163,6 +166,13 @@ public class Application extends SpringBootServletInitializer {
     @Bean
     protected LinkRelationProvider dspaceLinkRelationProvider() {
         return new DSpaceLinkRelationProvider();
+    }
+
+    @Bean
+    public FilterRegistrationBean<ForwardedHeaderFilter> forwardedHeaderFilter() {
+        FilterRegistrationBean<ForwardedHeaderFilter> filterRegistrationBean = new FilterRegistrationBean<>();
+        filterRegistrationBean.setFilter(new ForwardedHeaderFilter());
+        return filterRegistrationBean;
     }
 
     @Bean
