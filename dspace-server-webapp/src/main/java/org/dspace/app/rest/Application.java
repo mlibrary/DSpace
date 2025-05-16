@@ -168,12 +168,12 @@ public class Application extends SpringBootServletInitializer {
         return new DSpaceLinkRelationProvider();
     }
 
-    @Bean
-    public FilterRegistrationBean<ForwardedHeaderFilter> forwardedHeaderFilter() {
-        FilterRegistrationBean<ForwardedHeaderFilter> filterRegistrationBean = new FilterRegistrationBean<>();
-        filterRegistrationBean.setFilter(new ForwardedHeaderFilter());
-        return filterRegistrationBean;
-    }
+    // @Bean
+    // public FilterRegistrationBean<ForwardedHeaderFilter> forwardedHeaderFilter() {
+    //     FilterRegistrationBean<ForwardedHeaderFilter> filterRegistrationBean = new FilterRegistrationBean<>();
+    //     filterRegistrationBean.setFilter(new ForwardedHeaderFilter());
+    //     return filterRegistrationBean;
+    // }
 
 //@Bean
 //public ForwardedHeaderFilter forwardedHeaderFilter() {
