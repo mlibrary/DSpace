@@ -158,9 +158,9 @@ public class Bundle extends DSpaceObject implements DSpaceObjectLegacySupport {
                                                  .getProperty("handle.prefix");
 
 
-        log.info("TEST hidden the value is => " + hidden_format);
-        log.info("TEST nodoi.email => " + no_doi_email);
-        log.info("TEST handle.prefix => " + handle_prefix);
+        //log.info("TEST hidden the value is => " + hidden_format);
+        //log.info("TEST nodoi.email => " + no_doi_email);
+        //log.info("TEST handle.prefix => " + handle_prefix);
 
 
 
