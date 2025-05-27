@@ -744,6 +744,7 @@ public class ItemImportServiceImpl implements ItemImportService, InitializingBea
         Item myitem = null;
         WorkspaceItem wi = null;
         WorkflowItem wfi = null;
+        boolean applyEmbargo = false;
 
         if (!isTest) {
           // May need a creation here for the doi
@@ -790,6 +791,7 @@ public class ItemImportServiceImpl implements ItemImportService, InitializingBea
             log.info("EMBARGO: restriction to this date " + restriction);
             // apply the restrictions to the item
             Restrict.applyByFullDate(c, myitem, restriction);
+            applyEmbargo = true;
           }
         }
 
@@ -845,6 +847,7 @@ public class ItemImportServiceImpl implements ItemImportService, InitializingBea
 
             // apply the restrictions to the item
             Restrict.applyByMonth(c, myitem, restrictionValue);
+            applyEmbargo = true;
           }
         }
 
@@ -926,6 +929,18 @@ public class ItemImportServiceImpl implements ItemImportService, InitializingBea
         if (mapOut != null) {
             mapOut.println(mapOutputString);
         }
+
+       if ( applyEmbargo )
+       {
+          // switch all READ authorization policies to WITHDRAWN_READ
+          authorizeService.switchPoliciesAction(c, myitem, Constants.READ, Constants.WITHDRAWN_READ);
+          for (Bundle bnd : myitem.getBundles()) {
+                authorizeService.switchPoliciesAction(c, bnd, Constants.READ, Constants.WITHDRAWN_READ);
+                for (Bitstream bs : bnd.getBitstreams()) {
+                        authorizeService.switchPoliciesAction(c, bs, Constants.READ, Constants.WITHDRAWN_READ);
+                }
+          }
+       }
 
         //Clear intermediary objects from the cache
         c.uncacheEntity(wi);

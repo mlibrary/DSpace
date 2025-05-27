@@ -1537,7 +1537,7 @@ prevent the generation of resource policy entry values with null dspace_object a
                 return true;
             }
             if (authorizeService.authorizeActionBoolean(context, item, org.dspace.core.Constants.READ)) {
-                if (item.isDiscoverable()) {
+                if (item.isDiscoverable() && !item.isWithdrawn()) {
                     return true;
                 }
             }
