@@ -318,36 +318,52 @@ LOGGER.info ("OIDC: referer " + referer + " addr=" + addr + " addr2=" + addr2 + 
         return false;
     }
 
-     public static boolean isBioUser(HttpServletRequest request, String addr)
+
+    private static boolean isWithinRange(String addr, String[] range) {
+      String[] rangeStart = range[0].split("\\.");
+      String[] rangeEnd = range[1].split("\\.");
+      String[] addrParts = addr.split("\\.");
+
+      for (int i = 0; i < 4; i++) {
+        int start = Integer.parseInt(rangeStart[i]);
+        int end = Integer.parseInt(rangeEnd[i]);
+        int current = Integer.parseInt(addrParts[i]);
+
+        if (current < start || current > end) {
+            return false;
+        }
+      }
+      return true;
+    }
+
+    public static boolean isBioUser(HttpServletRequest request, String addr)
     {
-       //String addr = request.getRemoteAddr();
-       //String addr = request.getHeader("X-Forwarded-For");
-
-       LOGGER.info ("OIDC: isBioUser addr = " + addr);
-       String ips = DSpaceServicesFactory.getInstance().getConfigurationService()
-                                                 .getProperty("ip.bioIPs");
-       LOGGER.info ("OIDC-ips: the ips from config = " + ips);
-       final String[] bioIPs = ips.split("\\|");
-
-       for (int i = 0; i < bioIPs.length; i++)
-       {
-            LOGGER.info ("OIDC-ips: bioIPs = " + bioIPs[i]);
-       }
+        LOGGER.info ("OIDC: isBioUser addr = " + addr);
 
         if ( addr == null )
         {
             return false;
         }
 
-        for (int i = 0; i < bioIPs.length; i++)
-        {
-            if (addr.startsWith(bioIPs[i]))
-            {
-                return true;
-            }
-        }
+        String ips1 = DSpaceServicesFactory.getInstance().getConfigurationService()
+                                                     .getProperty("ip.bioIPsRange1");
 
-        return false;
+        String ips2 = DSpaceServicesFactory.getInstance().getConfigurationService()
+                                                     .getProperty("ip.bioIPsRange2");
+
+        final String[] bioIPsRange1 = ips1.split("\\|");
+        final String[] bioIPsRange2 = ips2.split("\\|");       
+
+        LOGGER.info ("OIDC: isBioUser addr start RANGE1 = " + bioIPsRange1[0]);
+        LOGGER.info ("OIDC: isBioUser addr end   RANGE1 = " + bioIPsRange1[1]);
+        LOGGER.info ("OIDC: isBioUser addr start RANGE2 = " + bioIPsRange2[0]);
+        LOGGER.info ("OIDC: isBioUser addr end   RANGE2 = " + bioIPsRange2[1]);
+
+        String[] range1 = {bioIPsRange1[0], bioIPsRange1[1]};
+        String[] range2 = {bioIPsRange1[0], bioIPsRange2[1]};
+
+        return isWithinRange(addr, range1) || isWithinRange(addr, range2);  
+
     }
     
    public static boolean isBentleyUser(Context context, HttpServletRequest request, String addr)
