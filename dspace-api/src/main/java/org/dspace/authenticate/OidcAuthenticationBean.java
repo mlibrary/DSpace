@@ -360,7 +360,7 @@ LOGGER.info ("OIDC: referer " + referer + " addr=" + addr + " addr2=" + addr2 + 
         LOGGER.info ("OIDC: isBioUser addr end   RANGE2 = " + bioIPsRange2[1]);
 
         String[] range1 = {bioIPsRange1[0], bioIPsRange1[1]};
-        String[] range2 = {bioIPsRange1[0], bioIPsRange2[1]};
+        String[] range2 = {bioIPsRange2[0], bioIPsRange2[1]};
 
         return isWithinRange(addr, range1) || isWithinRange(addr, range2);  
 
