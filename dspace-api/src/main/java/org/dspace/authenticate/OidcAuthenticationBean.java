@@ -108,7 +108,6 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
                 String defaultUUID = "00000000-0000-1000-a000-000000000000";
                 UUID bioId = UUID.fromString(defaultUUID);
                 UUID umId = UUID.fromString(defaultUUID);
-                UUID bentId = UUID.fromString(defaultUUID);
                 UUID bentOnlyId = UUID.fromString(defaultUUID);
                 UUID rcId = UUID.fromString(defaultUUID);
                 int count = 0;
@@ -188,16 +187,6 @@ LOGGER.info ("OIDC: referer " + referer + " addr=" + addr + " addr2=" + addr2 + 
                 LOGGER.info ("OIDC: in RequestCopy Users " + rcId.toString());
                 count++;
 
-                if ( isBentleyUser( context, request, addr ) )
-                    {
-                        //Group bentGroup = Group.findByName(context, "Bentley Users");
-                        Group bentGroup = groupService.findByName(context, "Bentley Users");
-                        // Append to list of elligible groups
-                        bentId = bentGroup.getID();
-                        count++;
-                        LOGGER.info ("OIDC: group: in Bentley Users " + bentId.toString());
-                    }
-
                 if ( isBentleyOnlyUser( context, request, addr ) )
                     {
                         //Group bentOnlyGroup = Group.findByName(context, "Bentley Only Users");
@@ -224,8 +213,8 @@ LOGGER.info ("OIDC: referer " + referer + " addr=" + addr + " addr2=" + addr2 + 
 
                     }
 
-                //if ( (bioId == -1) && (umId == -1) && (bentId == -1) && (bentOnlyId == -1) && (rcId == -1) )
-                if ( (bioId.compareTo(UUID.fromString(defaultUUID))==1) && (umId.compareTo(UUID.fromString(defaultUUID))==1) && (bentId.compareTo(UUID.fromString(defaultUUID))==1) && (bentOnlyId.compareTo(UUID.fromString(defaultUUID))==1) && (rcId.compareTo(UUID.fromString(defaultUUID))==1) )
+                //if ( (bioId == -1) && (umId == -1) && (bentOnlyId == -1) && (rcId == -1) )
+                if ( (bioId.compareTo(UUID.fromString(defaultUUID))==1) && (umId.compareTo(UUID.fromString(defaultUUID))==1) && (bentOnlyId.compareTo(UUID.fromString(defaultUUID))==1) && (rcId.compareTo(UUID.fromString(defaultUUID))==1) )
                     {
 
                         LOGGER.info("OIDC: group: Missing in Groups.  Admin needs to create them: Bio, Um, Bent Only, Request Copy");
@@ -239,11 +228,6 @@ LOGGER.info ("OIDC: referer " + referer + " addr=" + addr + " addr2=" + addr2 + 
                 if ( !bioId.equals(UUID.fromString(defaultUUID)) )
                     {
                         groupIds[newcount] = bioId;
-                        newcount++;
-                    }
-                if ( !bentId.equals(UUID.fromString(defaultUUID)) )
-                    {
-                        groupIds[newcount] = bentId;
                         newcount++;
                     }
                 if ( !bentOnlyId.equals(UUID.fromString(defaultUUID)) )
@@ -363,129 +347,7 @@ LOGGER.info ("OIDC: referer " + referer + " addr=" + addr + " addr2=" + addr2 + 
         String[] range2 = {bioIPsRange2[0], bioIPsRange2[1]};
 
         return isWithinRange(addr, range1) || isWithinRange(addr, range2);  
-
     }
-    
-   public static boolean isBentleyUser(Context context, HttpServletRequest request, String addr)
-    {
-        //String addr = request.getRemoteAddr();
-        //String addr = request.getHeader("X-Forwarded-For");
-
-        ////  Just for testing
-       // String ips = DSpaceServicesFactory.getInstance().getConfigurationService()
-       //                                           .getProperty("ip.MusicFullIPs");
-       // LOGGER.info ("JOSEAUTHips: the ips from config = " + ips);
-       // final String[] MusicFullIPs = ips.split("\\|");
-
-       // for (int i = 0; i < MusicFullIPs.length; i++)
-       // {
-       //      LOGGER.info ("JOSEAUTH: MusicFullIPs = " + MusicFullIPs[i]);
-       // }
-
-       // ips = DSpaceServicesFactory.getInstance().getConfigurationService()
-       //                                           .getProperty("ip.MusicLowerHalfIPs");
-       // LOGGER.info ("JOSEAUTHips: the ips from config = " + ips);
-       // final String[] MusicLowerHalfIPs = ips.split("\\|");
-
-       // for (int i = 0; i < MusicLowerHalfIPs.length; i++)
-       // {
-       //      LOGGER.info ("JOSEAUTH: MusicLowerHalfIPs = " + MusicLowerHalfIPs[i]);
-       // }
-
-       // ips = DSpaceServicesFactory.getInstance().getConfigurationService()
-       //                                            .getProperty("ip.MusicUpperHalfIPs");
-
-       // LOGGER.info ("JOSEAUTHips: the ips from config = " + ips);
-       // final String[] MusicUpperHalfIPs = ips.split("\\|");
-
-       //  for (int i = 0; i < MusicUpperHalfIPs.length; i++)
-       //  {
-       //      LOGGER.info ("JOSEAUTH: MusicUpperHalfIPs = " + MusicUpperHalfIPs[i]);
-       //  }
-
-////  Just for testing ends.
-
-       LOGGER.info ("OIDC: isBentleyUser addr = " + addr);
-
-        if ( addr == null )
-        {
-            return false;
-        }
-
-
-       String ips = DSpaceServicesFactory.getInstance().getConfigurationService()
-                                                 .getProperty("ip.MusicFullIPs");
-       LOGGER.info ("OIDC-ips: the ips from config = " + ips);
-       final String[] MusicFullIPs = ips.split("\\|");
-
-       for (int i = 0; i < MusicFullIPs.length; i++)
-       {
-            LOGGER.info ("OIDC-ips: MusicFullIPs = " + MusicFullIPs[i]);
-       }
-
-        for (int i = 0; i < MusicFullIPs.length; i++)
-        {
-            if (addr.startsWith(MusicFullIPs[i]))
-            {
-                return true;
-            }
-        }
-
-       ips = DSpaceServicesFactory.getInstance().getConfigurationService()
-                                                 .getProperty("ip.MusicLowerHalfIPs");
-       LOGGER.info ("OIDC-ips: the ips from config = " + ips);
-       final String[] MusicLowerHalfIPs = ips.split("\\|");
-
-       for (int i = 0; i < MusicLowerHalfIPs.length; i++)
-       {
-            LOGGER.info ("OIDC-ips: MusicLowerHalfIPs = " + MusicLowerHalfIPs[i]);
-       }
-
-        int count = 1;
-        for (int i = 0; i < MusicLowerHalfIPs.length; i++)
-        {
-            while ( count < 127 )
-            {
-                if (addr.equals( MusicLowerHalfIPs[i] + Integer.toString(count) ) )
-                {
-                    return true;
-                }
-                count = count + 1;
-            }
-            count = 1;
-        }
-
-
-       ips = DSpaceServicesFactory.getInstance().getConfigurationService()
-                                                  .getProperty("ip.MusicUpperHalfIPs");
-
-       LOGGER.info ("OIDC-ips: the ips from config = " + ips);
-       final String[] MusicUpperHalfIPs = ips.split("\\|");
-
-        for (int i = 0; i < MusicUpperHalfIPs.length; i++)
-        {
-            LOGGER.info ("OIDC-ips: MusicUpperHalfIPs = " + MusicUpperHalfIPs[i]);
-        }
-
-        count = 129;
-        for (int i = 0; i < MusicUpperHalfIPs.length; i++)
-        {
-             LOGGER.info ("OIDC-ips: the Upper Half IPS = " + MusicUpperHalfIPs[i]);
-             while ( count < 255 )
-             {
-                 if (addr.equals( MusicUpperHalfIPs[i] + Integer.toString(count) ) )
-
-                 {
-                     return true;
-                 }
-                 count = count + 1;
-             }
-             count = 129;
-        }
-
-        return false;
-    }
-
 
    public static boolean isBentleyOnlyUser(Context context, HttpServletRequest request, String addr)
     {
