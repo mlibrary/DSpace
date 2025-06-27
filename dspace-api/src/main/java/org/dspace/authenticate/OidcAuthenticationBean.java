@@ -104,7 +104,6 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
             {
         clientInfoService = CoreServiceFactory.getInstance().getClientInfoService();
 
-                LOGGER.info ("OIDC: start getSpecialGroups");
                 String defaultUUID = "00000000-0000-1000-a000-000000000000";
                 UUID bioId = UUID.fromString(defaultUUID);
                 UUID umId = UUID.fromString(defaultUUID);
@@ -126,12 +125,11 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
                 // This is the one you should use local machine.
                 String addr3 = request.getHeader("X-Forwarded-For");
 
-        // Get the user's IP address
-        String addr2 = clientInfoService.getClientIp(request);
+                // Get the user's IP address
+                String addr2 = clientInfoService.getClientIp(request);
 
+                String referer = request.getHeader("referer");
 
-String referer = request.getHeader("referer");
-LOGGER.info ("OIDC: referer " + referer + " addr=" + addr + " addr2=" + addr2 + " addr3=" + addr3);
 
 
         // Define the IP address that should trigger an error
@@ -143,15 +141,9 @@ LOGGER.info ("OIDC: referer " + referer + " addr=" + addr + " addr2=" + addr2 + 
             //throw new RuntimeException("Access attempt from problematic IP address: " + addr);
         }
 
-
-                LOGGER.info ("OIDC: checking the addr = " + addr);
-                //addr = null;
-
                 if ( addr == null )
                 {
-                    LOGGER.error("OICD: group: returning and empty list because address is null");
                     return Collections.emptyList();
-
                 }
 
                 if ( isBioUser( request, addr ) )
@@ -162,7 +154,6 @@ LOGGER.info ("OIDC: referer " + referer + " addr=" + addr + " addr2=" + addr2 + 
                         bioId = bioGroup.getID();
                         count++;
 
-                        LOGGER.info ("OIDC: group: in Bio Users " + bioId.toString());
                     }
                 // else
                 //     {
@@ -184,7 +175,6 @@ LOGGER.info ("OIDC: referer " + referer + " addr=" + addr + " addr2=" + addr2 + 
                 Group rcGroup = groupService.findByName(context, "RequestCopy Users");
                 // Append to list of elligible groups
                 rcId = rcGroup.getID();
-                LOGGER.info ("OIDC: in RequestCopy Users " + rcId.toString());
                 count++;
 
                 if ( isBentleyOnlyUser( context, request, addr ) )
@@ -195,7 +185,6 @@ LOGGER.info ("OIDC: referer " + referer + " addr=" + addr + " addr2=" + addr2 + 
                         bentOnlyId = bentOnlyGroup.getID();
                         count++;
 
-                        LOGGER.info("OIDC: group: in Bentley Only Users " + bentOnlyId.toString());
                     }
 
                 // If logged in and has access.
@@ -209,7 +198,6 @@ LOGGER.info ("OIDC: referer " + referer + " addr=" + addr + " addr2=" + addr2 + 
                         // Append to list of elligible groups
                         umId = umGroup.getID();
                         count++;
-                        LOGGER.info("OIDC: group: in UM User " + umId.toString());
 
                     }
 
@@ -254,7 +242,6 @@ LOGGER.info ("OIDC: referer " + referer + " addr=" + addr + " addr2=" + addr2 + 
                         specialGroups.add ( g );
                 }
 
-                LOGGER.info("OIDC: Returning all the special groups");
                 return specialGroups;
 
             }
@@ -277,14 +264,7 @@ LOGGER.info ("OIDC: referer " + referer + " addr=" + addr + " addr2=" + addr2 + 
 
        String ips = DSpaceServicesFactory.getInstance().getConfigurationService()
                                                  .getProperty("ip.umIPs");
-       LOGGER.info ("OIDC: isUMUser addr = " + addr);
-       LOGGER.info ("OIDC-ips: the um ips from config = " + ips);
        final String[] umIPs = ips.split("\\|");
-
-       for (int i = 0; i < umIPs.length; i++)
-       {
-            LOGGER.info ("OIDC-ips: umIPs= " + umIPs[i]);
-       }
 
         if ( addr == null )
         {
@@ -322,7 +302,7 @@ LOGGER.info ("OIDC: referer " + referer + " addr=" + addr + " addr2=" + addr2 + 
 
     public static boolean isBioUser(HttpServletRequest request, String addr)
     {
-        LOGGER.info ("OIDC: isBioUser addr = " + addr);
+
 
         if ( addr == null )
         {
@@ -338,11 +318,6 @@ LOGGER.info ("OIDC: referer " + referer + " addr=" + addr + " addr2=" + addr2 + 
         final String[] bioIPsRange1 = ips1.split("\\|");
         final String[] bioIPsRange2 = ips2.split("\\|");       
 
-        LOGGER.info ("OIDC: isBioUser addr start RANGE1 = " + bioIPsRange1[0]);
-        LOGGER.info ("OIDC: isBioUser addr end   RANGE1 = " + bioIPsRange1[1]);
-        LOGGER.info ("OIDC: isBioUser addr start RANGE2 = " + bioIPsRange2[0]);
-        LOGGER.info ("OIDC: isBioUser addr end   RANGE2 = " + bioIPsRange2[1]);
-
         String[] range1 = {bioIPsRange1[0], bioIPsRange1[1]};
         String[] range2 = {bioIPsRange2[0], bioIPsRange2[1]};
 
@@ -354,18 +329,10 @@ LOGGER.info ("OIDC: referer " + referer + " addr=" + addr + " addr2=" + addr2 + 
        //String addr = request.getRemoteAddr();
        //String addr = request.getHeader("X-Forwarded-For");
 
-       LOGGER.info ("OIDC: isBentleyOnlyUser addr = " + addr);
-
        String ips = DSpaceServicesFactory.getInstance().getConfigurationService()
                                                   .getProperty("ip.BentleyOnlyIPs");
 
-       LOGGER.info ("OIDC-ips: the ips from config = " + ips);
        final String[] BentleyOnlyIPs = ips.split("\\|");
-
-        for (int i = 0; i < BentleyOnlyIPs.length; i++)
-        {
-            LOGGER.info ("OIDC-ips: BentleyOnlyIPs = " + BentleyOnlyIPs[i]);
-        }
 
         if ( addr == null )
         {
@@ -403,7 +370,6 @@ LOGGER.info ("OIDC: referer " + referer + " addr=" + addr + " addr2=" + addr2 + 
         if ( eperson != null )
             {
                 email = eperson.getEmail ();
-                LOGGER.info ("OIDC: hasUMPriviledges getting email; eamil=" + email);
             }
         else
             {

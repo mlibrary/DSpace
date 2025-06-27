@@ -58,7 +58,6 @@ public class AnonymousAdditionalAuthorizationFilter extends BasicAuthenticationF
         Context context = ContextUtil.obtainContext(req);
         try {
 String className = authenticationService.getClass().getName();
-            log.info("OIDC: getSpecialGroup in doFilterINternal authenticatinService=" + className);
             List<Group> groups = authenticationService.getSpecialGroups(context, req);
             for (Group group : groups) {
                 context.setSpecialGroup(group.getID());

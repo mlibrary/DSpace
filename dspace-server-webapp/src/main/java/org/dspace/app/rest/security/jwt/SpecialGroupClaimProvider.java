@@ -48,7 +48,6 @@ public class SpecialGroupClaimProvider implements JWTClaimProvider {
     public Object getValue(Context context, HttpServletRequest request) {
         List<Group> groups = new ArrayList<>();
         try {
- 	    log.info("OIDC: getSpecialGroups in getValue");
             groups = authenticationService.getSpecialGroups(context, request);
         } catch (SQLException e) {
             log.error("SQLException while retrieving special groups", e);
