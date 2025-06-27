@@ -282,11 +282,9 @@ public class GroupServiceImpl extends DSpaceObjectServiceImpl<Group> implements 
                 //special group is a subgroup of the provided group.
                 //Note that special groups should only be checked if the current user == the ePerson.
                 //This also works for anonymous users (ePerson == null) if IP authentication used
-                log.info("OIDC: calling getSpecialGroups in isMember");
                 if (!isMember && CollectionUtils.isNotEmpty(context.getSpecialGroups()) &&
                     isAuthenticatedUser(context, ePerson)) {
 
-		    log.info ("OIDC: getSpecialGroups in Member 2");
                     Iterator<Group> it = context.getSpecialGroups().iterator();
 
                     while (it.hasNext() && !isMember) {
@@ -344,7 +342,6 @@ public class GroupServiceImpl extends DSpaceObjectServiceImpl<Group> implements 
         // of the current user, as we cannot look up the special groups
         // of a user who is not logged in.
         if ((context.getCurrentUser() == null) || (context.getCurrentUser().equals(ePerson))) {
-            log.info ("OIDC: getSpecialGroups in Member 3");
             List<Group> specialGroups = context.getSpecialGroups();
             for (Group special : specialGroups) {
                 groups.add(special);

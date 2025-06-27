@@ -69,7 +69,6 @@ public class GroupRestPermissionEvaluatorPlugin extends RestObjectPermissionEval
             Group group = groupService.find(context, dsoId);
 
             // if the group is one of the special groups of the context it is readable
-            log.info ("OIDC: getSpecialGroups in hasDSpacePermission ");
             if (context.getSpecialGroups().contains(group)) {
                 return true;
             }

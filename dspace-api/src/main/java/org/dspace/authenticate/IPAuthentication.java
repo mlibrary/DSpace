@@ -170,9 +170,6 @@ public class IPAuthentication implements AuthenticationMethod {
         // Get the user's IP address
         String addr = clientInfoService.getClientIp(request);
 
-log.info ("OIDC: in IPAuth addr=" + addr);
-
-
         for (IPMatcher ipm : ipMatchers) {
             try {
                 if (ipm.match(addr)) {

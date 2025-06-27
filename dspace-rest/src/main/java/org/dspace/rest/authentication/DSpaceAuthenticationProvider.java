@@ -103,7 +103,6 @@ public class DSpaceAuthenticationProvider implements AuthenticationProvider {
     protected void addSpecialGroupsToGrantedAuthorityList(Context context, HttpServletRequest httpServletRequest,
                                                           List<SimpleGrantedAuthority> grantedAuthorities)
         throws SQLException {
-        log.info ( "OIDC: getSpecialGroups in addSpecial...." );
         List<Group> groups = authenticationService.getSpecialGroups(context, httpServletRequest);
         for (Group group : groups) {
             grantedAuthorities.add(new SimpleGrantedAuthority(group.getName()));
