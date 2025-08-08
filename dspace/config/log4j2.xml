@@ -26,7 +26,7 @@
                   filePattern="${log.dir}/dspace.log-%d{yyyy-MM-dd}"
                   type='RollingFile'
                   fileName='${log.dir}/dspace.log'
-
+                  immediateFlush="true"
         >
             <!-- NOTE: The %equals patterns are providing a default value of "unknown" if "correlationID" or
                  "requestID" are not currently set in the ThreadContext. -->
