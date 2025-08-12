@@ -42,6 +42,8 @@ if [ "$JAVA_OPTS" = "" ]; then
   JAVA_OPTS="-Xmx6144m -Xms2048m -Dfile.encoding=UTF-8"
 fi
 
+export JAVA_OPTS="$JAVA_OPTS -Dlog4j2.configurationFile=$DSPACEDIR/config/log4j2-cli.xml"
+
 # Now invoke Java
 java $JAVA_OPTS \
      -classpath $FULLPATH \
