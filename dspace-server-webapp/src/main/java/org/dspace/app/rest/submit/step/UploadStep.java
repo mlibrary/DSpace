@@ -35,6 +35,8 @@ import org.dspace.core.Constants;
 import org.dspace.core.Context;
 import org.springframework.web.multipart.MultipartFile;
 
+import org.dspace.ctask.general.ClamScanUM;
+
 /**
  * Upload step for DSpace Spring Rest. Expose information about the bitstream
  * uploaded for the in progress submission.
@@ -111,6 +113,21 @@ public class UploadStep extends AbstractProcessingStep
             bundles = itemService.getBundles(item, Constants.CONTENT_BUNDLE_NAME);
 
             InputStream inputStream = new BufferedInputStream(file.getInputStream());
+
+            // Could we check for Virus here.
+            log.info("VIRUS:" + file + " using clamdscan");
+
+    ClamScanUM clamScan = new ClamScanUM("localhost", 3310); // Adjust host/port as needed
+    ClamScanUM.ClamScanResult result = clamScan.virusCheck(file.getInputStream());
+
+    if (result.isVirusFound()) {
+        log.info("VIRUS: Found a virus " + result.getDetails());
+        throw new Exception("VIRUS: Found a virus " + result.getDetails());
+    }
+    else {
+              log.info("VIRUS: NOT Found a virus " + result.getDetails());  
+    }
+
             if (bundles.size() < 1) {
                 // set bundle's name to ORIGINAL
                 source = itemService.createSingleBitstream(context, inputStream, item, Constants.CONTENT_BUNDLE_NAME);
@@ -129,6 +146,7 @@ public class UploadStep extends AbstractProcessingStep
             // Update to DB
             bitstreamService.update(context, source);
             itemService.update(context, item);
+
 
         } catch (Exception e) {
             log.error(e.getMessage(), e);
