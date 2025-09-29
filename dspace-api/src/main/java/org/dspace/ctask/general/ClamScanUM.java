@@ -7,11 +7,15 @@ import java.io.*;
 import java.net.Socket;
 import org.dspace.services.ConfigurationService;
 
+import org.apache.logging.log4j.Logger;
     
 
 public class ClamScanUM {
     private String clamHost;
     private int clamPort;
+
+    private static final Logger log = org.apache.logging.log4j.LogManager.getLogger(ClamScanUM.class);
+
 
     private static ConfigurationService configurationService;
     protected final String PLUGIN_PREFIX = "clamav";
@@ -27,6 +31,10 @@ public class ClamScanUM {
 
         //timeout = configurationService.getIntProperty(PLUGIN_PREFIX + ".socket.timeout");
         //failfast = configurationService.getBooleanProperty(PLUGIN_PREFIX + ".scan.failfast");
+log.info("VIRUS: Found a virus host=" + host);
+
+log.info("VIRUS: Found a virus port=" + Integer.toString(port));
+
 
         this.clamHost = host;
         this.clamPort = port;
