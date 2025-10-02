@@ -71,7 +71,7 @@ public class ClamScanUM {
         // Read and interpret clamd's response
         String response = in.readLine();
         if (response == null) {
-            return new ClamScanResult(false, "No response from clamd.");
+            return new ClamScanResult(true, "No response from clamd.");
         }
         if (response.contains("OK")) {
             return new ClamScanResult(false, response);
@@ -79,11 +79,11 @@ public class ClamScanUM {
             String virus = response.substring(response.indexOf(":") + 1, response.indexOf("FOUND")).trim();
             return new ClamScanResult(true, virus);
         } else {
-            return new ClamScanResult(false, "Unknown response: " + response);
+            return new ClamScanResult(true, "Unknown response: " + response);
         }
 
         } catch (IOException e) {
-            return new ClamScanResult(false, "IOException: " + e.getMessage());
+            return new ClamScanResult(true, "IOException: " + e.getMessage());
         }
     }
 
