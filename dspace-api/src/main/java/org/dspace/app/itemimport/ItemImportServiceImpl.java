@@ -125,6 +125,8 @@ import java.util.Calendar;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
+import org.dspace.ctask.general.ClamScanUM;
+
 
 /**
  * Import items into DSpace. The conventional use is upload files by copying
@@ -1540,63 +1542,70 @@ public class ItemImportServiceImpl implements ItemImportService, InitializingBea
     protected void processContentFileEntry(Context c, Item i, String path,
                                            String fileName, String bundleName, boolean primary) throws SQLException,
         IOException, AuthorizeException {
-        if (isExcludeContent) {
-            return;
+
+    if (isExcludeContent) {
+        return;
+    }
+
+    String fullpath = path + File.separatorChar + fileName;
+
+    log.info("VIRUS: check during backend use of itemimport");
+
+    // --- Perform virus scan ---
+    try (BufferedInputStream virusScanStream = new BufferedInputStream(new FileInputStream(fullpath))) {
+        ClamScanUM clamScan = new ClamScanUM("localhost", 3310); // Adjust host/port as needed
+        ClamScanUM.ClamScanResult result = clamScan.virusCheck(virusScanStream);
+
+        String details = result.getDetails();
+        if (result.isVirusFound()) {
+            log.info("VIRUS: Found a virus " + details);
+            throw new IOException("VIRUS: Found a virus " + details);
+        } else {
+            log.info("VIRUS: VIRUS NOT FOUND " + details);
+        }
+    }
+
+    // --- Ingest bitstream ---
+    Bitstream bs = null;
+    String newBundleName = bundleName;
+
+    if (bundleName == null) {
+        if ("license.txt".equals(fileName)) {
+            newBundleName = "LICENSE";
+        } else {
+            newBundleName = "ORIGINAL";
+        }
+    }
+
+    if (!isTest) {
+        List<Bundle> bundles = itemService.getBundles(i, newBundleName);
+        Bundle targetBundle;
+
+        if (bundles.isEmpty()) {
+            targetBundle = bundleService.create(c, i, newBundleName);
+        } else {
+            targetBundle = bundles.iterator().next();
         }
 
-        String fullpath = path + File.separatorChar + fileName;
-
-        // get an input stream
-        BufferedInputStream bis = new BufferedInputStream(new FileInputStream(
-            fullpath));
-
-        Bitstream bs = null;
-        String newBundleName = bundleName;
-
-        if (bundleName == null) {
-            // is it license.txt?
-            if ("license.txt".equals(fileName)) {
-                newBundleName = "LICENSE";
-            } else {
-                // call it ORIGINAL
-                newBundleName = "ORIGINAL";
-            }
-        }
-
-        if (!isTest) {
-            // find the bundle
-            List<Bundle> bundles = itemService.getBundles(i, newBundleName);
-            Bundle targetBundle = null;
-
-            if (bundles.size() < 1) {
-                // not found, create a new one
-                targetBundle = bundleService.create(c, i, newBundleName);
-            } else {
-                // put bitstreams into first bundle
-                targetBundle = bundles.iterator().next();
-            }
-
-            // now add the bitstream
+        // Open a NEW stream for ingestion since the virus scan has closed the first
+        try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(fullpath))) {
             bs = bitstreamService.create(c, targetBundle, bis);
-
-            bs.setName(c, fileName);
-
-            // Identify the format
-            // FIXME - guessing format guesses license.txt incorrectly as a text
-            // file format!
-            BitstreamFormat bf = bitstreamFormatService.guessFormat(c, bs);
-            bitstreamService.setFormat(c, bs, bf);
-
-            // Is this a the primary bitstream?
-            if (primary) {
-                targetBundle.setPrimaryBitstreamID(bs);
-                bundleService.update(c, targetBundle);
-            }
-
-            bitstreamService.update(c, bs);
         }
 
-        bis.close();
+        bs.setName(c, fileName);
+
+        // Identify the format
+        BitstreamFormat bf = bitstreamFormatService.guessFormat(c, bs);
+        bitstreamService.setFormat(c, bs, bf);
+
+        // Set as primary bitstream if needed
+        if (primary) {
+            targetBundle.setPrimaryBitstreamID(bs);
+            bundleService.update(c, targetBundle);
+        }
+
+        bitstreamService.update(c, bs);
+    }
     }
 
     /**
