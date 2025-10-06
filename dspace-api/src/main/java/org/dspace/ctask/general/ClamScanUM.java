@@ -42,6 +42,13 @@ public class ClamScanUM {
     }
 
     public ClamScanResult virusCheck(InputStream stream) {
+
+    boolean doVirus = configurationService.getBooleanProperty("bitstream.virus.check", false);
+
+    if (!doVirus) {
+       return new ClamScanResult(false, "VIRUS:Not checking for Virus, because not config to check.");
+    }
+
     try (Socket socket = new Socket(clamHost, clamPort);
          BufferedOutputStream out = new BufferedOutputStream(socket.getOutputStream());
          BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
@@ -94,7 +101,7 @@ public class ClamScanUM {
 
         public ClamScanResult(boolean virusFound, String details) {
             this.virusFound = virusFound;
-            this.details = details;
+            this.details = details.replaceAll("[^\\x20-\\x7E]", "?");
         }
 
         public boolean isVirusFound() { return virusFound; }

@@ -114,19 +114,23 @@ public class UploadStep extends AbstractProcessingStep
 
             InputStream inputStream = new BufferedInputStream(file.getInputStream());
 
+//UM Change
             // Could we check for Virus here.
             log.info("VIRUS:" + file + " using clamdscan");
 
-    ClamScanUM clamScan = new ClamScanUM("localhost", 3310); // Adjust host/port as needed
-    ClamScanUM.ClamScanResult result = clamScan.virusCheck(file.getInputStream());
+            ClamScanUM clamScan = new ClamScanUM("localhost", 3310); // Adjust host/port as needed
+            ClamScanUM.ClamScanResult result = clamScan.virusCheck(file.getInputStream());
 
-    if (result.isVirusFound()) {
-        log.info("VIRUS: Found a virus " + result.getDetails());
-        throw new Exception("VIRUS: Found a virus " + result.getDetails());
-    }
-    else {
-              log.info("VIRUS: NOT Found a virus " + result.getDetails());  
-    }
+            String details = result.getDetails();
+            if (result.isVirusFound()) {
+              log.info("VIRUS: Found a virus " + details);
+              throw new Exception("VIRUS: Found a virus " + details);
+            }
+            else {
+              log.info("VIRUS: VIRUS NOT FOUND " + details);  
+            }
+//UM Change End
+
 
             if (bundles.size() < 1) {
                 // set bundle's name to ORIGINAL
