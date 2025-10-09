@@ -19,7 +19,10 @@
     <submission-map>
         <!-- Default submission process -->
         <name-map collection-handle="default"     submission-name="traditionalCC_um"/>
-   <name-map collection-handle="123456789/124"  submission-name="rossseniorthesis" /> <!-- busadisp -->
+
+<!-- For testing:
+
+   <name-map collection-handle="123456789/124"  submission-name="rossseniorthesis" />
    <name-map collection-handle="123456789/125" submission-name="rossseniorthesis" />
    <name-map collection-handle="123456789/126"  submission-name="honorsthesis" />
    <name-map collection-handle="123456789/127"  submission-name="meche" />
@@ -28,7 +31,8 @@
    <name-map collection-handle="123456789/130"  submission-name="umtri" />
    <name-map collection-handle="123456789/131"  submission-name="biostation" />
 
-<!-- For when we go live:
+-->
+
 
    <name-map collection-handle="2027.42/64026"  submission-name="rossseniorthesis" />
    <name-map collection-handle="2027.42/149471" submission-name="rossseniorthesis" />
@@ -39,7 +43,7 @@
    <name-map collection-handle="2027.42/13914"  submission-name="umtri" />
    <name-map collection-handle="2027.42/49252"  submission-name="biostation" />
 
--->
+
 
 
 
