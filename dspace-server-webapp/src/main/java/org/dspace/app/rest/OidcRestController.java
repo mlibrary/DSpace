@@ -65,7 +65,8 @@ public class OidcRestController {
             allowedHostNames.add(Utils.getHostName(url));
         }
 
-            log.info("OIDC redirecting to HERE" + redirectUrl);
+        redirectUrl = redirectUrl + "/documents";
+        log.info("OIDC redirecting to HERE" + redirectUrl);
         if (StringUtils.equalsAnyIgnoreCase(redirectHostName, allowedHostNames.toArray(new String[0]))) {
             log.info("OIDC redirecting to " + redirectUrl);
             response.sendRedirect(redirectUrl); // lgtm [java/unvalidated-url-redirection]
