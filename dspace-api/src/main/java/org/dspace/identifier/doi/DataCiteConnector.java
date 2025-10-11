@@ -689,6 +689,10 @@ public class DataCiteConnector
         credentialsProvider.setCredentials(new AuthScope(HOST, 443),
                 new UsernamePasswordCredentials(this.getUsername(), this.getPassword()));
 
+log.info("DOI: user=" + this.getUsername());
+log.info("DOI: passord=" + this.getPassword());
+log.info("DOI: HOST=" + HOST);
+
         HttpClientContext httpContext = HttpClientContext.create();
         httpContext.setCredentialsProvider(credentialsProvider);
 

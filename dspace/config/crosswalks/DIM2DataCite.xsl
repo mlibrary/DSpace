@@ -27,7 +27,7 @@
          Schema, see https://schema.datacite.org. -->
     
     <!-- We need the prefix to determine DOIs that were minted by ourself. -->
-    <xsl:param name="prefix">10.33577</xsl:param>
+    <xsl:param name="prefix">10.7302</xsl:param>
     <!-- The content of the following parameter will be used as element publisher. -->
     <xsl:param name="publisher">University of Michigan</xsl:param>
     <!-- The content of the following variable will be used as element contributor with contributorType datamanager. -->
