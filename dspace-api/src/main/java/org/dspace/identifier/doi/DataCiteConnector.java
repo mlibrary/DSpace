@@ -66,7 +66,7 @@ public class DataCiteConnector
 
     // Configuration property names
     static final String CFG_USER = "identifier.doi.user";
-    static final String CFG_PASSWORD = "identifier.doi.password";
+    static final String CFG_PASSWORD = "identifier.doi.password_working";
     static final String CFG_PREFIX
         = "identifier.doi.prefix";
     static final String CFG_PUBLISHER
