@@ -205,7 +205,7 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
                 if ( (bioId.compareTo(UUID.fromString(defaultUUID))==1) && (umId.compareTo(UUID.fromString(defaultUUID))==1) && (bentOnlyId.compareTo(UUID.fromString(defaultUUID))==1) && (rcId.compareTo(UUID.fromString(defaultUUID))==1) )
                     {
 
-                        LOGGER.info("OIDC: group: Missing in Groups.  Admin needs to create them: Bio, Um, Bent Only, Request Copy");
+                        //LOGGER.info("OIDC: group: Missing in Groups.  Admin needs to create them: Bio, Um, Bent Only, Request Copy");
 
                         //return ListUtils.EMPTY_LIST;
                         return Collections.emptyList();
@@ -236,7 +236,7 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
                 List<Group> specialGroups = new ArrayList<Group>();
                 for(int i = 0; i < groupIds.length; i++)
                 {
-                        LOGGER.info("OIDC: Group Found and returning " + groupIds[i].toString() + " addr=" + addr + " addr2=" + addr2 + " addr3=" + addr3);
+                        //LOGGER.info("OIDC: Group Found and returning " + groupIds[i].toString() + " addr=" + addr + " addr2=" + addr2 + " addr3=" + addr3);
 
                         Group g =  EPersonServiceFactory.getInstance().getGroupService().find(context, groupIds[i]);;
                         specialGroups.add ( g );
@@ -247,7 +247,7 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
             }
         catch(SQLException sqle)
             {
-                LOGGER.info("OIDC: SQL Exception Error.  Returning empty list of groups");
+                //LOGGER.info("OIDC: SQL Exception Error.  Returning empty list of groups");
                 //return ListUtils.EMPTY_LIST;
                 return Collections.emptyList();
                 //throw new JspException(ie);
@@ -373,7 +373,7 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
             }
         else
             {
-                LOGGER.info ("OIDC: hasUMPriviledges(false) email not found; email =" + email);
+                //LOGGER.info ("OIDC: hasUMPriviledges(false) email not found; email =" + email);
                 return false;
             }
 
@@ -411,7 +411,7 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
                 int pos2 = ResponseValue.indexOf("Error in Verification");
                 if ( pos2 > 0 )
                     {
-                        LOGGER.info ("OIDC: hasUMPriviledges(false) ERROR with verification; email =" + email);
+                        //LOGGER.info ("OIDC: hasUMPriviledges(false) ERROR with verification; email =" + email);
                         return false;
                     }
                 else
@@ -440,16 +440,16 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
         }
         catch (MalformedURLException mue)
         {
-            LOGGER.info ("OIDC: hasUMPriviledges Invalid URL");
+            //LOGGER.info ("OIDC: hasUMPriviledges Invalid URL");
             System.err.println ("Invalid URL");
         }
         catch (IOException ioe)
         {
-            LOGGER.info ("OIDC: hasUMPriviledges I/O Error");
+            //LOGGER.info ("OIDC: hasUMPriviledges I/O Error");
             System.err.println ("I/O Error - " + ioe);
         }
 
-        LOGGER.info ("OIDC: hasUMPriviledges(false) does not have UM Priviledges");
+        //LOGGER.info ("OIDC: hasUMPriviledges(false) does not have UM Priviledges");
         return false;
     }
 
@@ -551,10 +551,10 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
         }
 
         try {
-            LOGGER.warn("OIDC: LOGIN ==> " + format(LOGIN_PAGE_URL_FORMAT, authorizeUrl, clientId, scopes, encode(redirectUri, "UTF-8")));
+            //LOGGER.warn("OIDC: LOGIN ==> " + format(LOGIN_PAGE_URL_FORMAT, authorizeUrl, clientId, scopes, encode(redirectUri, "UTF-8")));
             return format(LOGIN_PAGE_URL_FORMAT, authorizeUrl, clientId, scopes, encode(redirectUri, "UTF-8"));
         } catch (UnsupportedEncodingException e) {
-            LOGGER.error(e.getMessage(), e);
+            //LOGGER.error(e.getMessage(), e);
             return "";
         }
 
@@ -606,10 +606,10 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
         try {
 
 
-            LOGGER.error("OIDC:  Trying to get oidc access token with this code = " + code);
+            //LOGGER.error("OIDC:  Trying to get oidc access token with this code = " + code);
             return oidcClient.getAccessToken(code);
         } catch (Exception ex) {
-            LOGGER.error("An error occurs retriving the OIDC access_token", ex);
+            //LOGGER.error("An error occurs retriving the OIDC access_token", ex);
             return null;
         }
     }
@@ -618,7 +618,7 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
         try {
             return oidcClient.getUserInfo(accessToken);
         } catch (Exception ex) {
-            LOGGER.error("An error occurs retriving the OIDC user info", ex);
+            //LOGGER.error("An error occurs retriving the OIDC user info", ex);
             return Map.of();
         }
     }
