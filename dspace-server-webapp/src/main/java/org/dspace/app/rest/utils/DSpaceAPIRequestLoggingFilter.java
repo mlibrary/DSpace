@@ -90,7 +90,7 @@ if (StringUtils.isBlank(clientIp)) {
     clientIp = clientIp.split(",")[0].trim();
 }
     // Log the message with referrer and IP information
-    logger.info(message + " originated from " + referrer + " with IP address " + clientIp);
+    // logger.info(message + " originated from " + referrer + " with IP address " + clientIp);
 
     }
 
