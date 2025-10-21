@@ -151,9 +151,10 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
                         Group bioGroup = groupService.findByName(context, "Bio Users");
                         //Group bioGroup = Group.findByName(context, "Bio Users");
                         // Append to list of elligible groups
-                        bioId = bioGroup.getID();
-                        count++;
-
+                        if (bioGroup != null) {
+                            bioId = bioGroup.getID();  // This is safe, as bioGroup exists
+                            count++;
+                        }
                     }
                 // else
                 //     {
@@ -174,17 +175,20 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
                 //Group rcGroup = Group.findByName(context, "RequestCopy Users");
                 Group rcGroup = groupService.findByName(context, "RequestCopy Users");
                 // Append to list of elligible groups
-                rcId = rcGroup.getID();
-                count++;
+                if (rcGroup  != null) {
+                    rcId = rcGroup.getID();
+                    count++;
+                }   
 
                 if ( isBentleyOnlyUser( context, request, addr ) )
                     {
                         //Group bentOnlyGroup = Group.findByName(context, "Bentley Only Users");
                         Group bentOnlyGroup = groupService.findByName(context, "Bentley Only Users");
-                        // Append to list of elligible groups
-                        bentOnlyId = bentOnlyGroup.getID();
-                        count++;
-
+                        if (bentOnlyGroup  != null) {
+                            // Append to list of elligible groups
+                            bentOnlyId = bentOnlyGroup.getID();
+                            count++;
+                        }
                     }
 
                 // If logged in and has access.
@@ -195,9 +199,11 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
                         // add the user to the special group "UM Users"
                         //Group umGroup = Group.findByName(context, "UM Users");
                         Group umGroup = groupService.findByName(context, "UM Users");
-                        // Append to list of elligible groups
-                        umId = umGroup.getID();
-                        count++;
+                        if (umGroup != null) {
+                            // Append to list of elligible groups
+                            umId = umGroup.getID();
+                            count++;
+                        }
 
                     }
 

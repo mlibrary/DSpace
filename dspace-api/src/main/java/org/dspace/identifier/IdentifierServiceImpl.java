@@ -234,18 +234,14 @@ public class IdentifierServiceImpl implements IdentifierService {
         // UM this is called at install, you don't want to regitster the DOI if the user does not want one.
         boolean noDoi = context.getNoDoiStatus();
 
-        log.info("DOI: 123  should BE  in this reserve the value of noDoi=" + noDoi);
-
         // Iterate all services and register identifiers as appropriate
         boolean registered = false;
         for (IdentifierProvider service : providers) {
             if ( noDoi )
             {
                 String serviceName = service.getClass().getSimpleName();
-                log.info("DOI: 123 checking service= " + serviceName);
                 if (!serviceName.contains("DOI"))
                 {
-                log.info("DOI: 123 doing...= " + serviceName + " identifier=" + identifier);
 
                   if (service.supports(identifier)) {
                     try {
@@ -366,7 +362,6 @@ public class IdentifierServiceImpl implements IdentifierService {
         }
 
         log.debug("Found identifiers: " + identifiers.toString());
-        log.info("DOI: 123 dont expect list of ids created. Found identifiers: " + identifiers.toString());
         return identifiers;
     }
     }
@@ -374,7 +369,6 @@ public class IdentifierServiceImpl implements IdentifierService {
     @Override
     public List<String> lookupNoDoi(Context context, DSpaceObject dso) {
 
-        log.info("DOI: 123 in lookupNoDoi expect to be here");
 
         List<String> identifiers = new ArrayList<>();
         // Attempt to lookup DSO's identifiers using every available provider
@@ -383,10 +377,8 @@ public class IdentifierServiceImpl implements IdentifierService {
             try {
 
                 String serviceName = service.getClass().getSimpleName();
-                log.info("DOI: 123 checking service= " + serviceName);
                 if (!serviceName.contains("DOI"))
                 {
-                    log.info("DOI: 123 getting this service= " + serviceName);
 
                     String result = service.lookup(context, dso);
                     if (!StringUtils.isEmpty(result)) {
@@ -398,7 +390,6 @@ public class IdentifierServiceImpl implements IdentifierService {
                             }
                         }
                     // Never gets here    
-                    log.info("DOI: 123 very important identifier is= " + result);
 
                     identifiers.add(result);
                     }
@@ -440,7 +431,6 @@ public class IdentifierServiceImpl implements IdentifierService {
 
         log.debug("Found identifiers: " + identifiers.toString());
 
-        log.info("DOI: 123 expect list of ids created. Found identifiers: " + identifiers.toString());
         return identifiers;
     }
 
@@ -448,7 +438,6 @@ public class IdentifierServiceImpl implements IdentifierService {
     public DSpaceObject resolve(Context context, String identifier)
         throws IdentifierNotFoundException, IdentifierNotResolvableException {
 
-log.info("DOI: 123  should NOT be in this resolve");
 
         for (IdentifierProvider service : providers) {
             if (service.supports(identifier)) {
@@ -472,7 +461,6 @@ log.info("DOI: 123  should NOT be in this resolve");
 
     @Override
     public void delete(Context context, DSpaceObject dso) throws AuthorizeException, SQLException, IdentifierException {
-log.info("DOI: 123 ONE should NOT be in this delete");
 
         for (IdentifierProvider service : providers) {
             try {
@@ -486,7 +474,6 @@ log.info("DOI: 123 ONE should NOT be in this delete");
     @Override
     public void delete(Context context, DSpaceObject dso, String identifier)
         throws AuthorizeException, SQLException, IdentifierException {
-log.info("DOI: 123 should NOT be in this delete");
 
         for (IdentifierProvider service : providers) {
             try {
