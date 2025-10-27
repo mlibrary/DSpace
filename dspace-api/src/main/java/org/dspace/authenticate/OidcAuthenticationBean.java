@@ -104,38 +104,35 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
             {
         clientInfoService = CoreServiceFactory.getInstance().getClientInfoService();
 
-                String defaultUUID = "00000000-0000-1000-a000-000000000000";
-                UUID bioId = UUID.fromString(defaultUUID);
-                UUID umId = UUID.fromString(defaultUUID);
-                UUID bentOnlyId = UUID.fromString(defaultUUID);
-                UUID rcId = UUID.fromString(defaultUUID);
-                int count = 0;
+        String defaultUUID = "00000000-0000-1000-a000-000000000000";
+        UUID bioId = UUID.fromString(defaultUUID);
+        UUID umId = UUID.fromString(defaultUUID);
+        UUID bentOnlyId = UUID.fromString(defaultUUID);
+        int count = 0;
 
-                GroupService groupService = EPersonServiceFactory.getInstance().getGroupService();
+        GroupService groupService = EPersonServiceFactory.getInstance().getGroupService();
 
-		        // UM Change
-                // The way swordv2 works now, the code will come here, and in that case request will be null.
-                if ( request == null )
-                {
-                    return Collections.emptyList();
-                }
-                // This is what you should use on production.
-                String addr = request.getRemoteAddr();
+        // UM Change
+        // The way swordv2 works now, the code will come here, and in that case request will be null.
+        if ( request == null )
+        {
+            return Collections.emptyList();
+        }
+        // This is what you should use on production.
+        String addr = request.getRemoteAddr();
 
-                // This is the one you should use local machine.
-                String addr3 = request.getHeader("X-Forwarded-For");
+        // This is the one you should use local machine.
+        String addr3 = request.getHeader("X-Forwarded-For");
 
-                // Get the user's IP address
-                String addr2 = clientInfoService.getClientIp(request);
+        // Get the user's IP address
+        String addr2 = clientInfoService.getClientIp(request);
 
-                String referer = request.getHeader("referer");
-
-
+        String referer = request.getHeader("referer");
 
         // Define the IP address that should trigger an error
         String problematicIpAddress = "10.255.12.30";
         
-        // Check if the client's IP address matches the problematic IP
+        // Check if the client's IP address matches the problematic IP, for debugging.
         if (problematicIpAddress.equals(addr)) {
             // Throw a runtime exception to generate a stack trace
             //throw new RuntimeException("Access attempt from problematic IP address: " + addr);
@@ -149,40 +146,14 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
                 if ( isBioUser( request, addr ) )
                     {
                         Group bioGroup = groupService.findByName(context, "Bio Users");
-                        //Group bioGroup = Group.findByName(context, "Bio Users");
-                        // Append to list of elligible groups
                         if (bioGroup != null) {
                             bioId = bioGroup.getID();  // This is safe, as bioGroup exists
                             count++;
                         }
                     }
-                // else
-                //     {
-			    //         // UM Change.  For now don't put people in the NotBio group
-			    //         // This will guarantee that RequestItem files are requested to 
-			    //         // everyone except the Admins.
-
-                //         //Group notbioGroup = Group.findByName(context, "NotBio");
-                //         //Group notbioGroup = groupService.findByName(context, "NotBio");
-                //         // Append to list of elligible groups
-                //         //bioId = notbioGroup.getID();
-                //         //count++;
-                //         //LOGGER.info ("OIDC: In: NotBio " + bioId.toString());
-
-                //     }
-
-                // Put everyone in the Request Copy Group
-                //Group rcGroup = Group.findByName(context, "RequestCopy Users");
-                Group rcGroup = groupService.findByName(context, "RequestCopy Users");
-                // Append to list of elligible groups
-                if (rcGroup  != null) {
-                    rcId = rcGroup.getID();
-                    count++;
-                }   
 
                 if ( isBentleyOnlyUser( context, request, addr ) )
                     {
-                        //Group bentOnlyGroup = Group.findByName(context, "Bentley Only Users");
                         Group bentOnlyGroup = groupService.findByName(context, "Bentley Only Users");
                         if (bentOnlyGroup  != null) {
                             // Append to list of elligible groups
@@ -195,9 +166,6 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
                 // OR is at a UM Address
                 if (hasUMPriviledges(context) || isUMUser(request, addr))
                     {
-
-                        // add the user to the special group "UM Users"
-                        //Group umGroup = Group.findByName(context, "UM Users");
                         Group umGroup = groupService.findByName(context, "UM Users");
                         if (umGroup != null) {
                             // Append to list of elligible groups
@@ -207,13 +175,8 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
 
                     }
 
-                //if ( (bioId == -1) && (umId == -1) && (bentOnlyId == -1) && (rcId == -1) )
-                if ( (bioId.compareTo(UUID.fromString(defaultUUID))==1) && (umId.compareTo(UUID.fromString(defaultUUID))==1) && (bentOnlyId.compareTo(UUID.fromString(defaultUUID))==1) && (rcId.compareTo(UUID.fromString(defaultUUID))==1) )
+                if ( (bioId.compareTo(UUID.fromString(defaultUUID))==1) && (umId.compareTo(UUID.fromString(defaultUUID))==1) && (bentOnlyId.compareTo(UUID.fromString(defaultUUID))==1) )
                     {
-
-                        //LOGGER.info("OIDC: group: Missing in Groups.  Admin needs to create them: Bio, Um, Bent Only, Request Copy");
-
-                        //return ListUtils.EMPTY_LIST;
                         return Collections.emptyList();
                     }
 
@@ -229,11 +192,6 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
                         groupIds[newcount] = bentOnlyId;
                         newcount++;
                     }
-                if ( !rcId.equals(UUID.fromString(defaultUUID)) )
-                    {
-                        groupIds[newcount] = rcId;
-                        newcount++;
-                    }
                 if ( !umId.equals(UUID.fromString(defaultUUID)) )
                     {
                         groupIds[newcount] = umId;
@@ -242,10 +200,8 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
                 List<Group> specialGroups = new ArrayList<Group>();
                 for(int i = 0; i < groupIds.length; i++)
                 {
-                        //LOGGER.info("OIDC: Group Found and returning " + groupIds[i].toString() + " addr=" + addr + " addr2=" + addr2 + " addr3=" + addr3);
-
-                        Group g =  EPersonServiceFactory.getInstance().getGroupService().find(context, groupIds[i]);;
-                        specialGroups.add ( g );
+                    Group g =  EPersonServiceFactory.getInstance().getGroupService().find(context, groupIds[i]);;
+                    specialGroups.add ( g );
                 }
 
                 return specialGroups;
@@ -253,11 +209,7 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
             }
         catch(SQLException sqle)
             {
-                //LOGGER.info("OIDC: SQL Exception Error.  Returning empty list of groups");
-                //return ListUtils.EMPTY_LIST;
                 return Collections.emptyList();
-                //throw new JspException(ie);
-                //              throw new IOException(sqle.getMessage());
             }
 
     }
@@ -467,11 +419,6 @@ public class OidcAuthenticationBean implements AuthenticationMethod {
     @Override
     public int authenticate(Context context, String username, String password, String realm, HttpServletRequest request)
         throws SQLException {
-
-//For Testing
-//int a =0;
-//int b=10;
-//int c = b/a;
 
         if (request == null) {
             LOGGER.warn("Unable to authenticate using OIDC because the request object is null.");
