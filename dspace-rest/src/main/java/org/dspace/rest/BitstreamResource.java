@@ -52,6 +52,7 @@ import org.dspace.storage.bitstore.service.BitstreamStorageService;
 import org.dspace.usage.UsageEvent;
 
 import org.dspace.content.Bundle;
+import org.dspace.content.Item;
 
 /**
  * @author Rostislav Novak (Computing and Information Centre, CTU in Prague)
@@ -476,6 +477,65 @@ public class BitstreamResource extends Resource {
             if (sequenceId != null && sequenceId.intValue() != -1) {
                 dspaceBitstream.setSequenceID(sequenceId);
             }
+
+            //UM change to support Bentley deposit.  Adding License bundle if there is not one
+            if(bitstream.getBundleName() != null)
+            {
+                if ( bitstream.getBundleName().equals("LICENSE") )
+                {
+                    log.info("BUNDLECHECK: Initial Getting bundle name. " + bitstream.getBundleName());
+                    //find the bundle with the desired name or create it if necessary
+                    //Item parentItem = (Item) dspaceBitstream.getParentObjecttstreamServicetstreamService();
+                    Item parentItem = (Item) bitstreamService.getParentObject(context, dspaceBitstream); 
+                    Bundle namedBundle = null;
+                    for(Bundle existingBundle : parentItem.getBundles()) {
+                        if(existingBundle.getName().equals(bitstream.getBundleName())) {
+                            namedBundle = existingBundle;
+                            log.info("BUNDLECHECK: bundle exist no need to create it." + namedBundle);
+                            break;
+                        } else {
+                            log.info("BUNDLECHECK: No bundle with thtat name create one." + bitstream.getBundleName());
+                            //namedBundle = parentItem.createBundle(bitstream.getBundleName());
+                            namedBundle = bundleService.create(context, parentItem, bitstream.getBundleName());
+                            break;
+                        }                               
+                    }
+                  
+
+                    log.info("BUNDLECHECK: getting ready to add bitstream to bundle. ");
+      
+                    if(namedBundle != null) 
+                        {
+                            log.trace("Placing bitstream in bundle " + bitstream.getBundleName());
+                            
+                            log.info("BUNDLECHECK: getiing ready to add bitstream to bundle. " + namedBundle);
+                            
+
+                            //remove the bitstream from its current bundles
+                            //Bundle[] bundles = dspaceBitstream.getBundles();
+                            List<Bundle> bundlesList = parentItem.getBundles ();
+                            Bundle[] bundles = bundlesList.toArray(new Bundle[bundlesList.size()]);
+                            for(Bundle bundle : bundles) {          
+                                //try {
+                                    bundle.removeBitstream(dspaceBitstream);
+                                //} catch (IOException e) {
+                                    // TODO Auto-generated catch block
+                                //    e.printStackTrace();
+                                //    log.info("BUNDLECHECK: could not remove bitsream in bundle. " + bundle.getName());
+                                //}
+                            }
+                            
+                            log.info("BUNDLECHECK: adding bitstream to bundle. ");
+
+                            //put the bitstream in the named bundle
+                            //namedBundle.addBitstream(dspaceBitstream);
+                            // Before removing the policies first, was getting two Anonymous policies for license.txt
+                            authorizeService.removeAllPolicies(context,dspaceBitstream);
+                            bundleService.addBitstream(context, namedBundle, dspaceBitstream);
+                        }
+                }
+            }
+            //End UM Change
 
             bitstreamService.update(context, dspaceBitstream);
 
