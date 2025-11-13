@@ -185,12 +185,11 @@ public class BitstreamRestRepository extends DSpaceObjectRestRepository<Bitstrea
                     String sequence_id =  Integer.toString(bits[i].getSequenceID());
                     String filename =  bits[i].getName();
                     String filedesc =  bits[i].getDescription();
-
-                    //String url_start = configurationService.getProperty("dspace.url");
+                    String bit_uuid =  bits[i].getID().toString();
 
                     String dspace_url = DSpaceServicesFactory.getInstance().getConfigurationService()
-                                                         .getProperty("dspace.url");
-                    String biturl = dspace_url + "/bitstream/" + suppliedHandle + "/" + sequence_id + "/" + filename;
+                                                         .getProperty("dspace.ui.url");
+                    String biturl = dspace_url + "/bitstreams/" + bit_uuid + "/download";
                     // Get the information you need for the bitstream.
                     //item.addDC("description", "bitstreamurl", null, biturl);
                     itemService.addMetadata(context, item, MetadataSchemaEnum.DC.getName(), "description", "bitstreamurl", null, biturl);

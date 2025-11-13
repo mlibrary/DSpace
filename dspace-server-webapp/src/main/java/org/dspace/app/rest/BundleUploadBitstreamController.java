@@ -142,7 +142,7 @@ public class BundleUploadBitstreamController {
         Item item = bundle.getItems().iterator().next();
         String sequence_id =  Integer.toString(bitstreamRest.getSequenceId());
         String filename =  bitstreamRest.getName();
-        String biturl = DSpaceServicesFactory.getInstance().getConfigurationService().getProperty("dspace.url")  + "/bitstream/" + item.getHandle() + "/" + sequence_id + "/" + filename;
+        String biturl = DSpaceServicesFactory.getInstance().getConfigurationService().getProperty("dspace.ui.url")  + "/bitstream/" + item.getHandle() + "/" + sequence_id + "/" + filename;
 
         itemService.addMetadata(context, item, MetadataSchemaEnum.DC.getName(), "description", "bitstreamurl", "en", biturl);
 

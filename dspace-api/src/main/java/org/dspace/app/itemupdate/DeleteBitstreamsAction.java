@@ -123,8 +123,9 @@ public class DeleteBitstreamsAction extends UpdateBitstreamsAction {
                         {
                             String sequence_id =  Integer.toString(bits[i].getSequenceID());
                             String filename =  bits[i].getName();
+                            String bit_uuid =  bits[i].getID().toString();
 
-                            String biturl = DSpaceServicesFactory.getInstance().getConfigurationService().getProperty("dspace.url")  + "/bitstream/" + handle + "/" + sequence_id + "/" + filename;
+                            String biturl = DSpaceServicesFactory.getInstance().getConfigurationService().getProperty("dspace.ui.url")  + "/bitstreams/" + bit_uuid + "/download";
                             itemService.addMetadata(context, item, MetadataSchemaEnum.DC.getName(), "description", "bitstreamurl", "en", biturl);
 
 

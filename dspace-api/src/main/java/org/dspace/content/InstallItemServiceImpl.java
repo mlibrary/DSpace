@@ -297,13 +297,12 @@ public class InstallItemServiceImpl implements InstallItemService {
                     String sequence_id =  Integer.toString(bits[i].getSequenceID());
                     String filename =  bits[i].getName();
                     String filedesc =  bits[i].getDescription();
-
-                    //String url_start = configurationService.getProperty("dspace.url");
+                    String bit_uuid =  bits[i].getID().toString();
 
                     String dspace_url = DSpaceServicesFactory.getInstance().getConfigurationService()
-                                                         .getProperty("dspace.url");
+                                                         .getProperty("dspace.ui.url");
 
-                    String biturl = dspace_url + "/bitstream/" + suppliedHandle + "/" + sequence_id + "/" + filename;
+                    String biturl = dspace_url + "/bitstreams/" + bit_uuid + "/download";
                     itemService.addMetadata(c, item, MetadataSchemaEnum.DC.getName(), "description", "bitstreamurl", null, biturl);
 
                     if ( filedesc != null )
