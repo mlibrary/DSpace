@@ -323,14 +323,15 @@ public class BitstreamServiceImpl extends DSpaceObjectServiceImpl<Bitstream> imp
 
             String sequence_id =  Integer.toString(bitstream.getSequenceID());
             String filename =  bitstream.getName();
+            String bit_uuid =  bitstream.getID().toString();
 
-                  EPerson e = context.getCurrentUser();
-                  String userName = e.getFullName();
-                  Date date = new Date();
-           String timestamp = date.toString();
+            EPerson e = context.getCurrentUser();
+            String userName = e.getFullName();
+            Date date = new Date();
+            String timestamp = date.toString();
 
 
-            String biturl = DSpaceServicesFactory.getInstance().getConfigurationService().getProperty("dspace.url")  + "/bitstream/" + handle + "/" + sequence_id + "/" + filename;
+            String biturl = DSpaceServicesFactory.getInstance().getConfigurationService().getProperty("dspace.ui.url")  + "/bitstreams/" + bit_uuid + "/download";
             String msg = biturl + " removed on " + timestamp + " by " + userName;
             itemService.addMetadata(context, item, MetadataSchemaEnum.DC.getName(), "description", "provenance", "en", msg);
 
@@ -348,7 +349,9 @@ public class BitstreamServiceImpl extends DSpaceObjectServiceImpl<Bitstream> imp
                     {
                         sequence_id =  Integer.toString(bits[i].getSequenceID());
                         filename =  bits[i].getName();
-                        biturl = DSpaceServicesFactory.getInstance().getConfigurationService().getProperty("dspace.url")  + "/bitstream/" + handle + "/" + sequence_id + "/" + filename;
+                        bit_uuid =  bits[i].getID().toString();
+
+                        biturl = DSpaceServicesFactory.getInstance().getConfigurationService().getProperty("dspace.ui.url")  + "/bitstreams/" + bit_uuid + "/download";
                         itemService.addMetadata(context, item, MetadataSchemaEnum.DC.getName(), "description", "bitstreamurl", "en", biturl);
 
                     }
