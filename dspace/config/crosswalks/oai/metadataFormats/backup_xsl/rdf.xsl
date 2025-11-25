@@ -12,6 +12,11 @@
 			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 			xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/rdf/ http://www.openarchives.org/OAI/2.0/rdf.xsd">
 			<ow:Publication>
+				<xsl:if test="doc:metadata/doc:element[@name='others']/doc:field[@name='identifier']">
+					<xsl:attribute name="rdf:about">
+						<xsl:value-of select="doc:metadata/doc:element[@name='others']/doc:field[@name='identifier']/text()"></xsl:value-of>
+					</xsl:attribute>
+				</xsl:if>
 				<xsl:for-each select="doc:metadata/doc:element[@name='dc']/doc:element[@name='title']/doc:element/doc:field[@name='value']">
 				<dc:title><xsl:value-of select="." /></dc:title>
 				</xsl:for-each>
@@ -35,6 +40,9 @@
 				</xsl:for-each>
 				<xsl:for-each select="doc:metadata/doc:element[@name='dc']/doc:element[@name='type']/doc:element/doc:field[@name='value']">
 					<dc:type><xsl:value-of select="." /></dc:type>
+				</xsl:for-each>
+				<xsl:for-each select="doc:metadata/doc:element[@name='dc']/doc:element[@name='identifier']/doc:element/doc:element/doc:field[@name='value']">
+					<dc:identifier><xsl:value-of select="." /></dc:identifier>
 				</xsl:for-each>
 				<xsl:for-each select="doc:metadata/doc:element[@name='dc']/doc:element[@name='language']/doc:element/doc:element/doc:field[@name='value']">
 					<dc:language><xsl:value-of select="." /></dc:language>

@@ -8,11 +8,7 @@
     <xsl:template match="/">
         <dim:dim xmlns:dim="http://www.dspace.org/xmlns/dspace/dim" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                  xsi:schemaLocation="http://www.dspace.org/xmlns/dspace/dim http://www.dspace.org/schema/dim.xsd">
-            <xsl:apply-templates select="
-              //doc:field[@name='value' and not(
-                ancestor::doc:element[@name='other' and parent::doc:element[@name='identifier']]
-              )]
-            "/>
+            <xsl:apply-templates select="//doc:field[@name='value']"/>
         </dim:dim>
     </xsl:template>
 
@@ -88,4 +84,5 @@
             <xsl:value-of select="$value"/>
         </dim:field>
     </xsl:template>
+
 </xsl:stylesheet>
