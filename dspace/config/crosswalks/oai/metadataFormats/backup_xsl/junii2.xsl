@@ -154,7 +154,7 @@
                     <xsl:when test="./doc:field">
                         <identifier><xsl:value-of select="./doc:field/text()"/></identifier>
                     </xsl:when>
-                    <xsl:when test="@name !='other' and @name!='issn' and @name!='uri' and @name!='isbn' and @name!='selfdoi' and @name!='ichushi' and @name!='naid' and @name!='ncid' and @name!='doi' and @name!='pmid' and @name!='scpjid' and @name!='grantid'">
+                    <xsl:when test="@name!='issn' and @name!='uri' and @name!='isbn' and @name!='selfdoi' and @name!='ichushi' and @name!='naid' and @name!='ncid' and @name!='doi' and @name!='pmid' and @name!='scpjid' and @name!='grantid'">
                         <identifier><xsl:value-of select="./doc:element/doc:field/text()"/></identifier>
                     </xsl:when>
                 </xsl:choose>
