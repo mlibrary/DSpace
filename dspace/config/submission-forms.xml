@@ -1908,10 +1908,10 @@
                      <dc-element>identifier</dc-element>
                      <dc-qualifier>uniqname</dc-qualifier>
                      <repeatable>true</repeatable>
-                     <label>EmplID or uniqname</label>
+                     <label>Uniqname</label>
                      <input-type>onebox</input-type>
-                     <hint>Student's EmplID (e.g. 1234 5678) or uniqname.  Add additional by clicking + Add more. (* required)</hint>
-                     <required>At least one student EmplID or uniqname is required</required>
+                     <hint>Student's Uniqname.  Add additional by clicking + Add more. (* required)</hint>
+                     <required>At least one students Uniqname is required</required>
                 </field>
             </row>
 

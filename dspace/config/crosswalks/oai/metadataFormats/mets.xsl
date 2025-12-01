@@ -64,6 +64,14 @@
 								</mods:dateIssued>
 							</mods:originInfo>
 							</xsl:for-each>
+							<xsl:for-each select="doc:metadata/doc:element[@name='dc']/doc:element[@name='identifier']/doc:element">
+							<mods:identifier>
+								<xsl:attribute name="type">
+									<xsl:value-of select="@name"></xsl:value-of>
+								</xsl:attribute>
+								<xsl:value-of select="doc:element/doc:field[@name='value']/text()" />
+							</mods:identifier>
+							</xsl:for-each>
 							<xsl:for-each select="doc:metadata/doc:element[@name='dc']/doc:element[@name='description']/doc:element[@name='abstract']/doc:element">
 							<mods:abstract>
 								<xsl:value-of select="doc:field[@name='value']/text()" />
