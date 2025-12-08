@@ -444,7 +444,7 @@
                      <repeatable>true</repeatable>
                      <label>Type</label>
                      <input-type value-pairs-name="common_types">dropdown</input-type>
-                     <hint>Select the type(s) of content of the work.  Add additional by clicking + Add more. (* required)</hint>
+                     <hint>Select the type(s) of content of the work. Datasets can no longer be deposited into Deep Blue Documents. For datasets (such as observations, survey results, simulations, experimental data, etc.), use Deep Blue Data (https://deepblue.lib.umich.edu/data) instead. Add additional by clicking + Add more. (* required)</hint>
                      <required>Type is required</required>
                 </field>
             </row>
@@ -818,7 +818,7 @@
                      <repeatable>true</repeatable>
                      <label>Type</label>
                      <input-type value-pairs-name="common_types">dropdown</input-type>
-                     <hint>Select the type(s) of content of the work.  Add additional by clicking + Add more. (* required)</hint>
+                     <hint>Select the type(s) of content of the work. Datasets can no longer be deposited into Deep Blue Documents. For datasets (such as observations, survey results, simulations, experimental data, etc.), use Deep Blue Data (https://deepblue.lib.umich.edu/data) instead. Add additional by clicking + Add more. (* required)</hint>
                      <required>Type is required</required>
                 </field>
             </row>
@@ -898,7 +898,7 @@
                      <repeatable>true</repeatable>
                      <label>Type</label>
                      <input-type value-pairs-name="common_types">dropdown</input-type>
-                     <hint>Select the type(s) of content of the work.  Add additional by clicking + Add more. (* required)</hint>
+                     <hint>Select the type(s) of content of the work. Datasets can no longer be deposited into Deep Blue Documents. For datasets (such as observations, survey results, simulations, experimental data, etc.), use Deep Blue Data (https://deepblue.lib.umich.edu/data) instead. Add additional by clicking + Add more. (* required)</hint>
                      <required>Type is required</required>
                 </field>
             </row>
@@ -1296,7 +1296,7 @@
                      <repeatable>true</repeatable>
                      <label>Type</label>
                      <input-type value-pairs-name="common_types">dropdown</input-type>
-                     <hint>Select the type(s) of content of the work.  Add additional by clicking + Add more. (* required)</hint>
+                     <hint>Select the type(s) of content of the work. Datasets can no longer be deposited into Deep Blue Documents. For datasets (such as observations, survey results, simulations, experimental data, etc.), use Deep Blue Data (https://deepblue.lib.umich.edu/data) instead. Add additional by clicking + Add more. (* required)</hint>
                      <required>Type is required</required>
                 </field>
             </row>
@@ -1520,7 +1520,7 @@
                      <repeatable>true</repeatable>
                      <label>Type</label>
                      <input-type value-pairs-name="common_types">dropdown</input-type>
-                     <hint>Select the type(s) of content of the work.  Add additional by clicking + Add more. (* required)</hint>
+                     <hint>Select the type(s) of content of the work. Datasets can no longer be deposited into Deep Blue Documents. For datasets (such as observations, survey results, simulations, experimental data, etc.), use Deep Blue Data (https://deepblue.lib.umich.edu/data) instead. Add additional by clicking + Add more. (* required)</hint>
                      <required>Type is required</required>
                 </field>
             </row>
@@ -2490,7 +2490,7 @@
                       <repeatable>true</repeatable>
                       <label>Type</label>
                       <input-type value-pairs-name="common_types">dropdown</input-type>
-                      <hint>Select the type(s) of content of the work.  Add additional by clicking + Add more. (* required)</hint>
+                      <hint>Select the type(s) of content of the work. Datasets can no longer be deposited into Deep Blue Documents. For datasets (such as observations, survey results, simulations, experimental data, etc.), use Deep Blue Data (https://deepblue.lib.umich.edu/data) instead. Add additional by clicking + Add more. (* required)</hint>
                       <required>Type is required</required>
                 </field>
             </row>
@@ -2745,7 +2745,7 @@
                     <repeatable>true</repeatable>
                     <label>Type</label>
                     <input-type value-pairs-name="common_types">dropdown</input-type>
-                    <hint>Select the type(s) of content of the item.</hint>
+                    <hint>Select the type(s) of content of the work. Datasets can no longer be deposited into Deep Blue Documents. For datasets (such as observations, survey results, simulations, experimental data, etc.), use Deep Blue Data (https://deepblue.lib.umich.edu/data) instead. Add additional by clicking + Add more. (* required)</hint>
                     <required></required>
                 </field>
             </row>
