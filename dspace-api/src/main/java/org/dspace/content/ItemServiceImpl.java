@@ -680,9 +680,10 @@ public class ItemServiceImpl extends DSpaceObjectServiceImpl<Item> implements It
 
         addMetadata(context, item, MetadataSchemaEnum.DC.getName(), "description", "provenance", "en", prov.toString());
 
-        log.info("WITH:  the reason is =" + reason);
-
-        addMetadata(context, item, MetadataSchemaEnum.DC.getName(), "description", "withdrawalreason", "en", reason);
+        if (reason != null && !reason.isEmpty()) {
+          log.info("WITH:  the reason is =" + reason);
+          addMetadata(context, item, MetadataSchemaEnum.DC.getName(), "description", "withdrawalreason", "en", reason);
+        }
 
         // To store the filename for display later.
         clearMetadata(context, item, "dc", "description", "filename", Item.ANY);
