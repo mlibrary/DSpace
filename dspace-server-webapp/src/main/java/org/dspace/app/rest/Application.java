@@ -68,6 +68,23 @@ public class Application extends SpringBootServletInitializer {
 
     private static final Logger log = LoggerFactory.getLogger(Application.class);
 
+    /**
+     * Allow running directly from the IDE (e.g. IntelliJ "Run Application") without an external
+     * Tomcat installation. Spring Boot's embedded Tomcat is used automatically.
+     * <p>
+     * The WAR is still deployable to an external Tomcat in production — this main() method is
+     * simply ignored in that deployment path.
+     * <p>
+     * Set VM options in your run config:
+     *   -Ddspace.dir=/path/to/dspace
+     * or configure dspace.dir in dspace/config/local.cfg before running.
+     */
+    public static void main(String[] args) {
+        new SpringApplicationBuilder(Application.class)
+                .initializers(new DSpaceKernelInitializer(), new DSpaceConfigurationInitializer())
+                .run(args);
+    }
+
     @Autowired
     private ApplicationConfig configuration;
 

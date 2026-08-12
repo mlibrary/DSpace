@@ -10,6 +10,8 @@ services:
   # DSpace (backend) webapp container
   dspace:
     container_name: dspace
+    profiles:
+    - backend
     environment:
       # Below syntax may look odd, but it is how to override dspace.cfg settings via env variables.
       # See https://github.com/DSpace/DSpace/blob/main/dspace/config/config-definition.xml
