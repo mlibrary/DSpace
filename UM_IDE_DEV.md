@@ -54,9 +54,16 @@ oai.cache.dir = ${dspace.dir}/var/oai
 
 ## Build
 
-```
+```bash
 mvn clean install -DskipTests
 ```
+
+### Why is this needed?
+DSpace requires a "home" directory (defined by `dspace.dir`) that contains a specific structure of configurations, JARs, and scripts. The Maven build process assembles this structure into `dspace/target/dspace-installer`.
+
+*   **Initial Setup**: You **must** run this command at least once to create the installer directory.
+*   **Java Code Changes**: IntelliJ IDEA handles incremental compilation. After the initial Maven build, you can usually just restart the **Application** in IDEA to see your code changes without running Maven again.
+*   **Configuration Changes**: If you modify `local.cfg` or other files in `dspace/config`, you should run `mvn install` again to ensure the changes are copied into the `dspace-installer` directory.
 
 ## IntelliJ IDEA Setup
 
