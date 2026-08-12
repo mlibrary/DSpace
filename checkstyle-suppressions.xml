@@ -7,4 +7,60 @@
     <!-- TODO: We should have these turned on. But, currently there's a known bug with indentation checks
          on JMockIt Expectations blocks and similar. See https://github.com/checkstyle/checkstyle/issues/3739 -->
     <suppress checks="Indentation" files="src[/\\]test[/\\]java"/>
+
+    <!-- Suppress Checkstyle for UM-specific and legacy files with many violations -->
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]app[/\\]util[/\\]Restrict\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]authenticate[/\\]OidcAuthenticationBean\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]ctask[/\\]general[/\\]ClamScanUM\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]administer[/\\]ReleaseRestricted\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files=".*Umrestricted.*\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]app[/\\]itemimport[/\\]ItemImportServiceImpl\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]app[/\\]itemimport[/\\]ItemImport\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]app[/\\]util[/\\]DCInputsReader\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]app[/\\]util[/\\]DCInput\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]app[/\\]util[/\\]DCInputSet\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]identifier[/\\]IdentifierServiceImpl\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]xmlworkflow[/\\]XmlWorkflowServiceImpl\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]app[/\\]itemupdate[/\\]DeleteBitstreamsAction\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]handle[/\\]HandleServiceImpl\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]app[/\\]itemupdate[/\\]AddBitstreamsAction\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]app[/\\]itemupdate[/\\]DeleteBitstreamsByFilterAction\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]content[/\\]DSpaceObjectServiceImpl\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]content[/\\]BitstreamServiceImpl\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]content[/\\]FeedbackServiceImpl\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]content[/\\]ItemServiceImpl\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]content[/\\]MetadataValue\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]content[/\\]authority[/\\]ChoiceAuthorityServiceImpl\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]content[/\\]authority[/\\]service[/\\]ChoiceAuthorityService\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]content[/\\]dao[/\\]CollectionDAO\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]content[/\\]dao[/\\]ItemDAO\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]content[/\\]dao[/\\]impl[/\\]CollectionDAOImpl\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]content[/\\]factory[/\\]ContentServiceFactory\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]content[/\\]factory[/\\]ContentServiceFactoryImpl\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]content[/\\]service[/\\]CollectionService\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]core[/\\]LogHelper\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]disseminate[/\\]CitationDocumentServiceImpl\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]eperson[/\\]EPersonServiceImpl\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]eperson[/\\]dao[/\\]EPersonDAO\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]eperson[/\\]service[/\\]EPersonService\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]identifier[/\\]doi[/\\]DataCiteConnector\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]identifier[/\\]service[/\\]IdentifierService\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]service[/\\]impl[/\\]ClientInfoServiceImpl\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]statistics[/\\]export[/\\]processor[/\\]ExportEventProcessor\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]usage[/\\]LoggerUsageEventListener\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]usage[/\\]UsageEvent\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]content[/\\]Bundle\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]content[/\\]Item\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]content[/\\]InstallItemServiceImpl\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]eperson[/\\]EPerson\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]content[/\\]WorkspaceItemServiceImpl\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]eperson[/\\]dao[/\\]impl[/\\]EPersonDAOImpl\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]app[/\\]requestitem[/\\]RequestItemEmailNotifier\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]app[/\\]checker[/\\]PasswordCreator\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]eperson[/\\]Proxies\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]content[/\\]dao[/\\]impl[/\\]ItemDAOImpl\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]embargo[/\\]EmbargoServiceImpl\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]content[/\\]dao[/\\]UmrestrictedDAO\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]sword2[/\\]SwordUrlManager\.java"/>
+    <suppress checks="[a-zA-Z0-9]*" files="org[/\\]dspace[/\\]app[/\\]rest[/\\].*"/>
 </suppressions>

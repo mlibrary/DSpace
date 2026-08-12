@@ -133,3 +133,14 @@ You can also target a specific module:
 ```bash
 mvn license:format -pl dspace-api
 ```
+
+### Checkstyle Violations
+If the build fails with Checkstyle violations, it means the code does not follow the project's style guidelines. In this development branch, many custom files are temporarily suppressed in `checkstyle-suppressions.xml`.
+
+**To skip style checks entirely during build:**
+```bash
+mvn clean install -DskipTests -Dcheckstyle.skip=true
+```
+
+### Error Prone Compilation Errors
+If you encounter unhandled exceptions from the Error Prone plugin (common when using Java 17 for building a Java 11 project), Error Prone has been disabled in the root `pom.xml` to ensure compatibility. If you need to re-enable it, you will need to adjust the `maven-compiler-plugin` configuration in `pom.xml`.
