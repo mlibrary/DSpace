@@ -12,6 +12,8 @@ git checkout umich-ide-dev
 
 ### Mise
 
+See [UM_MISE_README.md](UM_MISE_README.md) for details on how `mise` manages Java and Maven versions.
+
 ```
 mise trust
 mise install
