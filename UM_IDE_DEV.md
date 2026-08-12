@@ -119,3 +119,17 @@ To run a single test class:
 ```bash
 mvn test -DskipUnitTests=false -Dtest=org.dspace.app.rest.builder.CollectionBuilderTest -DfailIfNoTests=false
 ```
+
+## Troubleshooting
+
+### License Header Failures
+If the build fails with `com.mycila:license-maven-plugin:3.0:check (check-headers)`, it means some files are missing the required license header.
+
+**To fix this automatically, run:**
+```bash
+mvn license:format
+```
+You can also target a specific module:
+```bash
+mvn license:format -pl dspace-api
+```
