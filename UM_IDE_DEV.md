@@ -90,3 +90,25 @@ Password:
 Again to confirm: 
 Administrator account created
 ```
+
+## Testing
+
+By default, tests are skipped during the build process to save time and avoid infrastructure dependencies.
+
+### Running Unit Tests
+Unit tests do not require the Docker services to be running.
+```bash
+mvn test -DskipUnitTests=false
+```
+
+### Running Integration Tests
+Integration tests require the database and Solr services to be running (via Docker Compose).
+```bash
+mvn install -DskipIntegrationTests=false
+```
+
+### Running Specific Tests
+To run a single test class:
+```bash
+mvn test -DskipUnitTests=false -Dtest=org.dspace.app.rest.builder.CollectionBuilderTest -DfailIfNoTests=false
+```
