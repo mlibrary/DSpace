@@ -74,7 +74,7 @@ DSpace requires a "home" directory (defined by `dspace.dir`) that contains a spe
 1. Open the project in IntelliJ IDEA.
 2. Create a new **Application** run configuration.
 3. **Main class**: `org.dspace.app.rest.Application` (in `dspace-server-webapp` module). See [UM_APP_REST_MAIN.md](UM_APP_REST_MAIN.md) for details.
-4. **VM Options**: `-Ddspace.dir=/Users/gkostin/GitHub/mlibrary/DSpace/dspace/target/dspace-installer`
+4. **VM Options**: `-Ddspace.dir=/Users/gkostin/GitHub/mlibrary/DSpace/dspace/target/dspace-installer -Dserver.servlet.context-path=/server -Djava.net.preferIPv4Stack=true`
 5. **Working directory**: `$PROJECT_DIR$`
 
 ## Sanity Check
