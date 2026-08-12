@@ -82,8 +82,7 @@ curl -i http://localhost:8080/server/api
 
 ## Create Administrator
 ```
-cd dspace/target/dspace-installer/bin
-./dspace create-administrator
+bash dspace/target/dspace-installer/bin/dspace create-administrator
 ```
 
 ```
