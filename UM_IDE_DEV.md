@@ -19,10 +19,11 @@ mise trust
 mise install
 ```
 
-## Build
+## Docker Compose
 
 ```
-mvn clean install -DskipTests
+docker compose build
+docker compose up -d
 ```
 
 ## Create dspace/config/local.cfg
@@ -51,11 +52,10 @@ oai.description.file = ${dspace.dir}/config/crosswalks/oai/oai.cfg
 oai.cache.dir = ${dspace.dir}/var/oai
 ```
 
-## Docker Compose
+## Build
 
 ```
-docker compose build
-docker compose up -d
+mvn clean install -DskipTests
 ```
 
 ## IntelliJ IDEA Setup
