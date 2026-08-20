@@ -40,7 +40,7 @@ db.username = dspace
 db.password = dspace
 db.schema = public
 solr.server = http://localhost:8983/solr
-proxies.trusted.ipranges = 127.0.0.1,0:0:0:0:0:0:0:1,::1
+proxies.trusted.ipranges = 127.0.0.1
 rest.cors.allowed-origins = ${dspace.ui.url}
 filestorage.dir=data
 pubmed.apiKey=PUBMED_API_KEY
@@ -73,9 +73,16 @@ DSpace requires a "home" directory (defined by `dspace.dir`) that contains a spe
 
 1. Open the project in IntelliJ IDEA.
 2. Create a new **Application** run configuration.
-3. **Main class**: `org.dspace.app.rest.Application` (in `dspace-server-webapp` module). See [UM_APP_REST_MAIN.md](UM_APP_REST_MAIN.md) for details.
-4. **VM Options**: `-Ddspace.dir=/Users/gkostin/GitHub/mlibrary/DSpace/dspace/target/dspace-installer -Dserver.servlet.context-path=/server -Djava.net.preferIPv4Stack=true`
-5. **Working directory**: `$PROJECT_DIR$`
+3. In the modify options drop-down, select **Add VM Options**.
+4. **Main class**: `org.dspace.app.rest.Application` (in `dspace-server-webapp` module). See [UM_APP_REST_MAIN.md](UM_APP_REST_MAIN.md) for details.
+5. **VM Options**: `-Ddspace.dir=/Users/gkostin/GitHub/mlibrary/DSpace/dspace/target/dspace-installer -Dserver.servlet.context-path=/server -Djava.net.preferIPv4Stack=true`
+6. **Working directory**: `/Users/gkostin/GitHub/mlibrary/DSpace`
+
+## Process finished with exit code 1
+
+```shell
+/Users/gkostin/GitHub/mlibrary/DSpace/dspace/target/dspace-installer/data/log/dspace.log
+```
 
 ## Sanity Check
 ```
