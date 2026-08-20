@@ -8,23 +8,30 @@ cd DSpace
 git checkout umich-ide-dev
 ```
 
-## Prerequisites
-
-### Mise
-
-See [UM_MISE_README.md](UM_MISE_README.md) for details on how `mise` manages Java and Maven versions.
-
-```
-mise trust
-mise install
-```
-
 ## Docker Compose
 
 ```
 docker compose build
 docker compose up -d
 ```
+
+## Mise
+
+See [UM_MISE_README.md](UM_MISE_README.md) for details on how `mise` manages Java and Maven versions.
+
+```
+cat .mise.toml
+mise trust
+mise install
+```
+
+## Maven
+
+Inside IntelliJ: You can trigger a full sync at any time via: 
+* The Reload All Maven Projects icon (the two circular arrows in the top-left of the Maven tool window). 
+* The shortcut Cmd + Shift + I (macOS) / Ctrl + Shift + O (or Cmd + Shift + A / Ctrl + Shift + A and typing Reload All Maven Projects).
+* This is important because the project may require specific versions that differ from your system defaults.
+
 
 ## Create dspace/config/local.cfg
 
@@ -73,15 +80,30 @@ DSpace requires a "home" directory (defined by `dspace.dir`) that contains a spe
 
 1. Open the project in IntelliJ IDEA.
 2. Create a new **Application** run configuration.
-3. In the modify options drop-down, select **Add VM Options**.
-4. **Main class**: `org.dspace.app.rest.Application` (in `dspace-server-webapp` module). See [UM_APP_REST_MAIN.md](UM_APP_REST_MAIN.md) for details.
-5. **VM Options**: `-Ddspace.dir=/Users/gkostin/GitHub/mlibrary/DSpace/dspace/target/dspace-installer -Dserver.servlet.context-path=/server -Djava.net.preferIPv4Stack=true`
-6. **Working directory**: `/Users/gkostin/GitHub/mlibrary/DSpace`
+3. In the modify options drop-down, select **Add dependencies with "provided" scope to classpath**.
+4. In the modify options drop-down, select **Add VM Options**.
+5. **Main class**: `org.dspace.app.rest.Application` (in `dspace-server-webapp` module). See [UM_APP_REST_MAIN.md](UM_APP_REST_MAIN.md) for details.
+6. **VM Options**: `-Ddspace.dir=/Users/gkostin/GitHub/mlibrary/DSpace/dspace/target/dspace-installer -Dserver.servlet.context-path=/server -Djava.net.preferIPv4Stack=true`
+7. **Working directory**: `/Users/gkostin/GitHub/mlibrary/DSpace`
+8. Apply the changes and save the configuration.
+9. Run the configuration to start the DSpace REST API server.
 
-## Process finished with exit code 1
+### On build failure try ...
+
+* The Reload All Maven Projects icon (the two circular arrows in the top-left of the Maven tool window).
+* The shortcut Cmd + Shift + I (macOS) / Ctrl + Shift + O (or Cmd + Shift + A / Ctrl + Shift + A and typing Reload All Maven Projects).
 
 ```shell
-/Users/gkostin/GitHub/mlibrary/DSpace/dspace/target/dspace-installer/data/log/dspace.log
+mvn clean install -DskipTests
+mvn dependency:resolve
+```
+9. Run the configuration to start the DSpace REST API server.
+
+
+## Tail the dspace.log
+
+```shell
+tail -f /Users/gkostin/GitHub/mlibrary/DSpace/dspace/target/dspace-installer/data/log/dspace.log
 ```
 
 ## Sanity Check
