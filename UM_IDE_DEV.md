@@ -59,6 +59,7 @@ ip.BentleyOnlyIPs = 141.211.1.
 oai.config.dir = ${dspace.dir}/config/crosswalks/oai
 oai.description.file = ${dspace.dir}/config/crosswalks/oai/oai.cfg
 oai.cache.dir = ${dspace.dir}/var/oai
+webui.user.assumelogin = true
 ```
 
 ## Build
