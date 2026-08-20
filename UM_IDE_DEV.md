@@ -111,6 +111,11 @@ tail -f /Users/gkostin/GitHub/mlibrary/DSpace/dspace/target/dspace-installer/dat
 curl -i http://localhost:8080/server/api
 ```
 
+## Migrate the database
+```
+bash dspace/target/dspace-installer/bin/dspace database migrate
+```
+
 ## Create Administrator
 ```
 bash dspace/target/dspace-installer/bin/dspace create-administrator
