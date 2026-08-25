@@ -46,6 +46,8 @@ on:
 jobs:
   del_runs:
     runs-on: ubuntu-latest
+    # Ensure this job only executed for 'mlibrary/DSpace'
+    if: github.repository == 'mlibrary/DSpace'
     steps:
       - name: Delete workflow runs
         uses: Mattraks/delete-workflow-runs@v2.1.0

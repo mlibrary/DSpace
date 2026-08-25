@@ -8,8 +8,8 @@ jobs:
   build:
     name: dspace-express:${{ github.ref_name }}
     runs-on: ubuntu-latest
-    # Ensure this job only executed for 'mlibrary/dspace-containerization'
-    if: github.repository == 'mlibrary/dspace-containerization'
+    # Ensure this job only executed for 'mlibrary/DSpace'
+    if: github.repository == 'mlibrary/DSpace'
     steps:
       - name: Checkout
         uses: actions/checkout@v6.0.2
@@ -29,5 +29,5 @@ jobs:
         with:
           context: .
           push: true
-          tags: 'ghcr.io/mlibrary/dspace-containerization/dspace-express:${{ github.sha }}, ghcr.io/mlibrary/dspace-containerization/dspace-express:${{ github.ref_name }}'
-          file: dspace/express.dockerfile
+          tags: 'ghcr.io/mlibrary/DSpace/dspace-express:${{ github.sha }}, ghcr.io/mlibrary/DSpace/dspace-express:${{ github.ref_name }}'
+          file: express.dockerfile

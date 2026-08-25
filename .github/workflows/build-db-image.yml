@@ -11,14 +11,13 @@ on:
         type: choice
         options:
           - 7.6
-          - 7_x
 
 jobs:
   build:
     name: dspace-db:${{ github.event.inputs.dspace_version }}
     runs-on: ubuntu-latest
-    # Ensure this job only executed for 'mlibrary/dspace-containerization'
-    if: github.repository == 'mlibrary/dspace-containerization'
+    # Ensure this job only executed for 'mlibrary/DSpace'
+    if: github.repository == 'mlibrary/DSpace'
     steps:
       - name: Checkout
         uses: actions/checkout@v6.0.2
@@ -38,7 +37,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: 'ghcr.io/mlibrary/dspace-containerization/dspace-db:${{ github.sha }}, ghcr.io/mlibrary/dspace-containerization/dspace-db:${{ github.event.inputs.dspace_version }}'
-          file: dspace/db.dockerfile
+          tags: 'ghcr.io/mlibrary/DSpace/dspace-db:${{ github.sha }}, ghcr.io/mlibrary/DSpace/dspace-db:${{ github.event.inputs.dspace_version }}'
+          file: db.dockerfile
           build-args: |
             DSPACE_VERSION=${{ github.event.inputs.dspace_version }}
