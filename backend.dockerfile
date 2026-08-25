@@ -1,11 +1,9 @@
-# This Dockerfile uses 7.6 by default
-# To build with 7_x, use "--build-arg DSPACE_VERSION=7_x"
 ARG DSPACE_VERSION=7.6
-
+ARG SOURCE_IMAGE_TAG=umich
 # This Dockerfile uses JDK17 (eclipse-temurin).
 ARG JDK_VERSION=17
 
-FROM dspace-containerization-source AS source
+FROM ghcr.io/mlibrary/dspace-containerization/dspace-source:${SOURCE_IMAGE_TAG} AS source
 
 # Step 1 - Run Maven Build
 FROM dspace/dspace-dependencies:dspace-${DSPACE_VERSION} AS mvn_build
@@ -28,8 +26,8 @@ RUN mvn --no-transfer-progress package -Pdspace-rest && \
   mvn clean
 
 # Step 2 - Run Ant Deploy
-# eclipse-temurin is the official successor to the deprecated openjdk Docker Hub images.
-FROM eclipse-temurin:${JDK_VERSION}-jdk AS ant_build
+FROM eclipse-temurin:${JDK_VERSION} AS ant_build
+#FROM openjdk:${JDK_VERSION}-slim as ant_build
 ARG TARGET_DIR=dspace-installer
 # COPY the /install directory from 'build' container to /dspace-src in this container
 COPY --from=mvn_build /install /dspace-src
@@ -38,8 +36,7 @@ WORKDIR /dspace-src
 ENV ANT_VERSION=1.10.12
 ENV ANT_HOME=/tmp/ant-$ANT_VERSION
 ENV PATH=$ANT_HOME/bin:$PATH
-# Need wget to install ant
-# Download and install 'ant', then remove wget once it is no longer needed
+# Need wget to install ant; download and install ant, then purge wget
 RUN apt-get -o Acquire::Retries=3 update \
     && apt-get -o Acquire::Retries=3 install -y --no-install-recommends wget \
     && mkdir $ANT_HOME \
@@ -67,6 +64,7 @@ RUN apt-get -o Acquire::Retries=3 update \
         liberror-perl \
         libdbd-pg-perl \
         libjson-xs-perl \
+        libjson-perl \
         libemail-sender-perl \
         libemail-mime-perl \
         libemail-stuffer-perl \
@@ -74,7 +72,9 @@ RUN apt-get -o Acquire::Retries=3 update \
         libnet-sftp-foreign-perl \
         libmailtools-perl \
         libtext-csv-perl \
+        libio-pty-perl \
         unzip \
+        zip \
         xsltproc \
         dnsutils \
         emacs \
@@ -103,13 +103,14 @@ COPY ./backend/bin/ $DSPACE_INSTALL/bin/
 
 # Enable the AJP connector in Tomcat's server.xml
 # NOTE: secretRequired="false" should only be used when AJP is NOT accessible from an external network. But, secretRequired="true" isn't supported by mod_proxy_ajp until Apache 2.5
-RUN sed -i '/Service name="Catalina".*/a \\n    <Connector protocol="AJP/1.3" port="8009" address="0.0.0.0" redirectPort="8443" URIEncoding="UTF-8" secretRequired="false" />' $TOMCAT_INSTALL/conf/server.xml
+RUN sed -i '/Service name="Catalina".*/a \\n    <Connector protocol="AJP/1.3" port="8009" address="0.0.0.0" redirectPort="8443" URIEncoding="UTF-8" secretRequired="false" maxHttpRequestHeaderSize="262144" maxHttpHeaderSize="16384" />' $TOMCAT_INSTALL/conf/server.xml
+
+RUN sed -i '/<Valve className="org.apache.catalina.valves.AccessLogValve/,/\/>/d' $TOMCAT_INSTALL/conf/server.xml
+
 # Expose Tomcat port and AJP port
 EXPOSE 8080 8009
-# Give java extra memory (2GB)
-ENV JAVA_OPTS=-Xmx2000m
-# Set up debugging
-ENV CATALINA_OPTS="-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=*:8000"
+# Give java extra memory (minimum 2GB; currently set to 10GB for production workloads)
+ENV JAVA_OPTS=-Xmx10g
 
 # Link the DSpace 'server' webapp into Tomcat's webapps directory.
 # This ensures that when we start Tomcat, it runs from /server path (e.g. http://localhost:8080/server/)

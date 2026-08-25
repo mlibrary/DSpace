@@ -1,4 +1,5 @@
-FROM dspace-containerization-source AS source
+ARG SOURCE_IMAGE_TAG=umich
+FROM ghcr.io/mlibrary/dspace-containerization/dspace-source:${SOURCE_IMAGE_TAG} AS source
 
 FROM solr:8.11-slim
 
