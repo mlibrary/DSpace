@@ -128,5 +128,5 @@ RUN ln -s $DSPACE_INSTALL/webapps/server   /usr/local/tomcat/webapps/server   &&
 
 # Overwrite the v6.x (deprecated) REST API's web.xml, so that we can run it on HTTP (defaults to requiring HTTPS)
 # WARNING: THIS IS OBVIOUSLY INSECURE. NEVER DO THIS IN PRODUCTION.
-COPY --from=source /DSpace/dspace/src/main/docker/test/rest_web.xml $DSPACE_INSTALL/webapps/rest/WEB-INF/web.xml
+COPY ./dspace/src/main/docker/test/rest_web.xml $DSPACE_INSTALL/webapps/rest/WEB-INF/web.xml
 RUN sed -i -e "s|\${dspace.dir}|$DSPACE_INSTALL|" $DSPACE_INSTALL/webapps/rest/WEB-INF/web.xml
