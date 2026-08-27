@@ -1,27 +1,14 @@
 # Step 1 - Run Maven Build
-FROM maven:3.9-eclipse-temurin-17 AS mvn_build
+FROM dspace-dependencies:main AS mvn_build
 ARG TARGET_DIR=dspace-installer
 WORKDIR /app
-# Create the 'dspace' user account & home directory
-RUN useradd dspace \
-    && mkdir -p /home/dspace \
-    && chown -Rv dspace: /home/dspace
-RUN chown -Rv dspace: /app
-# Need git to support buildnumber-maven-plugin, which lets us know what version of DSpace is being run.
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends git \
-    && apt-get purge -y --auto-remove \
-    && rm -rf /var/lib/apt/lists/*
-
+# The dspace-installer directory will be written to /install
+RUN mkdir /install \
+    && chown -Rv dspace: /install \
+    && chown -Rv dspace: /app
+USER dspace
 # Copy the DSpace source code (from local machine) into the workdir (excluding .dockerignore contents)
 ADD --chown=dspace . /app/
-
-# The dspace-installer directory will be written to /install
-RUN mkdir /install && chown -Rv dspace: /install
-
-# Switch to dspace user & run below commands as that user
-USER dspace
-
 # Build DSpace (INCLUDING the optional, deprecated "dspace-rest" webapp)
 # Copy the dspace-installer directory to /install.  Clean up the build to keep the docker image small
 RUN mvn --no-transfer-progress package -Pdspace-rest && \
