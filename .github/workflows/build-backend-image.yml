@@ -29,5 +29,5 @@ jobs:
         with:
           context: .
           push: true
-          tags: 'ghcr.io/mlibrary/DSpace/dspace-backend:${{ github.sha }}, ghcr.io/mlibrary/DSpace/dspace-backend:${{ github.ref_name }}'
+          tags: 'ghcr.io/mlibrary/dspace/dspace-backend:${{ github.sha }}, ghcr.io/mlibrary/dspace/dspace-backend:${{ github.ref_name }}'
           file: backend.dockerfile

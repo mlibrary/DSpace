@@ -29,5 +29,5 @@ jobs:
         with:
           context: .
           push: true
-          tags: 'ghcr.io/mlibrary/DSpace/dspace-solr:${{ github.sha }}, ghcr.io/mlibrary/DSpace/dspace-solr:${{ github.ref_name }}'
+          tags: 'ghcr.io/mlibrary/dspace/dspace-solr:${{ github.sha }}, ghcr.io/mlibrary/dspace/dspace-solr:${{ github.ref_name }}'
           file: solr.dockerfile

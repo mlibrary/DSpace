@@ -29,5 +29,5 @@ jobs:
         with:
           context: .
           push: true
-          tags: 'ghcr.io/mlibrary/DSpace/dspace-express:${{ github.sha }}, ghcr.io/mlibrary/DSpace/dspace-express:${{ github.ref_name }}'
+          tags: 'ghcr.io/mlibrary/dspace/dspace-express:${{ github.sha }}, ghcr.io/mlibrary/dspace/dspace-express:${{ github.ref_name }}'
           file: express.dockerfile
