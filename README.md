@@ -1,130 +1,76 @@
+# [Deep Blue Documents](https://deepblue.lib.umich.edu/) 
+## [DSpace](https://dspace.lyrasis.org/) backend services.
+GitHub Actions [workflows](https://github.com/mlibrary/DSpace/actions) to produce Docker [images](https://github.com/orgs/mlibrary/packages?repo_name=DSpace) of DSpace 7.6 backend services.
 
-# DSpace
+| Dockerfile              | Image | Description                             |
+|-------------------------|-------|-----------------------------------------|
+| dependencies.dockerfile | dspace-dependencies | Dependencies for DSpace backend service |
+| backend.dockerfile      | dspace-backend      | DSpace backend service                  |
+| db.dockerfile           | dspace-db           | PostgreSQL database for DSpace          |
+| solr.dockerfile         | dspace-solr         | Solr search engine for DSpace           |
+| express.dockerfile      | dspace-express      | Express server for Prometheus metrics   |
 
-[![Build Status](https://github.com/DSpace/DSpace/workflows/Build/badge.svg)](https://github.com/DSpace/DSpace/actions?query=workflow%3ABuild)
+## Building and running locally
+The `compose.yml` file is configured for local development and testing (`docker-compose.yml` is the upstream DSpace docker compose file).
+```shell
+docker compose up -d
+```
+### With optional Prometheus metrics service
 
-[DSpace Documentation](https://wiki.lyrasis.org/display/DSDOC/) |
-[DSpace Releases](https://github.com/DSpace/DSpace/releases) |
-[DSpace Wiki](https://wiki.lyrasis.org/display/DSPACE/Home) |
-[Support](https://wiki.lyrasis.org/display/DSPACE/Support)
+```shell
+docker compose --profile optional up -d
+```
 
-## Overview
+### Service URLs
+| URL                                     | Container | Comments                                     |
+|-----------------------------------------|-----------|----------------------------------------------|
+| jdbc:postgresql://localhost:5432/dspace | db        | PostgreSQL  (user: dspace, password: dspace) |
+| http://localhost:8080/server            | backend   | Server API                                   |
+| http://localhost:8983/solr              | solr      | Solr GUI                                     |
+| http://localhost:3000/metrics           | express   | Prometheus metrics endpoint (optional)       |
 
-DSpace open source software is a turnkey repository application used by more than
-2,000 organizations and institutions worldwide to provide durable access to digital resources.
-For more information, visit http://www.dspace.org/
+### Notes
+- The backend container exposes port **8000** (JDWP remote debugger — root `backend.dockerfile` for local dev only) and port **8009** (AJP connector). Neither is mapped in `docker-compose.yml` by default. Add a port mapping to `docker-compose.yml` if you need to attach a remote debugger locally.
+- The `backend` service uses `depends_on` with `condition: service_healthy` for `db` and `solr`, and the `frontend` service waits for `backend` to be healthy, ensuring correct startup ordering without manual delays.
+- **Backend configuration** is supplied entirely via `environment:` variables in `docker-compose.yml` (mirroring the Kubernetes ConfigMap pattern used in production). Key local-dev overrides: `plugin__P__sequence__P__org__P__dspace__P__authenticate__P__AuthenticationMethod` disables OIDC and enables password auth; `ip__P__bioIPsRange1` / `ip__P__bioIPsRange2` are set to non-routable CIDR placeholders (`192.0.2.0/24`) so that `OidcAuthenticationBean` — which calls `String.split()` on those properties unconditionally at startup — does not throw a `NullPointerException` on every `/server/api` request. In production/staging, real IP ranges and all other settings come from the Kubernetes ConfigMap.
 
-DSpace consists of both a Java-based backend and an Angular-based frontend.
+## Integration Testing
 
-* Backend (this codebase) provides a REST API, along with other machine-based interfaces (e.g. OAI-PMH, SWORD, etc)
-    * The REST Contract is at https://github.com/DSpace/RestContract
-* Frontend (https://github.com/DSpace/dspace-angular/) is the User Interface built on the REST API
+A shell-based smoke test suite lives in [`tests/`](tests/). It requires only `bash` and `curl`.
 
-Prior versions of DSpace (v6.x and below) used two different UIs (XMLUI and JSPUI). Those UIs are no longer supported in v7 (and above).
-* A maintenance branch for older versions is still available, see `dspace-6_x` for 6.x maintenance.
+### Quick run (stack already up)
+```shell
+bash tests/smoke.sh
+```
 
-## Downloads
+### Full run (start → wait → test)
+```shell
+make test
+```
+This is equivalent to:
+```shell
+make up                     # docker compose up -d
+bash tests/wait-for-stack.sh  # poll until backend/solr/frontend are ready
+bash tests/smoke.sh           # run all assertions
+```
 
-* Backend (REST API): https://github.com/DSpace/DSpace/releases
-* Frontend (User Interface): https://github.com/DSpace/dspace-angular/releases
+### What is tested
 
-## Documentation / Installation
+| Layer            | Endpoint                           | Assertion                                                                  |
+|------------------|------------------------------------|----------------------------------------------------------------------------|
+| Backend REST API | `GET /server/api`                  | HTTP 200, HAL `_links` present                                             |
+| Backend REST API | `GET /server/api`                  | `dspaceVersion` and `dspaceServer` fields present                          |
+| Backend REST API | `GET /server/api/core/communities` | HTTP 200                                                                   |
+| Backend REST API | `GET /server/api/core/collections` | HTTP 200                                                                   |
+| Backend REST API | `GET /server/api/authn/status`     | HTTP 200, `"authenticated":false`                                          |
+| Backend Actuator | `GET /server/actuator/health`      | `"status":"UP"` or `"UP_WITH_ISSUES"`                                      |
+| Solr             | `GET /solr/admin/info/system`      | HTTP 200, version info present                                             |
+| Solr             | `GET /solr/admin/cores`            | All four DSpace cores present (`authority`, `oai`, `search`, `statistics`) |
+| Solr             | `GET /solr/search/admin/ping`      | HTTP 200                                                                   |
+| Frontend         | `GET /`                            | HTTP 200, no `ng-error` boundary                                           |
+| Frontend (SSR)   | `GET /communities/`                | HTTP 200, `ds-root` element present, `DSpace` title present                |
 
-Documentation for each release may be viewed online or downloaded via our [Documentation Wiki](https://wiki.lyrasis.org/display/DSDOC/).
-
-The latest DSpace Installation instructions are available at:
-https://wiki.lyrasis.org/display/DSDOC7x/Installing+DSpace
-
-Please be aware that, as a Java web application, DSpace requires a database (PostgreSQL)
-and a servlet container (usually Tomcat) in order to function.
-More information about these and all other prerequisites can be found in the Installation instructions above.
-
-## Running DSpace 7 in Docker
-
-NOTE: At this time, we do not have production-ready Docker images for DSpace.
-That said, we do have quick-start Docker Compose scripts for development or testing purposes.
-
-See [Running DSpace 7 with Docker Compose](dspace/src/main/docker-compose/README.md)
-
-## Contributing
-
-See [Contributing documentation](CONTRIBUTING.md)
-
-## Getting Help
-
-DSpace provides public mailing lists where you can post questions or raise topics for discussion.
-We welcome everyone to participate in these lists:
-
-* [dspace-community@googlegroups.com](https://groups.google.com/d/forum/dspace-community) : General discussion about DSpace platform, announcements, sharing of best practices
-* [dspace-tech@googlegroups.com](https://groups.google.com/d/forum/dspace-tech) : Technical support mailing list. See also our guide for [How to troubleshoot an error](https://wiki.lyrasis.org/display/DSPACE/Troubleshoot+an+error).
-* [dspace-devel@googlegroups.com](https://groups.google.com/d/forum/dspace-devel) : Developers / Development mailing list
-
-Great Q&A is also available under the [DSpace tag on Stackoverflow](http://stackoverflow.com/questions/tagged/dspace)
-
-Additional support options are at https://wiki.lyrasis.org/display/DSPACE/Support
-
-DSpace also has an active service provider network. If you'd rather hire a service provider to
-install, upgrade, customize or host DSpace, then we recommend getting in touch with one of our
-[Registered Service Providers](http://www.dspace.org/service-providers).
-
-## Issue Tracker
-
-DSpace uses GitHub to track issues:
-* Backend (REST API) issues: https://github.com/DSpace/DSpace/issues
-* Frontend (User Interface) issues: https://github.com/DSpace/dspace-angular/issues
-
-## Testing
-
-### Running Tests
-
-By default, in DSpace, Unit Tests and Integration Tests are disabled. However, they are
-run automatically by [GitHub Actions](https://github.com/DSpace/DSpace/actions?query=workflow%3ABuild) for all Pull Requests and code commits.
-
-* How to run both Unit Tests (via `maven-surefire-plugin`) and Integration Tests (via `maven-failsafe-plugin`):
-  ```
-  mvn install -DskipUnitTests=false -DskipIntegrationTests=false
-  ```
-* How to run _only_ Unit Tests:
-  ```
-  mvn test -DskipUnitTests=false
-  ```
-* How to run a *single* Unit Test
-  ```
-  # Run all tests in a specific test class
-  # NOTE: failIfNoTests=false is required to skip tests in other modules
-  mvn test -DskipUnitTests=false -Dtest=[full.package.testClassName] -DfailIfNoTests=false
-
-  # Run one test method in a specific test class
-  mvn test -DskipUnitTests=false -Dtest=[full.package.testClassName]#[testMethodName] -DfailIfNoTests=false
-  ```
-* How to run _only_ Integration Tests
-  ```
-  mvn install -DskipIntegrationTests=false
-  ```
-* How to run a *single* Integration Test
-  ```
-  # Run all integration tests in a specific test class
-  # NOTE: failIfNoTests=false is required to skip tests in other modules
-  mvn install -DskipIntegrationTests=false -Dit.test=[full.package.testClassName] -DfailIfNoTests=false
-
-  # Run one test method in a specific test class
-  mvn install -DskipIntegrationTests=false -Dit.test=[full.package.testClassName]#[testMethodName] -DfailIfNoTests=false
-  ```
-* How to run only tests of a specific DSpace module
-  ```
-  # Before you can run only one module's tests, other modules may need installing into your ~/.m2
-  cd [dspace-src]
-  mvn clean install
-
-  # Then, move into a module subdirectory, and run the test command
-  cd [dspace-src]/dspace-server-webapp
-  # Choose your test command from the lists above
-  ```
-
-## License
-
-DSpace source code is freely available under a standard [BSD 3-Clause license](https://opensource.org/licenses/BSD-3-Clause).
-The full license is available in the [LICENSE](LICENSE) file or online at http://www.dspace.org/license/
-
-DSpace uses third-party libraries which may be distributed under different licenses. Those licenses are listed
-in the [LICENSES_THIRD_PARTY](LICENSES_THIRD_PARTY) file.
+### CI (GitHub Actions)
+The workflow [`.github/workflows/ci.yml`](.github/workflows/ci.yml) is the primary CI workflow. It runs automatically on:
+- **Direct pushes to `main`** — validates the branch after a merge.
+- **Pull requests targeting `main`** — validates every push to a PR branch before it lands.

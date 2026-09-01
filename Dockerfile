@@ -5,11 +5,10 @@
 
 # This Dockerfile uses JDK11 by default, but has also been tested with JDK17.
 # To build with JDK17, use "--build-arg JDK_VERSION=17"
-ARG JDK_VERSION=17
+ARG JDK_VERSION=11
 
 # Step 1 - Run Maven Build
-#FROM dspace/dspace-dependencies:dspace-7_x as build
-FROM dspace/dspace-dependencies:dspace-7.6 as build
+FROM dspace/dspace-dependencies:dspace-7_x as build
 ARG TARGET_DIR=dspace-installer
 WORKDIR /app
 # The dspace-installer directory will be written to /install
@@ -26,7 +25,7 @@ RUN mvn --no-transfer-progress package && \
   mvn clean
 
 # Step 2 - Run Ant Deploy
-FROM eclipse-temurin:${JDK_VERSION} as ant_build
+FROM openjdk:${JDK_VERSION}-slim as ant_build
 ARG TARGET_DIR=dspace-installer
 # COPY the /install directory from 'build' container to /dspace-src in this container
 COPY --from=build /install /dspace-src
