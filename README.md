@@ -1,4 +1,5 @@
 # [Deep Blue Documents](https://deepblue.lib.umich.edu/) 
+See also: [https://github.com/mlibrary/dspace-angular](https://github.com/mlibrary/dspace-angular) and [https://github.com/mlibrary/deepblue-documents-kube](https://github.com/mlibrary/deepblue-documents-kube) (private)
 ## [DSpace](https://dspace.lyrasis.org/) backend services.
 GitHub Actions [workflows](https://github.com/mlibrary/DSpace/actions) to produce Docker [images](https://github.com/orgs/mlibrary/packages?repo_name=DSpace) of DSpace 7.6 backend services.
 
