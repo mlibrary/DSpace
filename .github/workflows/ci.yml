@@ -31,9 +31,9 @@ on:
 jobs:
   smoke-test:
     name: Smoke tests – DSpace ${{ github.ref_name }}
-    runs-on: ubuntu-latest
-    # Only run for the canonical repository; avoids wasting runner minutes on forks.
+    # Ensure this job only executed for 'mlibrary/DSpace'
     if: github.repository == 'mlibrary/DSpace'
+    runs-on: ubuntu-latest
 
 #    env:
 #      BACKEND_URL:    http://localhost:8080
@@ -61,7 +61,7 @@ jobs:
 
       # ── Start ──────────────────────────────────────────────────────────────
       - name: Start core services
-        run: docker compose -f compose.yml up -dq
+        run: docker compose -f compose.yml up -d
 
       # ── Wait ───────────────────────────────────────────────────────────────
       - name: Wait for stack to be ready

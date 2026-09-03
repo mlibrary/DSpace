@@ -7,9 +7,9 @@ on:
 jobs:
   build:
     name: dspace-db:${{ github.ref_name }}
-    runs-on: ubuntu-latest
     # Ensure this job only executed for 'mlibrary/DSpace'
     if: github.repository == 'mlibrary/DSpace'
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v6.0.2
