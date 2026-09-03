@@ -53,7 +53,7 @@ jobs:
       # and will otherwise fail with "pull access denied".
       - name: Build dependencies image
         run: |
-          docker build -f dependencies.dockerfile -t dspace-dependencies .
+          docker build -f dependencies.dockerfile -t dspace-dependencies:${{ github.ref_name }} .
 
       - name: Build compose service images
         run: |
