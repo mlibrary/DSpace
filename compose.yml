@@ -1,5 +1,29 @@
 ---
 services:
+  frontend:
+    image: ghcr.io/mlibrary/dspace-angular/dspace-frontend:main
+    depends_on:
+      backend:
+        condition: service_healthy
+    environment:
+      # HOST controls the Node.js SSR server bind address.
+      # Must be 0.0.0.0 so Docker port-mapping (4000:4000) works from the host.
+      HOST: '0.0.0.0'
+      DSPACE_UI_SSL: 'false'
+      DSPACE_UI_HOST: ${DSPACE_UI_HOST:-0.0.0.0}
+      DSPACE_UI_PORT: '4000'
+      DSPACE_UI_NAMESPACE: /
+      DSPACE_REST_SSL: 'false'
+      DSPACE_REST_HOST: ${DSPACE_REST_HOST:-backend}
+      DSPACE_REST_PORT: 8080
+      DSPACE_REST_NAMESPACE: /server
+      NODE_OPTIONS: "--max-old-space-size=4096"
+    ports:
+      - "4000:4000"
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+
   backend:
     depends_on:
       db:
@@ -90,15 +114,13 @@ services:
       - "init-var-solr; precreate-core authority /opt/solr/server/solr/configsets/authority; cp -r -u /opt/solr/server/solr/configsets/authority/* authority; precreate-core oai /opt/solr/server/solr/configsets/oai; cp -r -u /opt/solr/server/solr/configsets/oai/* oai; precreate-core search /opt/solr/server/solr/configsets/search; cp -r -u /opt/solr/server/solr/configsets/search/* search; precreate-core statistics /opt/solr/server/solr/configsets/statistics; cp -r -u /opt/solr/server/solr/configsets/statistics/* statistics; exec solr start -f -V -p 8983"
     restart: unless-stopped
 
-  # Optional Express metrics service – exposes Prometheus metrics on :3000
+  # Express metrics service – exposes Prometheus metrics on :3000
   express:
     build:
       dockerfile: express.dockerfile
       context: .
     ports:
       - "3000:3000"
-    profiles:
-      - optional
 
 volumes:
 
