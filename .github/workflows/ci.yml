@@ -47,15 +47,13 @@ jobs:
 
 
       # ── Build ──────────────────────────────────────────────────────────────
-      # The source image MUST be built before `docker compose build` because
-      # backend/solr/frontend dockerfiles reference `dspace-containerization-source`
-      # with a FROM instruction.  Docker cannot pull this local-only image from
-      # Docker Hub and will otherwise fail with "pull access denied".
-#      - name: Build shared source image
-#        run: |
-#          docker build -t dspace-containerization-source \
-#            --build-arg GITHUB_BRANCH=${SOURCE_BRANCH} \
-#            .
+      # The dependencies image MUST be built before `docker compose build` because
+      # it is referenced by the backend dockerfile with a FROM instruction.
+      # Docker cannot pull this local-only image from Docker Hub
+      # and will otherwise fail with "pull access denied".
+      - name: Build dependencies image
+        run: |
+          docker build -t dspace-dependencies .
 
       - name: Build compose service images
         run: |
