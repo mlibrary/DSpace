@@ -13,6 +13,9 @@ GitHub Actions [workflows](https://github.com/mlibrary/DSpace/actions) to produc
 | express.dockerfile      | dspace-express      | Express server for Prometheus metrics         |
 * The frontend image is built from the [mlibrary/dspace-angular](https://github.com/mlibrary/dspace-angular) repository.
 ## Building and running locally
+```shell
+docker build -f dependencies.dockerfile -t dspace-dependencies:main .
+```
 The `compose.yml` file is configured for local development and testing (`docker-compose.yml` is the upstream DSpace docker compose file).
 ```shell
 docker compose up -d
