@@ -1,5 +1,5 @@
 # Step 1 - Run Maven Build
-FROM dspace-dependencies:main AS mvn_build
+FROM ghcr.io/mlibrary/dspace/dspace-dependencies:main AS mvn_build
 ARG TARGET_DIR=dspace-installer
 WORKDIR /app
 # The dspace-installer directory will be written to /install
