@@ -31,3 +31,5 @@ jobs:
           push: true
           tags: 'ghcr.io/mlibrary/dspace/dspace-backend:${{ github.sha }}, ghcr.io/mlibrary/dspace/dspace-backend:${{ github.ref_name }}'
           file: backend.dockerfile
+          build-args: |
+            DEPENDENCIES_IMAGE=ghcr.io/mlibrary/dspace/dspace-dependencies:${{ github.ref_name }}

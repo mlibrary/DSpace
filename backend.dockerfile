@@ -1,5 +1,8 @@
+# Global build argument to parameterize the base dependencies image
+ARG DEPENDENCIES_IMAGE=dspace-dependencies:latest
+
 # Step 1 - Run Maven Build
-FROM ghcr.io/mlibrary/dspace/dspace-dependencies:main AS mvn_build
+FROM ${DEPENDENCIES_IMAGE} AS mvn_build
 ARG TARGET_DIR=dspace-installer
 WORKDIR /app
 # The dspace-installer directory will be written to /install
