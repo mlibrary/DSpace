@@ -1,8 +1,10 @@
 # Deep Blue Documents Backend Services
 
-[Deep Blue Documents](https://deepblue.lib.umich.edu/) is the University of Michigan's open access repository for research and scholarship. This repository contains the backend services that power Deep Blue Documents, including the DSpace backend service, PostgreSQL database, Solr search engine, and Express metrics endpoint.
+[Deep Blue Documents](https://deepblue.lib.umich.edu/) is the University of Michigan's institutional repository for scholarly works.
 
-The Angular frontend for Deep Blue Documents is built and deployed from the [mlibrary/dspace-angular](https://github.com/mlibrary/dspace-angular).
+This repository contains the backend services: DSpace backend service, PostgreSQL database, Solr search engine, and Express metrics endpoint.
+
+The frontend service is in the [mlibrary/dspace-angular](https://github.com/mlibrary/dspace-angular) repository.
 
 ## Workflows to build GitHub Packages
 
@@ -33,7 +35,7 @@ Then the database migrations can be applied to the local database.
 docker compose exec backend /dspace/bin/dspace database migrate
 ```
 
-### Service URLs
+### Services Endpoints
 | URL                                     | Container | Comments                                                                     |
 |-----------------------------------------|-----------|------------------------------------------------------------------------------|
 | http://localhost:8080/server        | backend   | The HAL Browser                                                                   |
