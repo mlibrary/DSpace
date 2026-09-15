@@ -12,8 +12,23 @@
 
 const express = require('express');
 const client = require('prom-client');
+const cors = require('cors');
 
 const app = express();
+
+const allowedOrigins = process.env.CORS_ALLOWED_ORIGINS
+  ? process.env.CORS_ALLOWED_ORIGINS.split(',').map((origin) => origin.trim())
+  : '*';
+
+app.use(
+  cors({
+    origin: allowedOrigins,
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 
 // Create a registry for Prometheus metrics

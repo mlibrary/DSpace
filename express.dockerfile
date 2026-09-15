@@ -11,6 +11,7 @@ COPY ./express/index.js /express/index.js
 
 RUN npm install express
 RUN npm install prom-client
+RUN npm install cors
 
 # Exposing server port
 EXPOSE 3000

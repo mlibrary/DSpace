@@ -1,4 +1,8 @@
 ---
+networks:
+  dspace-net:
+    external: true
+
 services:
   backend:
     depends_on:
@@ -21,18 +25,54 @@ services:
       # HAL root links use the same hostname Angular is configured with.  A mismatch causes
       # Angular SSR's URL normalizer to recurse infinitely (Maximum call stack size exceeded).
       # Each "." in the property key is represented by "__P__" in the env var name.
-      - dspace__P__server__P__url=http://backend:8080/server
+      - dspace__P__server__P__url=http://localhost:8080/server
       # dspace.ui.url is used by the backend to generate frontend links (e.g. e-mail alerts).
       - dspace__P__ui__P__url=http://localhost:4000
       # Disable OIDC authentication for local dev; use password auth only.
       # In production/staging this is set via the external Kubernetes ConfigMap.
       - plugin__P__sequence__P__org__P__dspace__P__authenticate__P__AuthenticationMethod=org.dspace.authenticate.PasswordAuthentication
+      # Enable Both Password and OIDC Authentication To allow users to log in with either institutional SSO or local administrator passwords
+#      - plugin__P__sequence__P__org__P__dspace__P__authenticate__P__AuthenticationMethod=org.dspace.authenticate.PasswordAuthentication, org.dspace.authenticate.OidcAuthentication
+      # Enable OIDC authentication for local dev; use institutional SSO only.
+#      - plugin__P__sequence__P__org__P__dspace__P__authenticate__P__AuthenticationMethod=org.dspace.authenticate.OidcAuthentication
+      # OIDC Identity Provider Configuration
+      - authentication__D__oidc__P__auth-server-url=https://weblogin.lib.umich.edu
+      - authentication__D__oidc__P__client-id=your-client-id
+      - authentication__D__oidc__P__client-secret=your-client-secret
+      - authentication__D__oidc__P__redirect-url=http://localhost:8080/server/api/authn/oidc
+      - authentication__D__oidc__P__authorize-endpoint=https://weblogin.lib.umich.edu/auth
+      - authentication__D__oidc__P__token-endpoint=https://weblogin.lib.umich.edu/token
+      - authentication__D__oidc__P__user-info-endpoint=https://weblogin.lib.umich.edu/userinfo
+      - authentication__D__oidc__P__scopes=openid email profile
+      - authentication__D__oidc__P__can-self-register=true
+      # User Info Attribute Mapping
+      - authentication__D__oidc__P__user-info__P__email=email
+      - authentication__D__oidc__P__user-info__P__first-name=given_name
+      - authentication__D__oidc__P__user-info__P__last-name=family_name
       # OidcAuthenticationBean is instantiated by Spring even when removed from the plugin
       # sequence above.  It calls String.split() on ip.bioIPsRange1/2 unconditionally, so
       # provide harmless non-routable CIDR placeholders to prevent NullPointerException.
       # In production/staging real IP ranges are supplied via the Kubernetes ConfigMap.
       - ip__P__bioIPsRange1=192.0.2.0/24
       - ip__P__bioIPsRange2=192.0.2.0/24
+#      - ip__P__umIP=141.211.|35.2.
+#      - ip__P__umIPsRange1=141.211.0.0|141.211.255.255
+#      - ip__P__umIPsRange2=35.2.0.0|35.2.255.255
+#      - ip__P__BentleyOnlyIPs=141.211.1.
+      # Example: specify start and end of the IP range
+#      - ip__P__BentleyOnlyIPs=141.211.1.0|141.211.1.255
+#      - pubmed__P__apiKey=PUBMED_API_KEY
+#      - api__P__user__P__key=ALMA_API_KEY
+      # proxies.trusted.ipranges: This setting is required for a REST API running in Docker to trust requests
+      # from the host machine. This IP range MUST correspond to the 'dspace-net' subnet:
+      #   docker network inspect dspace-net --format '{{(index .IPAM.Config 0).Subnet}}'
+      - proxies__P__trusted__P__ipranges=172.18.0.0/16
+      - dspace__P__rest__P__cors__P__allowedOrigins=http://localhost:4000,http://localhost:8080
+      # Ensure Authorization and DSPACE-XSRF-TOKEN are in exposed headers
+      - dspace__P__rest__P__cors__P__exposedHeaders=Authorization,DSPACE-XSRF-TOKEN,Location,WWW-Authenticate
+      - dspace__P__jwt__P__response__P__header__P__samesite=Lax
+      - dspace__P__jwt__P__response__P__header__P__secure=false
+
     ports:
       - "8080:8080"
     volumes:
@@ -48,6 +88,9 @@ services:
       retries: 24
       start_period: 120s
     restart: unless-stopped
+    networks:
+      - dspace-net
+      - default
 
   db:
     build:
@@ -97,6 +140,8 @@ services:
     build:
       dockerfile: express.dockerfile
       context: .
+    environment:
+      - CORS_ALLOWED_ORIGINS=http://localhost:4000
     ports:
       - "3000:3000"
     healthcheck:
@@ -113,5 +158,3 @@ volumes:
   db-data:
   solr-data:
 
-networks:
-  default:
