@@ -2,7 +2,7 @@
 
 [Deep Blue Documents](https://deepblue.lib.umich.edu/documents) is the University of Michigan's institutional repository for scholarly works.
 
-This repository contains the backend services: DSpace backend service, PostgreSQL database, Solr search engine, and Express metrics endpoint.
+This repository contains the backend services: DSpace backend service, PostgreSQL database, Solr search engine, and Express metrics-service.
 
 The frontend service is in the [mlibrary/dspace-angular](https://github.com/mlibrary/dspace-angular) repository.
 
@@ -58,7 +58,7 @@ gkostin@m-hwf73k3946 DSpace %
 ```
 Then you may log in to the backend service using the HAL Browser at http://localhost:8080/server.
 
-Or use the frontend service at http://localhost:4000/documents (see [mlibrary/dspace-angular](https://github.com/mlibrary/dspace-angular)#[Local Production Sandbox](https://github.com/mlibrary/dspace-angular#local-production-sandbox)).
+Or the frontend service at http://localhost:4000/login (see [mlibrary/dspace-angular](https://github.com/mlibrary/dspace-angular)#[Local Production Sandbox](https://github.com/mlibrary/dspace-angular#local-production-sandbox)).
 ### Services Endpoints
 | URL                                     | Container | Comments                                                                     |
 |-----------------------------------------|-----------|------------------------------------------------------------------------------|
