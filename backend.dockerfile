@@ -95,7 +95,14 @@ COPY ./backend/bin/ $DSPACE_INSTALL/bin/
 
 # Enable the AJP connector in Tomcat's server.xml
 # NOTE: secretRequired="false" should only be used when AJP is NOT accessible from an external network. But, secretRequired="true" isn't supported by mod_proxy_ajp until Apache 2.5
-RUN sed -i '/Service name="Catalina".*/a \\n    <Connector protocol="AJP/1.3" port="8009" address="0.0.0.0" redirectPort="8443" URIEncoding="UTF-8" secretRequired="false" maxHttpRequestHeaderSize="262144" maxHttpHeaderSize="16384" />' $TOMCAT_INSTALL/conf/server.xml
+RUN sed -i '/Service name="Catalina".*/a \\n    <Connector protocol="AJP/1.3" port="8009" address="0.0.0.0" redirectPort="8443" URIEncoding="UTF-8" secretRequired="false" />' $TOMCAT_INSTALL/conf/server.xml
+
+# Enable the AJP connector with increased packet size
+# RUN sed -i '/Service name="Catalina".*/a \\n    <Connector protocol="AJP/1.3" port="8009" address="0.0.0.0" redirectPort="8443" URIEncoding="UTF-8" secretRequired="false" packetSize="65536" />' $TOMCAT_INSTALL/conf/server.xml
+
+# Increase maxHttpHeaderSize on the default HTTP connector
+# RUN sed -i 's/<Connector port="8080" protocol="HTTP\/1.1"/<Connector port="8080" protocol="HTTP\/1.1" maxHttpHeaderSize="65536"/' $TOMCAT_INSTALL/conf/server.xml
+
 
 RUN sed -i '/<Valve className="org.apache.catalina.valves.AccessLogValve/,/\/>/d' $TOMCAT_INSTALL/conf/server.xml
 

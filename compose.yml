@@ -1,8 +1,4 @@
 ---
-networks:
-  dspace-net:
-    external: true
-
 services:
   backend:
     depends_on:
@@ -17,9 +13,10 @@ services:
       context: .
     environment:
       - dspace__P__dir=/dspace
-      - dspace__P__name=DSpace Demo
+      - dspace__P__name=DSpace Local Production
       - db__P__url=jdbc:postgresql://db:5432/dspace
       - solr__P__server=http://solr:8983/solr
+      # This needs an explanation: TODO: Why is this needed?  Why not just use the default value of /dspace/assetstore?
       - filestorage__P__dir=/dspace
       # dspace.server.url MUST match the Angular DSPACE_REST_HOST:PORT/NAMESPACE so that
       # HAL root links use the same hostname Angular is configured with.  A mismatch causes
@@ -29,50 +26,53 @@ services:
       # dspace.ui.url is used by the backend to generate frontend links (e.g. e-mail alerts).
       - dspace__P__ui__P__url=http://localhost:4000
       # Disable OIDC authentication for local dev; use password auth only.
-      # In production/staging this is set via the external Kubernetes ConfigMap.
+      # NOTE: Setting the frontend environment variable DSPACE_AUTH_SHOWPASSWORDLOGIN: 'true' is required to show the password login form in the Angular UI.
       - plugin__P__sequence__P__org__P__dspace__P__authenticate__P__AuthenticationMethod=org.dspace.authenticate.PasswordAuthentication
-      # Enable Both Password and OIDC Authentication To allow users to log in with either institutional SSO or local administrator passwords
-#      - plugin__P__sequence__P__org__P__dspace__P__authenticate__P__AuthenticationMethod=org.dspace.authenticate.PasswordAuthentication, org.dspace.authenticate.OidcAuthentication
       # Enable OIDC authentication for local dev; use institutional SSO only.
+      # NOTE: NOT setting the frontend environment variable DSPACE_AUTH_SHOWPASSWORDLOGIN: 'true' is required to show the OIDC login form in the Angular UI.
 #      - plugin__P__sequence__P__org__P__dspace__P__authenticate__P__AuthenticationMethod=org.dspace.authenticate.OidcAuthentication
+      # NOTE: See config/modules/authentication-oidc.cfg for authentication-oidc.client-id = dspace-7-testing settings
       # OIDC Identity Provider Configuration
-      - authentication__D__oidc__P__auth-server-url=https://weblogin.lib.umich.edu
-      - authentication__D__oidc__P__client-id=your-client-id
-      - authentication__D__oidc__P__client-secret=your-client-secret
-      - authentication__D__oidc__P__redirect-url=http://localhost:8080/server/api/authn/oidc
-      - authentication__D__oidc__P__authorize-endpoint=https://weblogin.lib.umich.edu/auth
-      - authentication__D__oidc__P__token-endpoint=https://weblogin.lib.umich.edu/token
-      - authentication__D__oidc__P__user-info-endpoint=https://weblogin.lib.umich.edu/userinfo
-      - authentication__D__oidc__P__scopes=openid email profile
-      - authentication__D__oidc__P__can-self-register=true
+#      - authentication__D__oidc__P__auth-server-url=https://weblogin.lib.umich.edu
+#      - authentication__D__oidc__P__client-id=your-client-id
+#      - authentication__D__oidc__P__client-secret=your-client-secret
+#      - authentication__D__oidc__P__redirect-url=http://localhost:8080/server/api/authn/oidc
+#      - authentication__D__oidc__P__authorize-endpoint=https://weblogin.lib.umich.edu/auth
+#      - authentication__D__oidc__P__token-endpoint=https://weblogin.lib.umich.edu/token
+#      - authentication__D__oidc__P__user-info-endpoint=https://weblogin.lib.umich.edu/userinfo
+#      - authentication__D__oidc__P__scopes=openid email profile
+#      - authentication__D__oidc__P__can-self-register=true
       # User Info Attribute Mapping
-      - authentication__D__oidc__P__user-info__P__email=email
-      - authentication__D__oidc__P__user-info__P__first-name=given_name
-      - authentication__D__oidc__P__user-info__P__last-name=family_name
+#      - authentication__D__oidc__P__user-info__P__email=email
+#      - authentication__D__oidc__P__user-info__P__first-name=given_name
+#      - authentication__D__oidc__P__user-info__P__last-name=family_name
       # OidcAuthenticationBean is instantiated by Spring even when removed from the plugin
       # sequence above.  It calls String.split() on ip.bioIPsRange1/2 unconditionally, so
       # provide harmless non-routable CIDR placeholders to prevent NullPointerException.
       # In production/staging real IP ranges are supplied via the Kubernetes ConfigMap.
-      - ip__P__bioIPsRange1=192.0.2.0/24
-      - ip__P__bioIPsRange2=192.0.2.0/24
-#      - ip__P__umIP=141.211.|35.2.
-#      - ip__P__umIPsRange1=141.211.0.0|141.211.255.255
-#      - ip__P__umIPsRange2=35.2.0.0|35.2.255.255
-#      - ip__P__BentleyOnlyIPs=141.211.1.
-      # Example: specify start and end of the IP range
-#      - ip__P__BentleyOnlyIPs=141.211.1.0|141.211.1.255
+      # IP range configuration required by OidcAuthenticationBean
+      - ip__P__bioIPsRange1=192.0.1.1|192.0.1.254
+      - ip__P__bioIPsRange2=192.0.2.1|192.0.2.254
+      - ip__P__umIPs=141.211.|35.2.
+      - ip__P__BentleyOnlyIPs=141.211.1.
+      # External API keys for PubMed and Alma.  These are required for the backend to call the respective APIs.
 #      - pubmed__P__apiKey=PUBMED_API_KEY
 #      - api__P__user__P__key=ALMA_API_KEY
       # proxies.trusted.ipranges: This setting is required for a REST API running in Docker to trust requests
       # from the host machine. This IP range MUST correspond to the 'dspace-net' subnet:
       #   docker network inspect dspace-net --format '{{(index .IPAM.Config 0).Subnet}}'
       - proxies__P__trusted__P__ipranges=172.18.0.0/16
+      # CORS configuration for local dev; allow localhost:4000 (Angular) and localhost:8080 (backend) to access the REST API.
       - dspace__P__rest__P__cors__P__allowedOrigins=http://localhost:4000,http://localhost:8080
       # Ensure Authorization and DSPACE-XSRF-TOKEN are in exposed headers
       - dspace__P__rest__P__cors__P__exposedHeaders=Authorization,DSPACE-XSRF-TOKEN,Location,WWW-Authenticate
       - dspace__P__jwt__P__response__P__header__P__samesite=Lax
       - dspace__P__jwt__P__response__P__header__P__secure=false
-
+      # Enable Admin to assume the identity of another user for testing purposes.  This is disabled in production/staging.
+      - webui__P__user__P__assumelogin=true
+      # Sets options for Tomcat runtime without overwriting JAVA_OPTS base heap settings
+      # If IPv6 is not supported in the host environment, uncomment the following line to force IPv4 stack usage.
+#      - CATALINA_OPTS=-Djava.net.preferIPv4Stack=true
     ports:
       - "8080:8080"
     volumes:
@@ -88,9 +88,6 @@ services:
       retries: 24
       start_period: 120s
     restart: unless-stopped
-    networks:
-      - dspace-net
-      - default
 
   db:
     build:
@@ -157,4 +154,3 @@ volumes:
   dspace-assetstore:
   db-data:
   solr-data:
-
