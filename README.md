@@ -126,5 +126,30 @@ proxies.trusted.ipranges = 127.0.0.1
 # - dspace__P__jwt__P__response__P__header__P__samesite=Lax
 # - dspace__P__jwt__P__response__P__header__P__secure=false
 ```
+
+
+```shell
+mvn package
+```
+
+```shell
+cd dspace/target/dspace-installer
+
+# For a fresh install:
+ant fresh_install
+
+# Or for subsequent updates to an existing installation:
+# ant update
+```
+
+
+
+
 Then you can run the backend service in development mode with hot reload enabled.
+
+. Run the Backend in Your IDE
+•
+Ensure your local configuration (dspace/config/local.cfg) points to localhost:5432 for the database and http://localhost:8983/solr for Solr.
+•
+Run the Spring Boot main class org.dspace.app.rest.Application located in dspace-server-webapp/src/main/java/org/dspace/app/rest/Application.java from IntelliJ IDEA or deploy the dspace-server-webapp module to a local Tomcat 9 instance.
 
