@@ -81,7 +81,7 @@ RUN apt-get -o Acquire::Retries=3 update \
 
 RUN gem install uri pry net-http json
 RUN pipx install awscli
-RUN ln -s /mnt/assetstore/dspace/repository/dev-test/asset_jose /dspace/assetstore
+#RUN ln -s /mnt/assetstore/dspace/repository/dev-test/asset_jose /dspace/assetstore
 
 RUN mkdir /root/.emacs.d
 # Install additional backend scripts
