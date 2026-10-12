@@ -57,21 +57,21 @@ use Getopt::Std;
 
 # -t test -o status
 # -t test -o upload
+# -d (dry run: validates DB items and skips AWS/DSpace external calls)
 
 # -t prod -o status
 # -t prod -o upload
 
 my %opts;
-getopts('t:o:', \%opts);
+getopts('t:o:d', \%opts);
 
-my $doTest             = $opts{'t'};
-my $UploadOrStatus     = $opts{'o'};
-
-my $doTest             = 'prod';
-my $UploadOrStatus     = 'nothing';
+my $doTest             = $opts{'t'} || 'prod';
+my $UploadOrStatus     = $opts{'o'} || 'nothing';
+my $dryRun             = $opts{'d'} || $ENV{'DRY_RUN'} || 0;
 
 print "test/prod = " . $doTest . "\n";
 print "load/status = " . $UploadOrStatus . "\n";
+print "dryRun = " . ($dryRun ? "yes" : "no") . "\n";
 
 #For database connection.
 my $gDbName         = $ENV{'DB_NAME'};
@@ -119,6 +119,7 @@ exit;
 
 sub CleanoutDirs
   {    
+    return if $dryRun;
     `rm -rf $gReplicatorWorkingArea/*`;
 
     #Remove from Zip area
@@ -133,6 +134,25 @@ sub MoveAllToAPtrust
 
     foreach my $handle ( @handles )
     {
+      $gAllIsFine = 1;
+
+      if ( ! &ItemHasTitle( $handle ) )
+      {
+        print "Item $handle is missing title; skipping APTrust deposit.\n";
+        my $msg = qq{Item missing title; skipped APTrust deposit.};
+        my $statement = qq{delete from aptrust_bagging_error where handle ='$handle'};
+        &ProcessSQL ( $statement );
+        $statement = qq{insert into aptrust_bagging_error (handle, error) values ('$handle', '$msg')};
+        &ProcessSQL ( $statement );
+        next;
+      }
+
+      if ( $dryRun )
+      {
+        print "DRY RUN: Item $handle has title; would proceed with replication and deposit.\n";
+        next;
+      }
+
       &DoReplication ( $handle );
       if ( $gAllIsFine == 1 )
 	    {
@@ -300,6 +320,42 @@ sub HasBeenSentToAptrust
     
     return $InAptrust;
 
+  }
+
+
+sub ItemHasTitle
+  {
+    my ( $handle ) = @_;
+
+    my $item_id = &GetItemId ( $handle );
+    if ( !defined($item_id) || $item_id eq '' )
+    {
+      return 0;
+    }
+
+    # metadata_field_id 64 is dc.title
+    my $statement = qq{select text_value from metadatavalue where metadata_field_id = 64 and dspace_object_id = '$item_id'};
+
+    my $sth = $dbhP->prepare($statement)
+      or die "Couldn't prepare statement: " . $dbhP->errstr;
+
+    $sth->execute()
+      or die "Couldn't execute statement: " . $sth->errstr;
+
+    my $hasTitle = 0;
+    while (my @data = $sth->fetchrow_array()) {
+      my $val = $data[0];
+      if ( defined($val) ) {
+        $val =~ s/^\s+|\s+$//g;
+        if ( length($val) > 0 ) {
+          $hasTitle = 1;
+          last;
+        }
+      }
+    }
+    $sth->finish;
+
+    return $hasTitle;
   }
 
 
@@ -544,6 +600,27 @@ sub CreateBagFromScratch
 
       my $bag= qq{deepbluedocs.$id};
       `/usr/bin/xsltproc -o $itemDir/aptrust-info.txt $gToolsDir/metadata2aptrust-info.xsl $itemDir/data/metadata.xml`;
+
+      # Verify that aptrust-info.txt has a non-empty Title
+      my $aptrust_info = &ReadFile("$itemDir/aptrust-info.txt");
+      if ( !defined($aptrust_info) || !($aptrust_info =~ /^Title:[ \t]*\S+/m) )
+      {
+        $gAllIsFine = 0;
+        `rm -rf $itemDir`;
+        `rm $gZipDir/$item`;
+
+        my $handle = $item;
+        $handle =~ s,.*\-(.*)\.zip$,$1,;
+        $handle = qq{$gHandlePrefix/$handle};
+
+        my $msg = qq{Item missing title in aptrust-info.txt; skipped APTrust deposit.};
+        my $statement = qq{delete from aptrust_bagging_error where handle ='$handle'};
+        &ProcessSQL ( $statement );
+        $statement = qq{insert into aptrust_bagging_error (handle, error) values ('$handle', '$msg')};
+        &ProcessSQL ( $statement );
+
+        return;
+      }
       
       #Payload-Oxum: 2938678.12
       my $bag_info_file = qq{$itemDir/bag-info.txt};
@@ -688,6 +765,9 @@ sub DepositBagToAPTrust
       &ProcessSQL ( $statement );
 
       my $statement = qq{insert into aptrust_bags_sent (handle, bag, date, last_modified_date, sent_count, check_status)  values ('$handle', '$bag', '$date', '$last_modified_date', $sent_count, 'CHECK')};
+      &ProcessSQL ( $statement );
+
+      $statement = qq{delete from aptrust_bagging_error where handle='$handle'};
       &ProcessSQL ( $statement );
 	
     }
