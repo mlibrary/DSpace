@@ -143,11 +143,24 @@ sub MoveAllToAPtrust
 	print "MoveAllToAPtrust: gMaxRetries=$gMaxRetries\n";
     foreach my $handle ( @handles )
     {
+      $gAllIsFine = 1;
       print "count=$count\n";
       if ( $gMaxRetries > 0 && $count > $gMaxRetries ) {
           last;
       }
       $count = $count + 1;
+
+      if ( ! &ItemHasTitle( $handle ) )
+      {
+        print "Item $handle is missing title; skipping APTrust deposit.\n";
+        my $msg = qq{Item missing title; skipped APTrust deposit.};
+        my $statement = qq{delete from aptrust_bagging_error where handle ='$handle'};
+        &ProcessSQL ( $statement );
+        $statement = qq{insert into aptrust_bagging_error (handle, error) values ('$handle', '$msg')};
+        &ProcessSQL ( $statement );
+        next;
+      }
+
       &DoReplication ( $handle );
       if ( $gAllIsFine == 1 )
 	    {
@@ -328,6 +341,42 @@ sub HasBeenSentToAptrust
 
     return $InAptrust;
 
+  }
+
+
+sub ItemHasTitle
+  {
+    my ( $handle ) = @_;
+
+    my $item_id = &GetItemId ( $handle );
+    if ( !defined($item_id) || $item_id eq '' )
+    {
+      return 0;
+    }
+
+    # metadata_field_id 64 is dc.title
+    my $statement = qq{select text_value from metadatavalue where metadata_field_id = 64 and dspace_object_id = '$item_id'};
+
+    my $sth = $dbhP->prepare($statement)
+      or die "Couldn't prepare statement: " . $dbhP->errstr;
+
+    $sth->execute()
+      or die "Couldn't execute statement: " . $sth->errstr;
+
+    my $hasTitle = 0;
+    while (my @data = $sth->fetchrow_array()) {
+      my $val = $data[0];
+      if ( defined($val) ) {
+        $val =~ s/^\s+|\s+$//g;
+        if ( length($val) > 0 ) {
+          $hasTitle = 1;
+          last;
+        }
+      }
+    }
+    $sth->finish;
+
+    return $hasTitle;
   }
 
 
@@ -576,6 +625,28 @@ sub CreateBagFromScratch
       my $bag= qq{deepbluedocs.$id};
       `/usr/bin/xsltproc -o $itemDir/aptrust-info.txt $gToolsDir/metadata2aptrust-info.xsl $itemDir/data/metadata.xml`;
 
+      # Verify that aptrust-info.txt has a non-empty Title
+      my $aptrust_info = &ReadFile("$itemDir/aptrust-info.txt");
+      if ( !defined($aptrust_info) || !($aptrust_info =~ /^Title:[ \t]*\S+/m) )
+      {
+        $gAllIsFine = 0;
+        `rm -rf $itemDir`;
+        `rm $gZipDir/$item`;
+
+        my $handle = $item;
+        $handle =~ s,.*\-(.*)\.zip$,$1,;
+        $handle = qq{$gHandlePrefix/$handle};
+
+        my $msg = qq{Item missing title in aptrust-info.txt; skipped APTrust deposit.};
+        if ( $gVerbose ) { print $handle . " -- " . $msg . "\n"; }
+        my $statement = qq{delete from aptrust_bagging_error where handle ='$handle'};
+        &ProcessSQL ( $statement );
+        $statement = qq{insert into aptrust_bagging_error (handle, error) values ('$handle', '$msg')};
+        &ProcessSQL ( $statement );
+
+        return;
+      }
+
       #Payload-Oxum: 2938678.12
       my $bag_info_file = qq{$itemDir/bag-info.txt};
       my $payload = &ReadFile ($bag_info_file);
@@ -733,6 +804,9 @@ sub DepositBagToAPTrust
       print "$statement\n";
       my $rv = &ProcessSQL ( $statement );
       print "ProcessSQL returned $rv\n";
+
+      $statement = qq{delete from aptrust_bagging_error where handle='$handle'};
+      &ProcessSQL ( $statement );
 
     }
 
