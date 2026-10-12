@@ -1,3 +1,4 @@
 [tools]
 java = "temurin-17"
 maven = "3.9"
+perl = "5.40.1"

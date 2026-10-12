@@ -59,21 +59,21 @@ use Getopt::Std;
 
 # -t test -o status
 # -t test -o upload
+# -d (dry run: validates DB items and skips AWS/DSpace external calls)
 
 # -t prod -o status
 # -t prod -o upload
 
 my %opts;
-getopts('t:o:', \%opts);
+getopts('t:o:d', \%opts);
 
-my $doTest             = $opts{'t'};
-my $UploadOrStatus     = $opts{'o'};
-
-my $doTest             = 'prod';
-my $UploadOrStatus     = 'nothing';
+my $doTest             = $opts{'t'} || 'prod';
+my $UploadOrStatus     = $opts{'o'} || 'nothing';
+my $dryRun             = $opts{'d'} || $ENV{'DRY_RUN'} || 0;
 
 print "test/prod = " . $doTest . "\n";
 print "load/status = " . $UploadOrStatus . "\n";
+print "dryRun = " . ($dryRun ? "yes" : "no") . "\n";
 
 #For database connection.
 my $gDbName         = $ENV{'DB_NAME'};
@@ -127,6 +127,7 @@ exit;
 
 sub CleanoutDirs
   {
+    return if $dryRun;
     `rm -rf $gReplicatorWorkingArea/*`;
 
     #Remove from Zip area
@@ -158,6 +159,12 @@ sub MoveAllToAPtrust
         &ProcessSQL ( $statement );
         $statement = qq{insert into aptrust_bagging_error (handle, error) values ('$handle', '$msg')};
         &ProcessSQL ( $statement );
+        next;
+      }
+
+      if ( $dryRun )
+      {
+        print "DRY RUN: Item $handle has title; would proceed with replication and deposit.\n";
         next;
       }
 
