@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dspace-dc-types>
+
+  <dspace-header>
+    <title>Additional dc. fields missing from target instance</title>
+    <contributor.author>migration</contributor.author>
+    <date.created>2026-10-16</date.created>
+    <description>
+      Local extensions to the dc schema. 
+    </description>
+  </dspace-header>
+
+  <dc-type><schema>dc</schema><element>description</element><qualifier>thesisdegreename</qualifier></dc-type>
+  <dc-type><schema>dc</schema><element>description</element><qualifier>thesisdegreediscipline</qualifier></dc-type>
+  <dc-type><schema>dc</schema><element>description</element><qualifier>thesisdegreegrantor</qualifier></dc-type>
+  <dc-type><schema>dc</schema><element>contributor</element><qualifier>committeemember</qualifier></dc-type>
+  <dc-type><schema>dc</schema><element>rights</element><qualifier>robots</qualifier></dc-type>
+  <dc-type><schema>dc</schema><element>subject</element><qualifier>hlbsecondlevel</qualifier></dc-type>
+  <dc-type><schema>dc</schema><element>subject</element><qualifier>hlbtoplevel</qualifier></dc-type>
+  <dc-type><schema>dc</schema><element>description</element><qualifier>peerreviewed</qualifier></dc-type>
+  <dc-type><schema>dc</schema><element>identifier</element><qualifier>uniqname</qualifier></dc-type>
+  <dc-type><schema>dc</schema><element>identifier</element><qualifier>videostream</qualifier></dc-type>
+  <dc-type><schema>dc</schema><element>identifier</element><qualifier>pmid</qualifier></dc-type>
+  <dc-type><schema>dc</schema><element>identifier</element><qualifier>oclc</qualifier></dc-type>
+  <dc-type><schema>dc</schema><element>description</element><qualifier>withdrawalreason</qualifier></dc-type>
+  <dc-type><schema>dc</schema><element>identifier</element><qualifier>citedreference</qualifier></dc-type>
+  <dc-type><schema>dc</schema><element>contributor</element><qualifier>authoremail</qualifier></dc-type>
+  <dc-type><schema>dc</schema><element>requestcopy</element><qualifier>email</qualifier></dc-type>
+  <dc-type><schema>dc</schema><element>requestcopy</element><qualifier>name</qualifier></dc-type>
+  <dc-type><schema>dc</schema><element>identifier</element><qualifier>imageclass</qualifier></dc-type>
+  <dc-type><schema>dc</schema><element>description</element><qualifier>mapping</qualifier></dc-type>
+  <dc-type><schema>dc</schema><element>description</element><qualifier>md5checksum</qualifier></dc-type>
+  <dc-type><schema>dc</schema><element>rights</element><qualifier>access</qualifier></dc-type>
+  <dc-type><schema>dc</schema><element>description</element><qualifier>hathi</qualifier></dc-type>
+  <dc-type><schema>dc</schema><element>description</element><qualifier>restriction</qualifier></dc-type>
+  <dc-type><schema>dc</schema><element>description</element><qualifier>filedescription</qualifier></dc-type>
+  <dc-type><schema>dc</schema><element>date</element><qualifier>open</qualifier></dc-type>
+  <dc-type><schema>dc</schema><element>rights</element><qualifier>copyright</qualifier></dc-type>
+  <dc-type><schema>dc</schema><element>identifier</element><qualifier>volume</qualifier></dc-type>
+  <dc-type><schema>dc</schema><element>identifier</element><qualifier>issue</qualifier></dc-type>
+  <dc-type><schema>dc</schema><element>identifier</element><qualifier>startpage</qualifier></dc-type>
+  <dc-type><schema>dc</schema><element>identifier</element><qualifier>endpage</qualifier></dc-type>
+  <dc-type><schema>dc</schema><element>description</element><qualifier>fulcrum</qualifier></dc-type>
+  <dc-type><schema>dc</schema><element>identifier</element><qualifier>name-orcid</qualifier></dc-type>
+  <dc-type><schema>dc</schema><element>res</element></dc-type>
+  <dc-type><schema>dc</schema><element>restrict</element><qualifier>um</qualifier></dc-type>
+  <dc-type><schema>dc</schema><element>working</element><qualifier>doi</qualifier></dc-type>
+  <dc-type><schema>dc</schema><element>description</element><qualifier>filename</qualifier></dc-type>
+
+</dspace-dc-types>
