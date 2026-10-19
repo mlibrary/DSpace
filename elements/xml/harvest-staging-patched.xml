@@ -1,0 +1,988 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xwalkin:consolidated-maps xmlns:xwalk="http://www.symplectic.co.uk/elements/xwalkcommon" xmlns:xwalkin="http://www.symplectic.co.uk/elements/xwalkin">
+    <!-- === PARAMETERS ==================================================================================================================== -->
+    <xwalk:parameters>
+        <!-- dspace-xwalkin-use-file-description-as-file-version
+             When harvesting file-level metadata, should Elements use the file's <description> field to work out the file version information
+             in preference to the file's <version> field? Defaults to 'false'. -->
+        <!--<xwalk:parameter name="dspace-xwalkin-use-file-description-as-file-version" value="true"/>-->
+        <!-- dspace-xwalkin-public-access-group-ids
+             Used to specify the DSpace groups which should be considered "public" for embargo purposes. This global parameter is a comma-separated
+             list of DSpace integer group IDs. Defaults to '0', corresponding to the group of anonymous users. -->
+        <!--<xwalk:parameter name="dspace-xwalkin-public-access-group-ids" value="0,1,42,57,147,180"/>-->
+        <!-- FILES -->
+        <!-- xwalkin-without-files
+             If set to 'true', file-level metadata will not be crosswalked. Defaults to 'false'. -->
+        <!--<xwalk:parameter name="xwalkin-without-files" value="true"/>-->
+        <!-- xwalkin-without-file-links
+             If set to 'true', file-level metadata harvested by Elements will not include the repository URL of the file. Files displayed in the
+             Elements UI will therefore not display as links to the repository file. Defaults to 'false'-->
+        <!--<xwalk:parameter name="xwalkin-without-file-links" value="true"/>-->
+        <!-- CURRENCY -->
+        <!-- Currency to use when none is specified. Defaults to "USD". Options are:
+               "AUD"
+               "CAD"
+               "JPY"
+               "NZD"
+               "SGD"
+               "GBP"
+               "USD"
+               "EUR"
+        -->
+        <!--<xwalk:parameter name="default-currency" value="GBP" />-->
+        <!-- DATES -->
+        <!-- Default format to use when parsing a date string. Defaults to "date:YYYY-MM-DD" Options are:
+               "date:YYYY-MM-DD"
+               "date:DMY"
+               "date:MDY"
+               "date:YMD"
+               "date:YM"
+               "date:MY"
+               "date:Y"
+        -->
+        <!--<xwalk:parameter name="default-date-format" value="date:YYYY-MM-DD" />-->
+        <!-- Default date format delimiter to use parsing a date string. Defaults to "-". -->
+        <!--<xwalk:parameter name="default-date-delimiter" value="/" />-->
+        <!-- Sets whether single-digit day and month values should be padded with a leading zero. Defaults to "true"-->
+        <!--<xwalk:parameter name="use-leading-zeroes-for-dates" value="false" />-->
+        <!-- Sets whether default date component values should be used when formatting a date of lower precision than the specified format. Defaults to "false". -->
+        <!--<xwalk:parameter name="use-default-values-for-missing-date-components" value="true" />-->
+        <!-- PEOPLE -->
+        <!-- Default format to use when parsing a person (i.e. full name) string. Defaults to "person:lastname-initials". Options are:
+                     "person:lastname-initials"
+                     "person:initials-lastname"
+                     "person:lastname-firstnames"
+                     "person:firstnames-lastname"
+          -->
+        <xwalk:parameter name="default-person-format" value="person:lastname-firstnames" />
+        <!-- Default delimiter to use when parsing a person string. Defaults to " " (space). -->
+        <xwalk:parameter name="default-person-format-delimiter" value=", " />
+        <!-- PAGINATION -->
+        <!-- Default format to use when parsing a pagination string. Defaults to "pagination:start-end". Options are:
+               "pagination:start-end"
+                     "pagination:start"
+                     "pagination:end"
+                     "pagination:page-count"
+          -->
+        <!--<xwalk:parameter name="default-pagination-format" value="" />-->
+        <!-- Default delimiter to use when parsing a pagination string. Defaults to "-". -->
+        <!--<xwalk:parameter name="default-pagination-delimiter" value=" - " />-->
+        <!-- FUNDING ACKNOWLEDGEMENT GRANTS -->
+        <!-- Default format to use when parsing a funding acknowledgements grant string. Defaults to "funding-acknowledgements-grant:org-id". Options are:
+               "funding-acknowledgements-grant:id"
+                     "funding-acknowledgements-grant:org"
+                     "funding-acknowledgements-grant:id-org"
+                     "funding-acknowledgements-grant:org-id"
+          -->
+        <!--<xwalk:parameter name="default-funding-acknowledgements-grant-format" value="" />-->
+        <!-- Default delimiter to use when parsing a funding acknowledgements grant string. Defaults to "|". -->
+        <!--<xwalk:parameter name="default-funding-acknowledgements-grant-delimiter" value="; " />-->
+    </xwalk:parameters>
+    <!-- === FIELD MAPS ==================================================================================================================== -->
+    <xwalk:field-maps>
+        <!-- The default field map, used as a base for all other field maps -->
+        <xwalk:field-map name="default-harvest">
+            <!-- OA Location specified by user at deposit -->
+            <!-- IMPORTANT! These mappings MUST be specified if "Support OA location" is enabled in Deposit Settings.
+                 They MUST be EXACT reversals of the deposit mappings. -->
+            <!-- <xwalk:field-mapping to="oa-location-url"> TODO check with Ben if is possible just the oa-location-file-version to be mapped
+              <xwalk:field-source from="dc.description.bitstreamurl"/>
+            </xwalk:field-mapping>
+            <xwalk:field-mapping to="oa-location-file-version">
+              <xwalk:field-source from="dc.description.bitstreamurl"/>
+            </xwalk:field-mapping>-->
+            <!-- **** Automatic mappings ********************************************************** -->
+            <!-- * These are handled automatically by the crosswalk base code.                    * -->
+            <!-- * There is no need to specify these mappings unless you wish                     * -->
+            <!-- * to override these defaults:                                                    * -->
+            <!-- *                                                                                * -->
+            <!-- * DSpace                                    Elements                             * -->
+            <!-- * ======                                    ========                             * -->
+            <!-- * parentCollectionList, parentCollection => collections                          * -->
+            <!-- * archived / withdrawn                   => repository-status                    * -->
+            <!-- * dc.date.accessioned                    => record-created-at-source-date        * -->
+            <!-- * dc.date.available                      => record-made-public-at-source-date    * -->
+            <!-- *                                                                                * -->
+            <!-- ********************************************************************************** -->
+
+            <!--override record-created-at-source-date auto-crosswalked field-->
+            <xwalk:field-mapping to="record-created-at-source-date">
+                <xwalk:field-source from="dc.date.available" />
+            </xwalk:field-mapping>
+            <!--override record-created-at-source-date auto-crosswalked field-->
+            <xwalk:field-mapping to="record-made-public-at-source-date">
+                <xwalk:field-source from="dc.date.accessioned" />
+            </xwalk:field-mapping>
+            <!-- There is no default mapping to Elements object-level underlying field 'embargo-release-date'. A mapping
+                 is not required, as the file-level 'embargo-release-date' field used in OA Monitor calculations is
+                 crosswalked automatically. -->
+            <!-- There is no default mapping to Elements object-level underlying field 'is-embargoed'. Note that it is
+                 not necessary to populate this field, as embargo data used in the OA Monitor is held at the file level. -->
+                        <!-- repository-status override — DSpace 7 uses "Private (in review)" for items -->
+            <!-- in workflow; Elements may not recognise this value without an explicit mapping. -->
+            <!-- Map it to "Private" so that in-review items appear in Elements as private. -->
+            <xwalk:field-mapping to="repository-status">
+                <xwalk:field-source from="repository-status" value-map="dspace7-repository-status" />
+            </xwalk:field-mapping>
+            <!-- dc.identifier.uri (item handle) => public-url-->
+            <xwalk:field-mapping to="public-url">
+                <xwalk:field-source prefix="http://hdl.handle.net/" select-using="jsonpath" from="$.handle" />
+            </xwalk:field-mapping>
+            <!-- doi -->
+            <xwalk:field-mapping to="doi">
+                <xwalk:field-source from="dc.identifier.doi" />
+            </xwalk:field-mapping>
+            <!-- dc.title => title -->
+            <xwalk:field-mapping to="title">
+                <xwalk:field-source from="dc.title" />
+            </xwalk:field-mapping>
+            <!-- pagination-->
+            <xwalk:field-mapping to="pagination">
+                <xwalk:field-source from="dc.identifier.startpage" data-part="pagination:begin-page" />
+                <xwalk:field-source from="dc.identifier.endpage" data-part="pagination:end-page" />
+            </xwalk:field-mapping>
+
+            <!-- dc.contributor.author => authors -->
+            <!-- DSpace 7: ORCID-count XPath condition removed (XPath arithmetic cannot
+                 operate on JSON). Always uses dc.contributor.author. -->
+            <xwalk:field-mapping to="authors">
+                <xwalk:field-source from="dc.contributor.author" />
+            </xwalk:field-mapping>
+
+            <!-- dc.contributor.editor => editors -->
+            <xwalk:field-mapping to="editors">
+                <xwalk:field-source from="dc.contributor.editor" />
+            </xwalk:field-mapping>
+
+            <!-- series-->
+            <xwalk:field-mapping to="series">
+                <xwalk:field-source from="dc.relation.ispartofseries" />
+            </xwalk:field-mapping>
+            <!-- There is no default mapping to Elements underlying field 'edition' -->
+            <!-- 'volume' -->
+            <xwalk:field-mapping to="volume">
+                <xwalk:field-source from="dc.identifier.volume" />
+            </xwalk:field-mapping>
+            <!-- issue-->
+            <xwalk:field-mapping to="issue">
+                <xwalk:field-source from="dc.identifier.issue" />
+            </xwalk:field-mapping>
+            <!-- There is no default mapping to Elements underlying field 'addresses' -->
+            <!-- dc.date.issued => publication-date -->
+            <!-- The format attribute describes the date format used in the XML received from the repository API  -->
+            <xwalk:field-mapping to="publication-date">
+                <xwalk:field-source from="dc.date.issued" format="date:YYYY-MM-DD" />
+            </xwalk:field-mapping>
+            <!-- dc.description.abstract -->
+            <xwalk:field-mapping to="abstract">
+                <xwalk:field-source from="dc.description.abstract" />
+            </xwalk:field-mapping>
+            <!-- dc.description.sponsorship -->
+            <!-- This mapping uses an if/else structure to change its behaviour depending on the input -->
+            <!-- Also, select-using="xpath" allows us to use XPath functions to access and process the input data -->
+            <!-- dc.description.sponsorship => funding-acknowledgements -->
+            <!-- DSpace 7: complex XPath condition (starts-with on first value) removed.
+                 All dc.description.sponsorship values are mapped as grants.
+                 This is equivalent to the original <xwalk:else> branch and is
+                 fully compatible with the DSpace 7 JSON API. -->
+            <xwalk:field-mapping to="funding-acknowledgements">
+                <xwalk:field-source data-part="funding-acknowledgements:grant" from="dc.description.sponsorship">
+                    <xwalk:field-source data-part="funding-acknowledgements-grant:id" value-map="dc.description.sponsorship-to-grant-id" />
+                    <xwalk:field-source data-part="funding-acknowledgements-grant:org" value-map="dc.description.sponsorship-to-grant-org" />
+                </xwalk:field-source>
+            </xwalk:field-mapping>
+            <!-- dc.description.medium -->
+            <xwalk:field-mapping to="medium">
+                <xwalk:field-source from="dc.format.medium" />
+            </xwalk:field-mapping>
+            <!-- dc.identifier.isbn -->
+            <!-- Elements validates ISBNs on import, so we can map dc.identifier.isbn to both isbn-13 and isbn-10 and let Elements pick the correct field -->
+            <!-- The value maps remove invalid characters that may otherwise cause the input to be rejected -->
+            <xwalk:field-mapping to="isbn-13">
+                <xwalk:field-source from="dc.identifier.isbn" value-map="strip-invalid-characters-from-ISBN-13" />
+            </xwalk:field-mapping>
+            <xwalk:field-mapping to="isbn-10">
+                <xwalk:field-source from="dc.identifier.isbn" value-map="strip-invalid-characters-from-ISBN-10-or-ISSN" />
+            </xwalk:field-mapping>
+            <!-- references-->
+            <xwalk:field-mapping to="references">
+                <xwalk:field-source from="dc.identifier.citedreference" />
+            </xwalk:field-mapping>
+            <!-- types -->
+            <xwalk:field-mapping to="types">
+                <xwalk:field-source from="dc.type" />
+            </xwalk:field-mapping>
+            <!-- dc.identifier.issn -->
+            <xwalk:field-mapping to="issn">
+                <xwalk:field-source from="dc.identifier.issn" value-map="strip-invalid-characters-from-ISBN-10-or-ISSN" />
+            </xwalk:field-mapping>
+            <!-- dc.identifier.eissn => eissn-->
+            <xwalk:field-mapping to="eissn">
+                <xwalk:field-source from="dc.identifier.issn" value-map="strip-invalid-characters-from-ISBN-10-or-ISSN" />
+            </xwalk:field-mapping>
+            <!-- dc.language/dc.language.iso/dc.language.rfc3066 -->
+            <!-- This mapping uses a choose structure to choose which field is mapped to Elements' language fields -->
+            <!-- The ISO639-1-to-language value map converts two-letter language codes to full-text languages. If there is no match, the value is passed as-is. -->
+            <xwalk:field-mapping to="language">
+                <xwalk:choose>
+                    <!-- if dc.language has a value, map it to Elements' "language" field. -->
+                    <xwalk:when>
+                        <xwalk:condition argument-field="dc.language" operator="has-value" />
+                        <xwalk:result>
+                            <xwalk:field-source from="dc.language" value-map="language-none-custom" />
+                        </xwalk:result>
+                    </xwalk:when>
+                    <!-- If dc.language has no value, look for a value in dc.language.iso. -->
+                    <xwalk:when>
+                        <xwalk:condition argument-field="dc.language.iso" operator="has-value" />
+                        <xwalk:result>
+                            <xwalk:field-source from="dc.language.iso" value-map="ISO639-1-to-language" />
+                        </xwalk:result>
+                    </xwalk:when>
+                    <!-- If dc.language.iso has no value, look for a value in dc.language.rfc3066. -->
+                    <xwalk:when>
+                        <xwalk:condition argument-field="dc.language.rfc3066" operator="has-value" />
+                        <xwalk:result>
+                            <xwalk:field-source from="dc.language.rfc3066" value-map="ISO639-1-to-language" />
+                        </xwalk:result>
+                    </xwalk:when>
+                </xwalk:choose>
+            </xwalk:field-mapping>
+            <!-- dc.publisher -->
+            <xwalk:field-mapping to="publisher">
+                <xwalk:field-source from="dc.publisher" />
+            </xwalk:field-mapping>
+            <!-- There is no default mapping to Elements underlying field 'publication-status' -->
+            <!-- keywords-->
+            <xwalk:field-mapping to="keywords">
+                <xwalk:if>
+                    <xwalk:condition argument-field="dc.subject" operator="has-value" />
+                    <xwalk:result>
+                        <xwalk:field-source data-part="keyword:scheme" value="c-deep-blue" />
+                        <xwalk:field-source data-part="keyword:value" from="dc.subject" />
+                    </xwalk:result>
+                </xwalk:if>
+            </xwalk:field-mapping>
+            <!-- notes -->
+            <xwalk:field-mapping to="notes" separator=";">
+                <xwalk:choose>
+                    <xwalk:when>
+                        <xwalk:condition argument-field="dc.requestcopy.email" operator="has-value" />
+                        <xwalk:result>
+                            <xwalk:field-source value="Full text available on request from Deep Blue" />
+                        </xwalk:result>
+                    </xwalk:when>
+                </xwalk:choose>
+                <xwalk:field-source from="dc.description" />
+                <xwalk:field-source from="dc.relation.isbasedon" />
+                <xwalk:field-source from="dc.relation" />
+            </xwalk:field-mapping>
+            <!-- number-->
+            <xwalk:field-mapping to="number">
+                <xwalk:field-source from="dc.relation.haspart" />
+            </xwalk:field-mapping>
+            <!-- dc.relation.ispartof => parent-title -->
+            <xwalk:field-mapping to="parent-title">
+                <xwalk:field-source from="dc.relation.ispartof" />
+            </xwalk:field-mapping>
+            <!-- location-->
+            <xwalk:field-mapping to="location">
+                <xwalk:field-source from="dc.coverage.spatial" />
+            </xwalk:field-mapping>
+            <!-- journal-->
+            <xwalk:field-mapping to="journal">
+                <xwalk:field-source from="dc.identifier.source" />
+            </xwalk:field-mapping>
+            <!-- There is no default mapping to Elements underlying field 'patent-number' -->
+            <!-- associated-authors-->
+            <xwalk:field-mapping to="associated-authors">
+                <xwalk:field-source from="dc.contributor" />
+            </xwalk:field-mapping>
+            <!-- filed-date-->
+            <xwalk:field-mapping to="filed-date">
+                <xwalk:field-source from="dc.date.submitted" />
+            </xwalk:field-mapping>
+            <!-- There is no default mapping to Elements underlying field 'patent-status' -->
+            <!-- commissioning-body-->
+            <xwalk:field-mapping to="commissioning-body">
+                <xwalk:field-source from="dc.description.sponsorship" />
+            </xwalk:field-mapping>
+            <!-- There is no default mapping to Elements underlying field 'confidential' -->
+            <!-- number-of-pieces -->
+            <xwalk:field-mapping to="number-of-pieces" separator=";">
+                <xwalk:field-source from="dc.format.extent" />
+                <xwalk:field-source from="dc.relation.requires" />
+            </xwalk:field-mapping>
+            <!-- version-->
+            <xwalk:field-mapping to="version" separator=";">
+                <xwalk:field-source prefix="Version:" from="dc.description.version" />
+                <xwalk:field-source prefix="Has version:" from="dc.relation.hasversion" />
+                <xwalk:field-source prefix="Is replaced by:" from="dc.relation.isreplacedby" />
+                <xwalk:field-source prefix="Is version of:" from="dc.relation.isversionof" />
+                <xwalk:field-source prefix="Replaces" from="dc.relation.replaces" />
+            </xwalk:field-mapping>
+            <!-- thesis-type -->
+            <xwalk:field-mapping to="thesis-type" separator=";">
+                <xwalk:field-source from="dc.description.thesisdegreename" />
+                <xwalk:field-source from="dc.description.degreediscipline" />
+            </xwalk:field-mapping>
+            <!--associated-identifiers -->
+            <xwalk:field-mapping to="associated-identifiers">
+                <!-- dc.identifier.orcid -->
+                <xwalk:field-source from="dc.identifier.orcid">
+                    <xwalk:field-source data-part="identifier:scheme" value="orcid" />
+                    <xwalk:field-source data-part="identifier:value" from="." />
+                </xwalk:field-source>
+            </xwalk:field-mapping>
+            <!-- external-identifiers with identifier:scheme = 'pubmed' -->
+            <xwalk:field-mapping to="external-identifiers">
+                <!-- dc.identifier.pmid -->
+                <xwalk:field-source from="dc.identifier.pmid">
+                    <xwalk:field-source data-part="identifier:scheme" value="pubmed" />
+                    <xwalk:field-source data-part="identifier:value" from="." />
+                </xwalk:field-source>
+            </xwalk:field-mapping>
+            <!--author-licence-->
+            <xwalk:field-mapping to="author-licence">
+                <xwalk:field-source from="dc.rights.uri" value-map="licence-uri-to-author-licence-choices" />
+            </xwalk:field-mapping>
+            <!--online-publication-date -->
+            <xwalk:field-mapping to="online-publication-date">
+                <xwalk:field-source from="dc.date" />
+            </xwalk:field-mapping>
+            <!-- c-description-tableofcontents-->
+            <xwalk:field-mapping to="c-description-tableofcontents">
+                <xwalk:field-source from="dc.description.tableofcontents" />
+            </xwalk:field-mapping>
+            <!-- c-identifier-uri-->
+            <xwalk:field-mapping to="c-identifier-uri">
+                <xwalk:field-source from="dc.identifier.uri" />
+            </xwalk:field-mapping>
+            <!-- c-relation-isformatof-->
+            <xwalk:field-mapping to="c-relation-isformatof">
+                <xwalk:field-source from="dc.relation.isformatof" />
+            </xwalk:field-mapping>
+            <!-- c-relation-uri-->
+            <xwalk:field-mapping to="c-relation-uri">
+                <xwalk:field-source from="dc.relation.uri" />
+            </xwalk:field-mapping>
+            <!-- c-title-alternative-->
+            <xwalk:field-mapping to="c-title-alternative">
+                <xwalk:field-source from="dc.title.alternative" />
+            </xwalk:field-mapping>
+        </xwalk:field-map>
+        <!-- field map for Thesis-type publications -->
+        <xwalk:field-map name="thesis-harvest">
+            <!-- include the default field map -->
+            <xwalk:include-field-map name="default-harvest">
+                <!--de default mapping into editors from dc.contributor.editor -->
+                <xwalk:exclude-field-mapping to="editors" />
+            </xwalk:include-field-map>
+            <!-- map both dc.contributor.advisor and dc.contributor.committeemember into editors -->
+            <xwalk:field-mapping to="editors" separator=";">
+                <xwalk:field-source from="dc.contributor.advisor" />
+                <xwalk:field-source from="dc.contributor.committeemember" />
+            </xwalk:field-mapping>
+        </xwalk:field-map>
+        <xwalk:field-map name="journal-harvest">
+            <xwalk:include-field-map name="default-harvest" />
+            <!-- citation formula -->
+            <!-- DSpace 7: XPath position/last() replaced with standard dc.contributor.author access.
+                 All dc.contributor.author values are listed with "; " suffix. This produces a
+                 trailing "; " on the last author name, which is a minor cosmetic difference from
+                 the original. Revise using JSONPath with regex once the RT2 engine's JSONPath support
+                 is confirmed (e.g. $.metadata['dc.contributor.author'][?(@.value =~ /,/)].value). -->
+            <xwalk:field-mapping to="c-citation" separator="">
+                <xwalk:field-source from="dc.contributor.author" suffix="; " />
+                <xwalk:field-source prefix="(" from="dc.date.issued" format="date:Y" suffix="). " />
+                <xwalk:field-source prefix="&quot;" from="dc.title" suffix="&quot; " />
+                <xwalk:field-source from="dc.identifier.source" />
+                <xwalk:field-source prefix=", " from="dc.identifier.volume" />
+                <xwalk:field-source prefix=":" from="dc.identifier.issue" />
+                <xwalk:field-source prefix=", " from="dc.identifier.startpage" />
+                <xwalk:field-source prefix="-" from="dc.identifier.endpage" suffix="." />
+            </xwalk:field-mapping>
+        </xwalk:field-map>
+        <!-- field map for other-type publications -->
+        <xwalk:field-map name="other-harvest">
+            <xwalk:include-field-map name="default-harvest">
+                <xwalk:exclude-field-mapping to="number-of-pieces" />
+            </xwalk:include-field-map>
+        </xwalk:field-map>
+    </xwalk:field-maps>
+    <!-- === VALUE MAPS ==================================================================================================================== -->
+    <xwalk:value-maps>
+
+        <xwalk:value-map name="replace-authors-with-name-orcids" matchMode="regex">
+            <!-- Attach ORCID iDs to author names (N.B. duplicate names will all get the first matching ORCID iD) -->
+            <xwalk:value-mapping from="##AUTHOR##([^#]*)(?=.*?##NAME-ORCID##\1; (\d{4}-\d{4}-\d{4}-\d{3}[\dX]))" to="##AUTHOR##$1; $2" />
+            <!-- Remove the name-orcid substrings -->
+            <xwalk:value-mapping from="##NAME-ORCID##[^#]*" to="" />
+        </xwalk:value-map>
+
+        <xwalk:value-map name="extract-name-from-name-orcid" matchMode="regex">
+            <xwalk:value-mapping from="^(.*); \d{4}-\d{4}-\d{4}-\d{3}[\dX]$" to="$1" />
+        </xwalk:value-map>
+
+        <xwalk:value-map name="extract-orcid-from-name-orcid" matchMode="regex">
+            <xwalk:value-mapping from="^.*; (\d{4}-\d{4}-\d{4}-\d{3}[\dX])$" to="$1" />
+            <xwalk:otherwise-mapping action="ignore-this-value" />
+        </xwalk:value-map>
+
+        <xwalk:value-map name="extract-lastname-from-name-orcid" matchMode="regex">
+            <xwalk:value-mapping from="^(.*?)(?:,[^,]*)?(; \d{4}-\d{4}-\d{4}-\d{3}[\dX])?$" to="$1" />
+        </xwalk:value-map>
+
+        <xwalk:value-map name="guess-identifier-scheme" matchMode="regex">
+            <xwalk:value-mapping from="^\d{4}-\d{4}-\d{4}-\d{3}[\dX]$" to="orcid" />
+            <xwalk:otherwise-mapping action="ignore-this-value" />
+        </xwalk:value-map>
+
+        <!-- Maps licence URIs to author-licence choices -->
+        <!-- Looks for the URI anywhere in the input string. -->
+        <xwalk:value-map name="licence-uri-to-author-licence-choices" matchMode="regex">
+            <!-- In Copyright -->
+            <xwalk:value-mapping from="^.*?https?://rightsstatements.org/page/InC-RUU/1.0/.*$" to="InCopyright-RUU" />
+            <xwalk:value-mapping from="^.*?https?://rightsstatements.org/page/InC/1.0/.*$" to="InCopyright" />
+            <!-- Creative Commons licences -->
+            <!-- Elements does not distinguish between CC licence version numbers or localisations. Therefore we map all to the appropriate generic licence. -->
+            <xwalk:value-mapping from="^.*?https?://creativecommons.org/licenses/by-nc-nd/.*$" to="CC-BY-NC-ND" />
+            <xwalk:value-mapping from="^.*?https?://creativecommons.org/licenses/by-nc-sa/.*$" to="CC-BY-NC-SA" />
+            <xwalk:value-mapping from="^.*?https?://creativecommons.org/licenses/by-nc/.*$" to="CC-BY-NC" />
+            <xwalk:value-mapping from="^.*?https?://creativecommons.org/licenses/by-nd/.*$" to="CC-BY-ND" />
+            <xwalk:value-mapping from="^.*?https?://creativecommons.org/licenses/by-sa/.*$" to="CC-BY-SA" />
+            <xwalk:value-mapping from="^.*?https?://creativecommons.org/licenses/by/.*$" to="CC-BY" />
+            <xwalk:value-mapping from="^.*?https?://creativecommons.org/publicdomain/zero/1.0/.*$" to="CC-0" />
+            <xwalk:value-mapping from="^.*?https?://creativecommons.org/publicdomain/mark/1.0/.*$" to="CC-Public-Domain" />
+            <!-- GNU General Public License -->
+            <!-- Matches to 'old-licences', version- and language-specific forms as well the generic URI -->
+            <!-- As of 16 Jan 2019, the latest GPL licence is version 3. Therefore https://www.gnu.org/licenses/gpl.html maps to this version. -->
+            <xwalk:value-mapping from="^.*?https?://www.gnu.org/licenses/gpl.(\.[a-z-]{2,5})?\.html.*$" to="GPL-3.0" />
+            <xwalk:value-mapping from="^.*?https?://www.gnu.org/licenses(/old-licenses)?/gpl-3.0(\.[a-z-]{2,5})?\.html.*$" to="GPL-3.0" />
+            <xwalk:value-mapping from="^.*?https?://www.gnu.org/licenses(/old-licenses)?/gpl-2.0(\.[a-z-]{2,5})?\.html.*$" to="GPL-2.0" />
+            <xwalk:value-mapping from="^.*?https?://www.gnu.org/licenses(/old-licenses)?/gpl-1.0(\.[a-z-]{2,5})?\.html.*$" to="GPL" />
+            <!-- MIT licence -->
+            <xwalk:value-mapping from="^.*?https?://opensource.org/licenses/MIT.*$" to="MIT" />
+            <!-- Apache License, Version 2.0 -->
+            <xwalk:value-mapping from="^.*?https?://www.apache.org/licenses/LICENSE-2.0.*$" to="Apache-2.0" />
+            <!-- Mozilla Public License 2.0 -->
+            <xwalk:value-mapping from="^.*?https?://www.mozilla.org(/[a-z]{2}(-[A-Z]{2})?)?/MPL/2.0/.*$" to="MLP-2.0" />
+            <xwalk:value-mapping from="^.*?https?://opensource.org/licenses/MPL-2.0.*$" to="MLP-2.0" />
+            <!-- 3-Clause BSD License (Berkeley Software Distribution) -->
+            <xwalk:value-mapping from="^.*?https?://opensource.org/licenses/BSD-3-Clause.*$" to="BSD-3-Clause" />
+            <!-- Open Government Licence for public sector information -->
+            <!-- As of 16 Jan 2019, has three versions. Version 3 has a Welsh translation available. All match the regex below. -->
+            <xwalk:value-mapping from="^.*?https?://www.nationalarchives.gov.uk/doc/open-government-licence.*$" to="OGL" />
+            <!-- AusGOAL Restrictive Licence Template (website now defunct) -->
+            <xwalk:value-mapping from="^.*?https?://www.ausgoal.gov.au/restrictive-licence-template.*$" to="RLT" />
+            <!-- If non of the above match, ignore the value -->
+            <xwalk:otherwise-mapping action="ignore-this-value" />
+        </xwalk:value-map>
+
+        <!-- strips invalid characters from ISBN-10s and ISSNs -->
+        <xwalk:value-map name="strip-invalid-characters-from-ISBN-10-or-ISSN" matchMode="regex">
+            <!-- spaces are translated to hyphens for consistent presentation in Elements -->
+            <xwalk:value-mapping from=" " to="-" />
+            <!-- lowercase "x" is assumed to be a user-entry error and translated to uppercase "X"-->
+            <xwalk:value-mapping from="x" to="X" />
+            <!-- all remaining invalid characters are then removed-->
+            <xwalk:value-mapping from="[^\dX-]" to="" />
+        </xwalk:value-map>
+
+        <!-- strips invalid characters from ISBN-13s -->
+        <xwalk:value-map name="strip-invalid-characters-from-ISBN-13" matchMode="regex">
+            <!-- spaces are translated to hyphens for consistent presentation in Elements -->
+            <xwalk:value-mapping from=" " to="-" />
+            <!-- all remaining invalid characters are then removed-->
+            <xwalk:value-mapping from="[^\d-]" to="" />
+        </xwalk:value-map>
+
+        <!-- Parse dc.description.sponsorship into funding-acknowledgement data -->
+        <xwalk:value-map name="dc.description.sponsorship-to-grant-id" matchMode="regex">
+            <!-- When the string starts with the word "Grant" (case-insensitive), matches text after the word "Grant" up to the first
+                 colon (":") or the end of the string. Strips leading and trailing spaces. -->
+            <xwalk:value-mapping from="(?i)^Grant\s*([^:]+?)\s*(?::.*)?$" to="$1" />
+            <!-- If no match, ignore the value completely -->
+            <xwalk:otherwise-mapping action="ignore-this-value" />
+        </xwalk:value-map>
+
+        <xwalk:value-map name="dc.description.sponsorship-to-grant-org" matchMode="regex">
+            <!-- When the string starts with the word "Grant" (case-insensitive) and contains at least one colon, matches text after
+                 first colon up to the end of the string. Strips leading and trailing spaces. -->
+            <xwalk:value-mapping from="(?i)^Grant[^:]*:\s*(.*?)\s*$" to="$1" />
+            <!-- If no match, continue i.e. use the whole string as the funder name. -->
+            <xwalk:otherwise-mapping action="continue" />
+        </xwalk:value-map>
+
+        <xwalk:value-map name="language-none-custom">
+            <xwalk:value-mapping from="eng" to="English" />
+            <!-- if none of the above match, pass the value as-is -->
+            <xwalk:otherwise-mapping action="continue" />
+        </xwalk:value-map>
+
+        <!-- value map to look up languages from ISO 639-1 language code ================================================ -->
+        <xwalk:value-map name="ISO639-1-to-language">
+            <xwalk:value-mapping from="eng" to="English" />
+            <xwalk:value-mapping from="ab" to="Abkhaz" />
+            <xwalk:value-mapping from="aa" to="Afar" />
+            <xwalk:value-mapping from="af" to="Afrikaans" />
+            <xwalk:value-mapping from="ak" to="Akan" />
+            <xwalk:value-mapping from="sq" to="Albanian" />
+            <xwalk:value-mapping from="am" to="Amharic" />
+            <xwalk:value-mapping from="oj" to="Anishinaabe" />
+            <xwalk:value-mapping from="ar" to="Arabic" />
+            <xwalk:value-mapping from="an" to="Aragonese" />
+            <xwalk:value-mapping from="hy" to="Armenian" />
+            <xwalk:value-mapping from="as" to="Assamese" />
+            <xwalk:value-mapping from="av" to="Avaric" />
+            <xwalk:value-mapping from="ae" to="Avestan" />
+            <xwalk:value-mapping from="ay" to="Aymara" />
+            <xwalk:value-mapping from="az" to="Azerbaijani" />
+            <xwalk:value-mapping from="bm" to="Bambara" />
+            <xwalk:value-mapping from="ba" to="Bashkir" />
+            <xwalk:value-mapping from="eu" to="Basque" />
+            <xwalk:value-mapping from="be" to="Belarusian" />
+            <xwalk:value-mapping from="bn" to="Bengali, Bangla" />
+            <xwalk:value-mapping from="bh" to="Bihari" />
+            <xwalk:value-mapping from="bi" to="Bislama" />
+            <xwalk:value-mapping from="bs" to="Bosnian" />
+            <xwalk:value-mapping from="br" to="Breton" />
+            <xwalk:value-mapping from="bg" to="Bulgarian" />
+            <xwalk:value-mapping from="my" to="Burmese" />
+            <xwalk:value-mapping from="ca" to="Catalan" />
+            <xwalk:value-mapping from="ceb" to="Cebuano" />
+            <xwalk:value-mapping from="ch" to="Chamorro" />
+            <xwalk:value-mapping from="ce" to="Chechen" />
+            <xwalk:value-mapping from="ny" to="Chichewa, Chewa, Nyanja" />
+            <xwalk:value-mapping from="zh" to="Chinese" />
+            <xwalk:value-mapping from="cv" to="Chuvash" />
+            <xwalk:value-mapping from="kw" to="Cornish" />
+            <xwalk:value-mapping from="co" to="Corsican" />
+            <xwalk:value-mapping from="cr" to="Cree" />
+            <xwalk:value-mapping from="hr" to="Croatian" />
+            <xwalk:value-mapping from="cs" to="Czech" />
+            <xwalk:value-mapping from="da" to="Danish" />
+            <xwalk:value-mapping from="dv" to="Divehi, Dhivehi, Maldivian" />
+            <xwalk:value-mapping from="nl" to="Dutch" />
+            <xwalk:value-mapping from="dz" to="Dzongkha" />
+            <xwalk:value-mapping from="en-US" to="English" />
+            <xwalk:value-mapping from="en_US" to="English" />
+            <xwalk:value-mapping from="en" to="English" />
+            <xwalk:value-mapping from="english" to="English" />
+            <xwalk:value-mapping from="other" to="Other" />
+            <xwalk:value-mapping from="EN" to="English" />
+            <xwalk:value-mapping from="eo" to="Esperanto" />
+            <xwalk:value-mapping from="et" to="Estonian" />
+            <xwalk:value-mapping from="ee" to="Ewe" />
+            <xwalk:value-mapping from="fo" to="Faroese" />
+            <xwalk:value-mapping from="fj" to="Fijian" />
+            <xwalk:value-mapping from="fi" to="Finnish" />
+            <xwalk:value-mapping from="fr" to="French" />
+            <xwalk:value-mapping from="FR" to="French" />
+            <xwalk:value-mapping from="ff" to="Fula, Fulah, Pulaar, Pular" />
+            <xwalk:value-mapping from="gl" to="Galician" />
+            <xwalk:value-mapping from="ka" to="Georgian" />
+            <xwalk:value-mapping from="de" to="German" />
+            <xwalk:value-mapping from="GE" to="Georgia" />
+            <xwalk:value-mapping from="el" to="Greek (modern)" />
+            <xwalk:value-mapping from="gn" to="Guaraní" />
+            <xwalk:value-mapping from="gu" to="Gujarati" />
+            <xwalk:value-mapping from="ht" to="Haitian, Haitian Creole" />
+            <xwalk:value-mapping from="ha" to="Hausa" />
+            <xwalk:value-mapping from="he" to="Hebrew (modern)" />
+            <xwalk:value-mapping from="HE" to="Hebrew" />
+            <xwalk:value-mapping from="hz" to="Herero" />
+            <xwalk:value-mapping from="hi" to="Hindi" />
+            <xwalk:value-mapping from="ho" to="Hiri Motu" />
+            <xwalk:value-mapping from="hu" to="Hungarian" />
+            <xwalk:value-mapping from="ilo" to="Iloko" />
+            <xwalk:value-mapping from="ia" to="Interlingua" />
+            <xwalk:value-mapping from="id" to="Indonesian" />
+            <xwalk:value-mapping from="ie" to="Interlingue" />
+            <xwalk:value-mapping from="ga" to="Irish" />
+            <xwalk:value-mapping from="ig" to="Igbo" />
+            <xwalk:value-mapping from="ik" to="Inupiaq" />
+            <xwalk:value-mapping from="io" to="Ido" />
+            <xwalk:value-mapping from="is" to="Icelandic" />
+            <xwalk:value-mapping from="it" to="Italian" />
+            <xwalk:value-mapping from="iu" to="Inuktitut" />
+            <xwalk:value-mapping from="ja" to="Japanese" />
+            <xwalk:value-mapping from="jv" to="Javanese" />
+            <xwalk:value-mapping from="kl" to="Kalaallisut, Greenlandic" />
+            <xwalk:value-mapping from="kn" to="Kannada" />
+            <xwalk:value-mapping from="kr" to="Kanuri" />
+            <xwalk:value-mapping from="ks" to="Kashmiri" />
+            <xwalk:value-mapping from="kk" to="Kazakh" />
+            <xwalk:value-mapping from="km" to="Khmer" />
+            <xwalk:value-mapping from="ki" to="Kikuyu, Gikuyu" />
+            <xwalk:value-mapping from="rw" to="Kinyarwanda" />
+            <xwalk:value-mapping from="ky" to="Kyrgyz" />
+            <xwalk:value-mapping from="kv" to="Komi" />
+            <xwalk:value-mapping from="kg" to="Kongo" />
+            <xwalk:value-mapping from="ko" to="Korean" />
+            <xwalk:value-mapping from="ku" to="Kurdish" />
+            <xwalk:value-mapping from="kj" to="Kwanyama, Kuanyama" />
+            <xwalk:value-mapping from="la" to="Latin" />
+            <xwalk:value-mapping from="lb" to="Luxembourgish, Letzeburgesch" />
+            <xwalk:value-mapping from="lg" to="Ganda" />
+            <xwalk:value-mapping from="li" to="Limburgish, Limburgan, Limburger" />
+            <xwalk:value-mapping from="ln" to="Lingala" />
+            <xwalk:value-mapping from="lo" to="Lao" />
+            <xwalk:value-mapping from="lt" to="Lithuanian" />
+            <xwalk:value-mapping from="lu" to="Luba-Katanga" />
+            <xwalk:value-mapping from="lv" to="Latvian" />
+            <xwalk:value-mapping from="gv" to="Manx" />
+            <xwalk:value-mapping from="mk" to="Macedonian" />
+            <xwalk:value-mapping from="mg" to="Malagasy" />
+            <xwalk:value-mapping from="ms" to="Malay" />
+            <xwalk:value-mapping from="ml" to="Malayalam" />
+            <xwalk:value-mapping from="mt" to="Maltese" />
+            <xwalk:value-mapping from="mi" to="Māori" />
+            <xwalk:value-mapping from="mr" to="Marathi (Marāṭhī)" />
+            <xwalk:value-mapping from="mh" to="Marshallese" />
+            <xwalk:value-mapping from="mn" to="Mongolian" />
+            <xwalk:value-mapping from="na" to="Nauruan" />
+            <xwalk:value-mapping from="nv" to="Navajo, Navaho" />
+            <xwalk:value-mapping from="nd" to="Northern Ndebele" />
+            <xwalk:value-mapping from="SE" to="Northern Sami" />
+            <xwalk:value-mapping from="ne" to="Nepali" />
+            <xwalk:value-mapping from="ng" to="Ndonga" />
+            <xwalk:value-mapping from="nb" to="Norwegian Bokmål" />
+            <xwalk:value-mapping from="nn" to="Norwegian Nynorsk" />
+            <xwalk:value-mapping from="no" to="Norwegian" />
+            <xwalk:value-mapping from="ii" to="Nuosu" />
+            <xwalk:value-mapping from="nr" to="Southern Ndebele" />
+            <xwalk:value-mapping from="oc" to="Occitan" />
+            <xwalk:value-mapping from="oj" to="Ojibwe, Ojibwa" />
+            <xwalk:value-mapping from="cu" to="Old Church Slavonic, Church Slavonic, Old Bulgarian" />
+            <xwalk:value-mapping from="om" to="Oromo" />
+            <xwalk:value-mapping from="or" to="Oriya" />
+            <xwalk:value-mapping from="os" to="Ossetian, Ossetic" />
+            <xwalk:value-mapping from="pa" to="(Eastern) Punjabi" />
+            <xwalk:value-mapping from="pi" to="Pāli" />
+            <xwalk:value-mapping from="fa" to="Persian (Farsi)" />
+            <xwalk:value-mapping from="Persian" to="Persian" />
+            <xwalk:value-mapping from="pl" to="Polish" />
+            <xwalk:value-mapping from="ps" to="Pashto, Pushto" />
+            <xwalk:value-mapping from="PN" to="Pitcairn Islands" />
+            <xwalk:value-mapping from="pt" to="Portuguese" />
+            <xwalk:value-mapping from="qu" to="Quechua" />
+            <xwalk:value-mapping from="rm" to="Romansh" />
+            <xwalk:value-mapping from="rn" to="Kirundi" />
+            <xwalk:value-mapping from="ro" to="Romanian" />
+            <xwalk:value-mapping from="ru" to="Russian" />
+            <xwalk:value-mapping from="RU" to="Russian" />
+            <xwalk:value-mapping from="sa" to="Sanskrit (Saṁskṛta)" />
+            <xwalk:value-mapping from="sc" to="Sardinian" />
+            <xwalk:value-mapping from="sd" to="Sindhi" />
+            <xwalk:value-mapping from="se" to="Northern Sami" />
+            <xwalk:value-mapping from="sm" to="Samoan" />
+            <xwalk:value-mapping from="sg" to="Sango" />
+            <xwalk:value-mapping from="sr" to="Serbian" />
+            <xwalk:value-mapping from="gd" to="Scottish Gaelic, Gaelic" />
+            <xwalk:value-mapping from="sn" to="Shona" />
+            <xwalk:value-mapping from="si" to="Sinhalese, Sinhala" />
+            <xwalk:value-mapping from="sk" to="Slovak" />
+            <xwalk:value-mapping from="sl" to="Slovene" />
+            <xwalk:value-mapping from="so" to="Somali" />
+            <xwalk:value-mapping from="st" to="Southern Sotho" />
+            <xwalk:value-mapping from="es" to="Spanish" />
+            <xwalk:value-mapping from="su" to="Sundanese" />
+            <xwalk:value-mapping from="sw" to="Swahili" />
+            <xwalk:value-mapping from="ss" to="Swati" />
+            <xwalk:value-mapping from="sv" to="Swedish" />
+            <xwalk:value-mapping from="ta" to="Tamil" />
+            <xwalk:value-mapping from="te" to="Telugu" />
+            <xwalk:value-mapping from="tg" to="Tajik" />
+            <xwalk:value-mapping from="th" to="Thai" />
+            <xwalk:value-mapping from="ti" to="Tigrinya" />
+            <xwalk:value-mapping from="bo" to="Tibetan Standard, Tibetan, Central" />
+            <xwalk:value-mapping from="tk" to="Turkmen" />
+            <xwalk:value-mapping from="tl" to="Tagalog" />
+            <xwalk:value-mapping from="tn" to="Tswana" />
+            <xwalk:value-mapping from="to" to="Tonga (Tonga Islands)" />
+            <xwalk:value-mapping from="tr" to="Turkish" />
+            <xwalk:value-mapping from="ts" to="Tsonga" />
+            <xwalk:value-mapping from="tt" to="Tatar" />
+            <xwalk:value-mapping from="tw" to="Twi" />
+            <xwalk:value-mapping from="ty" to="Tahitian" />
+            <xwalk:value-mapping from="ug" to="Uyghur" />
+            <xwalk:value-mapping from="uk" to="Ukrainian" />
+            <xwalk:value-mapping from="ur" to="Urdu" />
+            <xwalk:value-mapping from="uz" to="Uzbek" />
+            <xwalk:value-mapping from="ve" to="Venda" />
+            <xwalk:value-mapping from="vi" to="Vietnamese" />
+            <xwalk:value-mapping from="vo" to="Volapük" />
+            <xwalk:value-mapping from="wa" to="Walloon" />
+            <xwalk:value-mapping from="cy" to="Welsh" />
+            <xwalk:value-mapping from="wo" to="Wolof" />
+            <xwalk:value-mapping from="fy" to="Western Frisian" />
+            <xwalk:value-mapping from="xh" to="Xhosa" />
+            <xwalk:value-mapping from="yi" to="Yi" />
+            <xwalk:value-mapping from="yo" to="Yoruba" />
+            <xwalk:value-mapping from="za" to="Zhuang, Chuang" />
+            <xwalk:value-mapping from="zu" to="Zulu" />
+            <!-- if none of the above match, pass the value as-is -->
+            <xwalk:otherwise-mapping action="continue" />
+        </xwalk:value-map>
+
+        <!-- DSpace 7: map "Private (in review)" workflow status to "Private" -->
+        <xwalk:value-map name="dspace7-repository-status">
+            <xwalk:value-mapping from="Private (in review)" to="Private" />
+            <!-- Pass all other values through unchanged -->
+            <xwalk:otherwise-mapping action="continue" />
+        </xwalk:value-map>
+    </xwalk:value-maps>
+
+    <!-- === OBJECT TYPE SELECTOR ========================================================================================================== -->
+    <!-- Selects the Elements category & type (category is always "publication"). -->
+    <!-- Also decides which field map should be used to crosswalk the item. -->
+    <xwalkin:object-type-selector>
+        <!-- Chooses the first <xwalk:when> block where the <xwalk:condition> is true -->
+        <!--  Hierarchy. For items with multiple types, represent it in Elements' type field as the one with the smallest number (highest rank)
+              1. Journal article
+              2. Book
+              3. Chapter
+              4. Journal article (with sub type Preprint)
+              5. Thesis / Dissertation
+              6. Report (with sub type Technical Report)
+              7. Report (with sub type Working Paper)
+              8. Dataset
+              9. Software / Code
+              10. Presentation
+              11. Other (with sub type Learning Object)
+              12. Composition
+              13. Other (with sub type Interview)
+              14. Media (with sub type Video)
+              15. Other (with sub type Project)
+              16. Other (wth sub type Plan or blueprint)
+              17. Figure (with sub type Map)
+              18. Media (with sub type Animation)
+              19. Media (with sub type Recording, oral)
+              20. Media (with sub type Recording, musical)
+              21. Media (with sub type Recording, acoustical)
+              22. Media (with sub type Image, 3-D)
+              23. Media (with sub type Image)
+              24. Other
+    -->
+        <xwalk:choose>
+            <!-- The order of the <xwalk:when> blocks is important - the first block whose condition is met will be the one actioned. -->
+            <!-- journal-article -->
+            <xwalk:when>
+                <!-- there exists at least one value of dc.type that CONTAINS "Article"  -->
+                <xwalk:condition select-using="jsonpath" argument-field="$.metadata['dc.type'][?(@.value =~ '(?i)article')].value" operator="has-value" />
+                <xwalk:result>
+                    <xwalkin:object-type-selection category="publication" object-type="journal-article" field-map="journal-harvest" />
+                </xwalk:result>
+            </xwalk:when>
+            <!-- chapter -->
+            <xwalk:when>
+                <!-- there exists at least one value of dc.type that CONTAINS "Book chapter" -->
+                <xwalk:condition select-using="jsonpath" argument-field="$.metadata['dc.type'][?(@.value =~ '(?i)book chapter')].value" operator="has-value" />
+                <xwalk:result>
+                    <xwalkin:object-type-selection category="publication" object-type="chapter" field-map="default-harvest" />
+                </xwalk:result>
+            </xwalk:when>
+            <!-- conference -->
+            <xwalk:when>
+                <!-- there exists at least one value of dc.type that CONTAINS "Conference paper" -->
+                <xwalk:condition select-using="jsonpath" argument-field="$.metadata['dc.type'][?(@.value =~ '(?i)conference paper')].value" operator="has-value" />
+                <xwalk:result>
+                    <xwalkin:object-type-selection category="publication" object-type="conference" field-map="default-harvest" />
+                </xwalk:result>
+            </xwalk:when>
+            <!-- poster -->
+            <xwalk:when>
+                <!-- there exists at least one value of dc.type that CONTAINS "Poster" -->
+                <xwalk:condition select-using="jsonpath" argument-field="$.metadata['dc.type'][?(@.value =~ '(?i)poster')].value" operator="has-value" />
+                <xwalk:result>
+                    <xwalkin:object-type-selection category="publication" object-type="poster" field-map="default-harvest" />
+                </xwalk:result>
+            </xwalk:when>
+            <!-- book -->
+            <xwalk:when>
+                <!-- there exists at least one value of dc.type that CONTAINS "book" -->
+                <xwalk:condition select-using="jsonpath" argument-field="$.metadata['dc.type'][?(@.value =~ '(?i)book')].value" operator="has-value" />
+                <xwalk:result>
+                    <xwalkin:object-type-selection category="publication" object-type="book" field-map="default-harvest" />
+                </xwalk:result>
+            </xwalk:when>
+            <!--preprint-->
+            <xwalk:when>
+                <!-- there exists at least one value of dc.type that CONTAINS "preprint"  -->
+                <xwalk:condition select-using="jsonpath" argument-field="$.metadata['dc.type'][?(@.value =~ '(?i)preprint')].value" operator="has-value" />
+                <xwalk:result>
+                    <xwalkin:object-type-selection category="publication" object-type="journal-article" field-map="default-harvest" />
+                </xwalk:result>
+            </xwalk:when>
+            <!--thesis-->
+            <xwalk:when>
+                <!-- there exists at least one value of dc.type that CONTAINS "Thesis"  -->
+                <xwalk:condition select-using="jsonpath" argument-field="$.metadata['dc.type'][?(@.value =~ '(?i)thesis')].value" operator="has-value" />
+                <xwalk:result>
+                    <xwalkin:object-type-selection category="publication" object-type="thesis-dissertation" field-map="thesis-harvest" />
+                </xwalk:result>
+            </xwalk:when>
+            <!--tehnical report-->
+            <xwalk:when>
+                <!--there exists at least one value of dc.type that CONTAINS "technical report"-->
+                <xwalk:condition select-using="jsonpath" argument-field="$.metadata['dc.type'][?(@.value =~ '(?i)technical report')].value" operator="has-value" />
+                <xwalk:result>
+                    <xwalkin:object-type-selection category="publication" object-type="report" field-map="default-harvest" />
+                </xwalk:result>
+            </xwalk:when>
+            <!--working paper-->
+            <xwalk:when>
+                <!--there exists at least one value of dc.type that CONTAINS "Working Paper"-->
+                <xwalk:condition select-using="jsonpath" argument-field="$.metadata['dc.type'][?(@.value =~ '(?i)working paper')].value" operator="has-value" />
+                <xwalk:result>
+                    <xwalkin:object-type-selection category="publication" object-type="report" field-map="default-harvest" />
+                </xwalk:result>
+            </xwalk:when>
+            <!--dataset-->
+            <xwalk:when>
+                <!--there exists at least one value of dc.type that CONTAINS "Dataset" -->
+                <xwalk:condition select-using="jsonpath" argument-field="$.metadata['dc.type'][?(@.value =~ '(?i)dataset')].value" operator="has-value" />
+                <xwalk:result>
+                    <xwalkin:object-type-selection category="publication" object-type="dataset" field-map="default-harvest" />
+                </xwalk:result>
+            </xwalk:when>
+            <!--software-->
+            <xwalk:when>
+                <!--there exists at least one value of dc.type that CONTAINS "Software" -->
+                <xwalk:condition select-using="jsonpath" argument-field="$.metadata['dc.type'][?(@.value =~ '(?i)software')].value" operator="has-value" />
+                <xwalk:result>
+                    <xwalkin:object-type-selection category="publication" object-type="software" field-map="default-harvest" />
+                </xwalk:result>
+            </xwalk:when>
+            <!--presentation-->
+            <xwalk:when>
+                <!--there exists at least one value of dc.type that CONTAINS "Presentation" -->
+                <xwalk:condition select-using="jsonpath" argument-field="$.metadata['dc.type'][?(@.value =~ '(?i)presentation')].value" operator="has-value" />
+                <xwalk:result>
+                    <xwalkin:object-type-selection category="publication" object-type="presentation" field-map="default-harvest" />
+                </xwalk:result>
+            </xwalk:when>
+            <!--learning object-->
+            <xwalk:when>
+                <!--there exists at least one value of dc.type that CONTAINS "Learning Object" -->
+                <xwalk:condition select-using="jsonpath" argument-field="$.metadata['dc.type'][?(@.value =~ '(?i)learning object')].value" operator="has-value" />
+                <xwalk:result>
+                    <xwalkin:object-type-selection category="publication" object-type="other" field-map="other-harvest" />
+                </xwalk:result>
+            </xwalk:when>
+            <!--musical score-->
+            <xwalk:when>
+                <!--there exists at least one value of dc.type that CONTAINS "Musical Score" -->
+                <xwalk:condition select-using="jsonpath" argument-field="$.metadata['dc.type'][?(@.value =~ '(?i)musical score')].value" operator="has-value" />
+                <xwalk:result>
+                    <xwalkin:object-type-selection category="publication" object-type="composition" field-map="default-harvest" />
+                </xwalk:result>
+            </xwalk:when>
+            <!--interview-->
+            <xwalk:when>
+                <!--there exists at least one value of dc.type that CONTAINS "Interview" -->
+                <xwalk:condition select-using="jsonpath" argument-field="$.metadata['dc.type'][?(@.value =~ '(?i)interview')].value" operator="has-value" />
+                <xwalk:result>
+                    <xwalkin:object-type-selection category="publication" object-type="other" field-map="other-harvest" />
+                </xwalk:result>
+            </xwalk:when>
+            <!--video-->
+            <xwalk:when>
+                <!--there exists at least one value of dc.type that CONTAINS "Video" -->
+                <xwalk:condition select-using="jsonpath" argument-field="$.metadata['dc.type'][?(@.value =~ '(?i)video')].value" operator="has-value" />
+                <xwalk:result>
+                    <xwalkin:object-type-selection category="publication" object-type="media" field-map="default-harvest" />
+                </xwalk:result>
+            </xwalk:when>
+            <!--project-->
+            <xwalk:when>
+                <!--there exists at least one value of dc.type that CONTAINS "Project" -->
+                <xwalk:condition select-using="jsonpath" argument-field="$.metadata['dc.type'][?(@.value =~ '(?i)project')].value" operator="has-value" />
+                <xwalk:result>
+                    <xwalkin:object-type-selection category="publication" object-type="other" field-map="other-harvest" />
+                </xwalk:result>
+            </xwalk:when>
+            <!--Plan or blueprint-->
+            <xwalk:when>
+                <!--there exists at least one value of dc.type that CONTAINS "Plan or blueprint" -->
+                <xwalk:condition select-using="jsonpath" argument-field="$.metadata['dc.type'][?(@.value =~ '(?i)plan or blueprint')].value" operator="has-value" />
+                <xwalk:result>
+                    <xwalkin:object-type-selection category="publication" object-type="other" field-map="other-harvest" />
+                </xwalk:result>
+            </xwalk:when>
+            <!--map-->
+            <xwalk:when>
+                <!--there exists at least one value of dc.type that CONTAINS "Map" -->
+                <xwalk:condition select-using="jsonpath" argument-field="$.metadata['dc.type'][?(@.value =~ '(?i)map')].value" operator="has-value" />
+                <xwalk:result>
+                    <xwalkin:object-type-selection category="publication" object-type="figure" field-map="default-harvest" />
+                </xwalk:result>
+            </xwalk:when>
+            <!--animation-->
+            <xwalk:when>
+                <!--there exists at least one value of dc.type that CONTAINS "Animation" -->
+                <xwalk:condition select-using="jsonpath" argument-field="$.metadata['dc.type'][?(@.value =~ '(?i)animation')].value" operator="has-value" />
+                <xwalk:result>
+                    <xwalkin:object-type-selection category="publication" object-type="media" field-map="default-harvest" />
+                </xwalk:result>
+            </xwalk:when>
+            <!--Recording, oral-->
+            <xwalk:when>
+                <!--there exists at least one value of dc.type that CONTAINS "Recording, oral" -->
+                <xwalk:condition select-using="jsonpath" argument-field="$.metadata['dc.type'][?(@.value =~ '(?i)recording, oral')].value" operator="has-value" />
+                <xwalk:result>
+                    <xwalkin:object-type-selection category="publication" object-type="media" field-map="default-harvest" />
+                </xwalk:result>
+            </xwalk:when>
+            <!-- Recording, musical -->
+            <xwalk:when>
+                <!--there exists at least one value of dc.type that CONTAINS "Recording, musical" -->
+                <xwalk:condition select-using="jsonpath" argument-field="$.metadata['dc.type'][?(@.value =~ '(?i)recording, musical')].value" operator="has-value" />
+                <xwalk:result>
+                    <xwalkin:object-type-selection category="publication" object-type="media" field-map="default-harvest" />
+                </xwalk:result>
+            </xwalk:when>
+            <!-- Recording, acoustical -->
+            <xwalk:when>
+                <!--there exists at least one value of dc.type that CONTAINS "Recording, acoustical" -->
+                <xwalk:condition select-using="jsonpath" argument-field="$.metadata['dc.type'][?(@.value =~ '(?i)recording, acoustical')].value" operator="has-value" />
+                <xwalk:result>
+                    <xwalkin:object-type-selection category="publication" object-type="media" field-map="default-harvest" />
+                </xwalk:result>
+            </xwalk:when>
+            <!-- Image, 3-D -->
+            <xwalk:when>
+                <!--there exists at least one value of dc.type that CONTAINS "Image, 3-D" -->
+                <xwalk:condition select-using="jsonpath" argument-field="$.metadata['dc.type'][?(@.value =~ '(?i)image, 3-d')].value" operator="has-value" />
+                <xwalk:result>
+                    <xwalkin:object-type-selection category="publication" object-type="media" field-map="default-harvest" />
+                </xwalk:result>
+            </xwalk:when>
+            <!-- Image -->
+            <xwalk:when>
+                <!--there exists at least one value of dc.type that CONTAINS "Image" -->
+                <xwalk:condition select-using="jsonpath" argument-field="$.metadata['dc.type'][?(@.value =~ '(?i)image')].value" operator="has-value" />
+                <xwalk:result>
+                    <xwalkin:object-type-selection category="publication" object-type="media" field-map="default-harvest" />
+                </xwalk:result>
+            </xwalk:when>
+
+            <!-- other -->
+            <xwalk:when>
+                <!--there exists at least one value of dc.type that CONTAINS "Other" -->
+                <xwalk:condition select-using="jsonpath" argument-field="$.metadata['dc.type'][?(@.value =~ '(?i)other')].value" operator="has-value" />
+                <xwalk:result>
+                    <xwalkin:object-type-selection category="publication" object-type="other" field-map="other-harvest" />
+                </xwalk:result>
+            </xwalk:when>
+
+            <xwalk:otherwise>
+                <xwalk:result>
+                    <xwalkin:object-type-selection category="publication" object-type="other" field-map="other-harvest" />
+                </xwalk:result>
+            </xwalk:otherwise>
+
+        </xwalk:choose>
+    </xwalkin:object-type-selector>
+</xwalkin:consolidated-maps>
