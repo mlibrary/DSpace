@@ -83,6 +83,29 @@
     </xwalk:field-map>
     <!-- INITIAL DEPOSIT (DEFAULT)-->
     <xwalk:field-map name="default-deposit">
+      <!-- Missing or unmatched primary groups leave campus unset for DSpace validation. -->
+      <xwalk:field-mapping to="dc.contributor.affiliationumcampus">
+        <xwalk:choose>
+          <xwalk:when>
+            <xwalk:condition argument-field="depositor.primary-group-id" operator="equals">1234</xwalk:condition>
+            <xwalk:result>
+              <xwalk:field-source value="Ann Arbor" />
+            </xwalk:result>
+          </xwalk:when>
+          <xwalk:when>
+            <xwalk:condition argument-field="depositor.primary-group-id" operator="equals">5678</xwalk:condition>
+            <xwalk:result>
+              <xwalk:field-source value="Dearborn" />
+            </xwalk:result>
+          </xwalk:when>
+          <xwalk:when>
+            <xwalk:condition argument-field="depositor.primary-group-id" operator="equals">9012</xwalk:condition>
+            <xwalk:result>
+              <xwalk:field-source value="Flint" />
+            </xwalk:result>
+          </xwalk:when>
+        </xwalk:choose>
+      </xwalk:field-mapping>
       <!-- OA Location specified by user at deposit -->
       <!-- IMPORTANT! These mappings MUST be specified if "Support OA location" is enabled in Deposit Settings. 
            They MUST meet the following conditions:
