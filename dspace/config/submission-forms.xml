@@ -1847,6 +1847,295 @@
             </row>
         </form>
 
+        <form name="traditionalpageone_elements">
+            <row>
+                <field>
+                    <dc-schema>dc</dc-schema>
+                    <dc-element>description</dc-element>
+                    <dc-qualifier>depositor</dc-qualifier>
+                    <repeatable>false</repeatable>
+                    <label>Depositing as</label>
+                    <input-type value-pairs-name="depositor">dropdown</input-type>
+                    <hint>Deposit as yourself, or as a proxy for someone else.</hint>
+                    <required></required>
+                </field>
+            </row>
+
+            <row>
+                <field>
+                    <dc-schema>dc</dc-schema>
+                    <dc-element>contributor</dc-element>
+                    <dc-qualifier>author</dc-qualifier>
+                    <repeatable>true</repeatable>
+                    <label>Author(s)</label>
+                    <input-type>name</input-type>
+                    <hint>Names of the author(s) of this work.  Add additional by clicking + Add more.  (* required)</hint>
+                    <required>At least one author is required.</required>
+                </field>
+            </row>
+
+            <row>
+                <field>
+                    <dc-schema>dc</dc-schema>
+                    <dc-element>identifier</dc-element>
+                    <dc-qualifier>orcid</dc-qualifier>
+                    <repeatable>true</repeatable>
+                    <label>ORCID iD</label>
+                    <input-type>onebox</input-type>
+                    <hint>ORCID iD(s) for author(s) of this work in this format: https://orcid.org/XXXX-XXXX-XXXX-XXXX (For example: https://orcid.org/0000-0002-2771-9344). Add additional by clicking + Add more.</hint>
+                    <required></required>
+                </field>
+            </row>
+
+            <row>
+                <field>
+                    <dc-schema>dc</dc-schema>
+                    <dc-element>contributor</dc-element>
+                    <dc-qualifier>affiliationum</dc-qualifier>
+                    <repeatable>true</repeatable>
+                    <label>U-M Author Affiliation</label>
+                    <input-type>onebox</input-type>
+                    <hint>U-M Author's affiliation(s).  Add additional by clicking + Add more.</hint>
+                    <required></required>
+                </field>
+            </row>
+
+            <row>
+                <field>
+                    <dc-schema>dc</dc-schema>
+                    <dc-element>contributor</dc-element>
+                    <dc-qualifier>affiliationother</dc-qualifier>
+                    <repeatable>true</repeatable>
+                    <label>Other Author Affiliation, non-U-M</label>
+                    <input-type>onebox</input-type>
+                    <hint>Author's affiliation(s), non-U-M.  Add additional by clicking + Add more.</hint>
+                    <required></required>
+                </field>
+            </row>
+
+            <!-- CHANGED vs traditionalpageone_um: no longer required, so Elements deposits validate -->
+            <row>
+                <field>
+                    <dc-schema>dc</dc-schema>
+                    <dc-element>contributor</dc-element>
+                    <dc-qualifier>affiliationumcampus</dc-qualifier>
+                    <repeatable>false</repeatable>
+                    <label>U-M Campus</label>
+                    <input-type value-pairs-name="um_campus">dropdown</input-type>
+                    <hint>U-M campus of the author(s).</hint>
+                    <required></required>
+                </field>
+            </row>
+
+            <row>
+                <field>
+                    <dc-schema>dc</dc-schema>
+                    <dc-element>title</dc-element>
+                    <dc-qualifier></dc-qualifier>
+                    <repeatable>false</repeatable>
+                    <label>Document or Work Title</label>
+                    <input-type>onebox</input-type>
+                    <hint>Enter the main title of the work. (* required)</hint>
+                    <required>You must enter a main title for this work.</required>
+                </field>
+            </row>
+
+            <row>
+                <field>
+                    <dc-schema>dc</dc-schema>
+                    <dc-element>title</dc-element>
+                    <dc-qualifier>alternative</dc-qualifier>
+                    <repeatable>true</repeatable>
+                    <label>Other Document or Work Titles</label>
+                    <input-type>onebox</input-type>
+                    <hint>If the work has any alternate titles, please enter them.  Add additional by clicking + Add more.</hint>
+                    <required></required>
+                </field>
+            </row>
+
+            <row>
+                <field>
+                    <dc-schema>dc</dc-schema>
+                    <dc-element>date</dc-element>
+                    <dc-qualifier>issued</dc-qualifier>
+                    <repeatable>false</repeatable>
+                    <label>Date of Issue</label>
+                    <input-type>date</input-type>
+                    <hint>Use today's date if Deep Blue is this work's first place of publication. (* YYYY required)</hint>
+                    <required>You must enter at least the year (YYYY). Day and month are not required.</required>
+                </field>
+            </row>
+
+            <row>
+                <field>
+                    <dc-schema>dc</dc-schema>
+                    <dc-element>identifier</dc-element>
+                    <dc-qualifier>source</dc-qualifier>
+                    <repeatable>false</repeatable>
+                    <label>Source</label>
+                    <input-type>onebox</input-type>
+                    <hint>Journal name, book title, etc.</hint>
+                    <required></required>
+                </field>
+            </row>
+
+            <row>
+                <field>
+                    <dc-schema>dc</dc-schema>
+                    <dc-element>publisher</dc-element>
+                    <dc-qualifier></dc-qualifier>
+                    <repeatable>false</repeatable>
+                    <label>Publisher</label>
+                    <input-type>onebox</input-type>
+                    <hint>Use only if previously published (e.g., in a journal).</hint>
+                    <required></required>
+                </field>
+            </row>
+
+            <row>
+                <field>
+                    <dc-schema>dc</dc-schema>
+                    <dc-element>description</dc-element>
+                    <dc-qualifier>peerreviewed</dc-qualifier>
+                    <repeatable>false</repeatable>
+                    <label>Peer Reviewed</label>
+                    <input-type value-pairs-name="peer_reviewed">dropdown</input-type>
+                    <hint>Select "Peer Reviewed" if work is peer reviewed. Selecting "Peer Reviewed" will allow this Work to be discovered as part of a specific "Peer reviewed Works" collection.</hint>
+                    <required></required>
+                </field>
+            </row>
+
+            <row>
+                <field>
+                    <dc-schema>dc</dc-schema>
+                    <dc-element>identifier</dc-element>
+                    <dc-qualifier>citation</dc-qualifier>
+                    <repeatable>false</repeatable>
+                    <label>Citation</label>
+                    <input-type>onebox</input-type>
+                    <hint>The citation for this work's previous publication. (e.g. Journal of X, vol. Y, no. Z, year, pp. m-n)</hint>
+                    <required></required>
+                </field>
+            </row>
+
+            <row>
+                <field>
+                    <dc-schema>dc</dc-schema>
+                    <dc-element>relation</dc-element>
+                    <dc-qualifier>ispartofseries</dc-qualifier>
+                    <repeatable>true</repeatable>
+                    <label>Series/Report No./Version</label>
+                    <input-type>onebox</input-type>
+                    <hint>Any series, number, version, or release assigned to this work.  Add additional by clicking + Add more.</hint>
+                    <required></required>
+                </field>
+            </row>
+
+            <row>
+                <field>
+                    <dc-schema>dc</dc-schema>
+                    <dc-element>identifier</dc-element>
+                    <dc-qualifier></dc-qualifier>
+                    <repeatable>true</repeatable>
+                    <label>Existing Identifiers</label>
+                    <input-type value-pairs-name="common_identifiers">qualdrop_value</input-type>
+                    <hint>If the work has existing identification numbers/codes associated with it, please select the type(s) and enter them.  Add additional by clicking + Add more.</hint>
+                    <required></required>
+                </field>
+            </row>
+
+            <row>
+                <field>
+                    <dc-schema>dc</dc-schema>
+                    <dc-element>type</dc-element>
+                    <dc-qualifier></dc-qualifier>
+                    <repeatable>true</repeatable>
+                    <label>Type</label>
+                    <input-type value-pairs-name="common_types">dropdown</input-type>
+                    <hint>Select the type(s) of content of the work. Datasets can no longer be deposited into Deep Blue Documents. For datasets (such as observations, survey results, simulations, experimental data, etc.), use Deep Blue Data (https://deepblue.lib.umich.edu/data) instead. Add additional by clicking + Add more. (* required)</hint>
+                    <required>Type is required</required>
+                </field>
+            </row>
+
+            <row>
+                <field>
+                    <dc-schema>dc</dc-schema>
+                    <dc-element>language</dc-element>
+                    <dc-qualifier>iso</dc-qualifier>
+                    <repeatable>false</repeatable>
+                    <label>Language</label>
+                    <input-type value-pairs-name="common_iso_languages">dropdown</input-type>
+                    <hint>The language of the main content. If the content does not really have a language (e.g. datasets or images) please select 'N/A'.</hint>
+                    <required></required>
+                </field>
+            </row>
+
+            <row>
+                <field>
+                    <dc-schema>dc</dc-schema>
+                    <dc-element>description</dc-element>
+                    <dc-qualifier>mapping</dc-qualifier>
+                    <repeatable>true</repeatable>
+                    <label>Display in Other Collections</label>
+                    <input-type value-pairs-name="collection_mappings">dropdown</input-type>
+                    <hint>If you are also a depositor in another collection and you'd like to associate your work with it, you may select the collection(s) here (e.g. a thesis may be added to the general thesis collection as well as appear in the relevant departmental collection(s)). This box will be blank if you are not a depositor in other collections.  Add additional by clicking + Add more.</hint>
+                    <required></required>
+                </field>
+            </row>
+
+            <row>
+                <field>
+                    <dc-schema>dc</dc-schema>
+                    <dc-element>subject</dc-element>
+                    <dc-qualifier></dc-qualifier>
+                    <repeatable>true</repeatable>
+                    <label>Subject Keywords</label>
+                    <input-type>onebox</input-type>
+                    <hint>Enter subject keyword or phrase, one per textbox. Add additional by clicking + Add More.</hint>
+                    <required></required>
+                </field>
+            </row>
+
+            <row>
+                <field>
+                    <dc-schema>dc</dc-schema>
+                    <dc-element>description</dc-element>
+                    <dc-qualifier>abstract</dc-qualifier>
+                    <repeatable>false</repeatable>
+                    <label>Abstract</label>
+                    <input-type>textarea</input-type>
+                    <hint>Enter the abstract of the work below.</hint>
+                    <required></required>
+                </field>
+            </row>
+
+            <row>
+                <field>
+                    <dc-schema>dc</dc-schema>
+                    <dc-element>description</dc-element>
+                    <dc-qualifier>sponsorship</dc-qualifier>
+                    <repeatable>true</repeatable>
+                    <label>Sponsors</label>
+                    <input-type>onebox</input-type>
+                    <hint>The names of any sponsors and/or funding codes.  Add additional by clicking + Add more.</hint>
+                    <required></required>
+                </field>
+            </row>
+
+            <row>
+                <field>
+                    <dc-schema>dc</dc-schema>
+                    <dc-element>description</dc-element>
+                    <dc-qualifier></dc-qualifier>
+                    <repeatable>true</repeatable>
+                    <label>Description</label>
+                    <input-type>textarea</input-type>
+                    <hint>Any additional descriptive information or comments.  Add additional by clicking + Add more.</hint>
+                    <required></required>
+                </field>
+            </row>
+        </form>
+
         <form name="traditionalpagetwo_ipc">
             <row>
                 <field>
@@ -2560,7 +2849,6 @@
                       <required></required>
                 </field>
             </row>
-
         </form>
 
         
