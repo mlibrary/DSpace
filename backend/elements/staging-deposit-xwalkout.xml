@@ -1,0 +1,844 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xwalkout:consolidated-maps xmlns:xwalk="http://www.symplectic.co.uk/elements/xwalkcommon" xmlns:xwalkout="http://www.symplectic.co.uk/elements/xwalkout" xmlns:api="http://www.symplectic.co.uk/publications/api">
+  <!-- === PARAMETERS ==================================================================================================================== -->
+  <xwalk:parameters>
+    <xwalk:parameter name="dspace-xwalkout-enable-metadata-post-for-redeposit" value="true" />
+    <!-- CURRENCY -->
+    <!-- Currency to use when none is specified. Defaults to "USD". Options are:
+           "AUD"
+           "CAD"
+           "JPY"
+           "NZD"
+           "SGD"
+           "GBP"
+           "USD"
+           "EUR"
+    -->
+    <!--<xwalk:parameter name="default-currency" value="GBP" />-->
+    <!-- DATES -->
+    <!-- Default format to use when building a date string from parts. Defaults to "date:YYYY-MM-DD" Options are:
+           "date:YYYY-MM-DD"
+           "date:DMY"
+           "date:MDY"
+           "date:YMD"
+           "date:YM"
+           "date:MY"
+           "date:Y"
+    -->
+    <!--<xwalk:parameter name="default-date-format" value="date:YYYY-MM-DD" />-->
+    <!-- Default date format delimiter to use to separate year, month and day parts. Defaults to "-". -->
+    <!--<xwalk:parameter name="default-date-delimiter" value="/" />-->
+    <!-- Sets whether single-digit day and month values should be padded with a leading zero. Defaults to "true"-->
+    <!--<xwalk:parameter name="use-leading-zeroes-for-dates" value="false" />-->
+    <!-- Sets whether default date component values should be used when formatting a date of lower precision than the specified format. Defaults to "false". -->
+    <!--<xwalk:parameter name="use-default-values-for-missing-date-components" value="true" />-->
+    <!-- PEOPLE -->
+    <!-- Default format to use when building a person (i.e. full name) string from parts. Defaults to "person:lastname-initials". Options are:
+			     "person:lastname-initials"
+			     "person:initials-lastname"
+			     "person:lastname-firstnames"
+			     "person:firstnames-lastname"
+  	-->
+    <xwalk:parameter name="default-person-format" value="person:lastname-firstnames" />
+    <!-- Default delimiter to use when building a person string from parts. Defaults to " " (space). -->
+    <xwalk:parameter name="default-person-format-delimiter" value=", " />
+    <!-- PAGINATION -->
+    <!-- Default format to use when building a pagination string from parts. Defaults to "pagination:start-end". Options are:
+           "pagination:start-end"
+			     "pagination:start"
+			     "pagination:end"
+			     "pagination:page-count"
+  	-->
+    <!--<xwalk:parameter name="default-pagination-format" value="" />-->
+    <!-- Default delimiter to use when building a pagination string from parts. Defaults to "-". -->
+    <!--<xwalk:parameter name="default-pagination-delimiter" value=" - " />-->
+    <!-- FUNDING ACKNOWLEDGEMENT GRANTS -->
+    <!-- Default format to use when building a funding acknowledgements grant string from parts. Defaults to "funding-acknowledgements-grant:org-id". Options are:
+           "funding-acknowledgements-grant:id"
+			     "funding-acknowledgements-grant:org"
+			     "funding-acknowledgements-grant:id-org"
+			     "funding-acknowledgements-grant:org-id"
+  	-->
+    <!--<xwalk:parameter name="default-funding-acknowledgements-grant-format" value="" />-->
+    <!-- Default delimiter to use when building a funding acknowledgements grant string from parts. Defaults to "|". -->
+    <!--<xwalk:parameter name="default-funding-acknowledgements-grant-delimiter" value="; " />-->
+  </xwalk:parameters>
+  <!-- === FIELD MAPS ==================================================================================================================== -->
+  <xwalk:field-maps>
+    <!-- SUBSEQUENT DEPOSIT -->
+    <!-- Any field-mappings added here will append metadata to the existing DSpace item. -->
+    <!-- N.B. THIS FIELD MAP CANNOT DELETE OR REPLACE EXISTING DATA, ONLY ADD TO IT. -->
+    <!-- The parameter "dspace-xwalkout-enable-metadata-post-for-redeposit" must be "true" -->
+    <xwalk:field-map name="subsequent-deposit">
+      <!-- Add a record of the subsequent deposit to dc.description.provenance -->
+      <xwalk:field-mapping to="dc.description.provenance" separator="">
+        <xwalk:field-source from="files.count" />
+        <xwalk:field-source value=" additional file(s) submitted via Symplectic Elements by " />
+        <xwalk:field-source from="depositor.full-name" />
+        <xwalk:field-source prefix=" (" from="depositor.email-address" suffix=")" />
+        <xwalk:field-source prefix=" on " from="deposit.date" format="date:YYYY-MM-DD" />
+        <xwalk:field-source value=": " />
+        <xwalk:field-source from="files.names" concatenate-with-separator="; " />
+      </xwalk:field-mapping>
+    </xwalk:field-map>
+    <!-- INITIAL DEPOSIT (DEFAULT)-->
+    <xwalk:field-map name="default-deposit">
+      <!-- OA Location specified by user at deposit -->
+      <!-- IMPORTANT! These mappings MUST be specified if "Support OA location" is enabled in Deposit Settings. 
+           They MUST meet the following conditions:
+             1) The DSpace destination fields must be used ONLY for OA locations
+             2) The mappings must be one-to-one mappings that are reversed EXACTLY in the harvest crosswalk.
+           Failure to meet these requirements may result in misreporting the deposited publication's Open Access compliance in Elements' OA Monitor -->
+      <!--<xwalk:field-mapping to="[Repository field for OA Location URL]">
+        <xwalk:field-source from="oa-location-url"/>
+      </xwalk:field-mapping>
+      <xwalk:field-mapping to="[Repository field for OA Location file version]">
+        <xwalk:field-source from="oa-location-file-version"/>
+      </xwalk:field-mapping>-->
+      <!-- deposit data => dc.description.provenance -->
+      <xwalk:field-mapping to="dc.description.provenance" separator="&#xD;&#xA;----------&#xD;&#xA;">
+        <!-- depositor info -->
+        <xwalk:field-source prefix="Item deposited via Symplectic Elements by user: " concatenate-with-separator="&#xD;&#xA;">
+          <xwalk:field-source from="depositor.full-name" />
+          <xwalk:field-source prefix="HR Feed Proprietary ID: " from="depositor.proprietary-id" />
+          <xwalk:field-source prefix="Email: " from="depositor.email-address" />
+        </xwalk:field-source>
+        <!-- deposit licence info -->
+        <xwalk:field-source concatenate-with-separator="&#xD;&#xA;">
+          <xwalk:field-source prefix="Deposit licence: " from="deposit-licence.display-name" />
+          <xwalk:field-source prefix="Deposit licence ID: " from="deposit-licence.identifier" />
+        </xwalk:field-source>
+        <!-- requested embargo info -->
+        <xwalk:field-source prefix="Depositor requested an embargo: " concatenate-with-separator="&#xD;&#xA;">
+          <xwalk:field-source from="requested-embargo.display-name" />
+          <xwalk:field-source prefix="Embargo ID: " from="requested-embargo.id" />
+          <xwalk:field-source prefix="Depositor's comment: " from="requested-embargo.comment" />
+        </xwalk:field-source>
+        <!-- requested licence info -->
+        <xwalk:field-source prefix="Depositor requested a reuse licence: " concatenate-with-separator="&#xD;&#xA;">
+          <xwalk:field-source from="requested-embargo.display-name" />
+          <xwalk:field-source prefix="Licence ID: " from="requested-reuse-licence.id" />
+          <xwalk:field-source prefix="Depositor's comment: " from="requested-reuse-licence.comment" />
+        </xwalk:field-source>
+        <!-- Publisher license -->
+        <xwalk:field-source prefix="Publisher licence: " from="publisher-licence" />
+        <!-- Confidential -->
+        <xwalk:field-source prefix="Confidential? " from="confidential" />
+      </xwalk:field-mapping>
+      <!-- requested-embargo => dc.date.available -->
+      <!-- Using format "WITHHELD_{# months}_MONTHS" -->
+      <xwalk:field-mapping to="dc.date.available">
+        <xwalk:field-source from="requested-embargo.display-name" value-map="format-requested-embargo" />
+      </xwalk:field-mapping>
+      <!-- publication-status => dc.description.version -->
+      <xwalk:field-mapping to="dc.description.version">
+        <xwalk:field-source from="publication-status" value-map="publication-status-to-dc.description.version" />
+      </xwalk:field-mapping>
+      <!-- requested reuse licence, author-licence, publisher-licence => dc.rights-->
+      <xwalk:field-mapping to="dc.rights">
+        <xwalk:field-source prefix="Re-use licence for this version: " from="requested-reuse-licence.short-name" value-map="licence-to-dc.rights" />
+        <xwalk:field-source prefix="Licence for author's own version: " from="author-licence" value-map="licence-to-dc.rights" />
+        <xwalk:field-source prefix="Licence for published version: " from="publisher-licence" value-map="licence-to-dc.rights" />
+      </xwalk:field-mapping>
+      <!-- requested reuse licence, author-licence, publisher-licence => dc.rights.uri-->
+      <xwalk:field-mapping to="dc.rights.uri">
+        <xwalk:field-source from="requested-reuse-licence.short-name" value-map="licence-to-dc.rights.uri" />
+        <xwalk:field-source from="author-licence" value-map="licence-to-dc.rights.uri" />
+        <xwalk:field-source from="publisher-licence" value-map="licence-to-dc.rights.uri" />
+      </xwalk:field-mapping>
+      <!-- set dc.type based on Elements publication type -->
+      <xwalk:field-mapping to="dc.type">
+        <xwalk:field-source from="object.type" value-map="object.type-to-dc.type" />
+      </xwalk:field-mapping>
+      <!-- title => dc.title -->
+      <xwalk:field-mapping to="dc.title">
+        <xwalk:field-source from="title" />
+      </xwalk:field-mapping>
+      <!-- abstract => dc.description.abstract -->
+      <xwalk:field-mapping to="dc.description.abstract">
+        <xwalk:field-source from="abstract" />
+      </xwalk:field-mapping>
+      <!-- notes => dc.description -->
+      <xwalk:field-mapping to="dc.description">
+        <xwalk:field-source from="notes" />
+      </xwalk:field-mapping>
+      <!-- authors => dc.contributor.author -->
+      <xwalk:field-mapping to="dc.contributor.author">
+        <xwalk:field-source from="authors" format="person:lastname-firstnames" />
+      </xwalk:field-mapping>
+      <!-- Resolved user, author metadata ORCID iDs, and ORCID iDs in associated-identifiers and external-identifiers  => dc.identifier.orcid -->
+      <xwalk:field-mapping to="dc.identifier.orcid">
+        <xwalk:field-source from="authors">
+          <!-- Prefer a resolved user ORCID iD to an ORCID iD in record metadata -->
+          <xwalk:field-source value-map="select-substring-before-first-!#!#!" evaluate-children-first="true">
+            <xwalk:field-source concatenate-with-separator="!#!#!">
+              <!-- Resolved user ORCID iDs -->
+              <xwalk:field-source data-part="person:resolved-user">
+                <xwalk:field-source from="user.identifiers" value-map="filter-to-orcid-identifiers">
+                  <xwalk:field-source data-part="identifier:value" />
+                </xwalk:field-source>
+              </xwalk:field-source>
+              <!-- Record metadata ORCID iDs -->
+              <xwalk:field-source data-part="person:identifier" value-map="filter-to-orcid-identifiers">
+                <xwalk:field-source data-part="identifier:value" />
+              </xwalk:field-source>
+            </xwalk:field-source>
+          </xwalk:field-source>
+        </xwalk:field-source>
+        <!-- Also include any ORCID iDs found in "associated-identifiers" or "external-identifiers" -->
+        <!-- N.B. This may introduce duplicates of ORCID iDs already added above -->
+        <xwalk:field-source from="associated-identifiers" value-map="filter-to-orcid-identifiers">
+          <xwalk:field-source data-part="identifier:value" />
+        </xwalk:field-source>
+        <xwalk:field-source from="external-identifiers" value-map="filter-to-orcid-identifiers">
+          <xwalk:field-source data-part="identifier:value" />
+        </xwalk:field-source>
+      </xwalk:field-mapping>
+      <!-- Resolved user and metadata ORCIDs => dc.identifier.name-orcid -->
+      <xwalk:field-mapping to="dc.identifier.name-orcid">
+        <xwalk:field-source from="authors">
+          <!-- We do not want to list names that do not have an ORCID iD associated with them. This outer value map ensures that is the case.
+               The evaluate-children-first attribute ensures that the value map is applied after the name-orcid value has been calculated. -->
+          <xwalk:field-source value-map="ignore-names-without-orcids" evaluate-children-first="true">
+            <xwalk:field-source concatenate-with-separator="; ">
+              <!-- Name data: must be as presented in dc.contributor.author -->
+              <xwalk:field-source format="person:lastname-firstnames" />
+              <!-- ORCID: prefer a resolved user ORCID to an ORCID in record metadata -->
+              <xwalk:field-source value-map="select-substring-before-first-!#!#!" evaluate-children-first="true">
+                <xwalk:field-source concatenate-with-separator="!#!#!">
+                  <!-- Resolved user ORCIDs -->
+                  <xwalk:field-source data-part="person:resolved-user">
+                    <xwalk:field-source from="user.identifiers" value-map="filter-to-orcid-identifiers">
+                      <xwalk:field-source data-part="identifier:value" />
+                    </xwalk:field-source>
+                  </xwalk:field-source>
+                  <!-- Record metadata ORCIDs -->
+                  <xwalk:field-source data-part="person:identifier" value-map="filter-to-orcid-identifiers">
+                    <xwalk:field-source data-part="identifier:value" />
+                  </xwalk:field-source>
+                  <!-- N.B. do not include ORCID iDs from associated- or external-identifiers here, as they are not clearly associated with an author -->
+                </xwalk:field-source>
+              </xwalk:field-source>
+            </xwalk:field-source>
+          </xwalk:field-source>
+        </xwalk:field-source>
+      </xwalk:field-mapping>
+      <!-- editors => dc.contributor.editor -->
+      <xwalk:field-mapping to="dc.contributor.editor">
+        <xwalk:field-source from="editors" format="person:lastname-firstnames" />
+      </xwalk:field-mapping>
+      <!-- associated-authors => dc.contributor-->
+      <xwalk:field-mapping to="associated-authors">
+        <xwalk:field-source from="dc.contributor" />
+      </xwalk:field-mapping>
+      <!--  author-url, public-url -->
+      <xwalk:field-mapping to="dc.identifier.uri">
+        <xwalk:choose>
+          <xwalk:when>
+            <xwalk:condition argument-field="author-url" operator="has-value" />
+            <xwalk:result>
+              <xwalk:field-source from="author-url" />
+            </xwalk:result>
+          </xwalk:when>
+          <xwalk:when>
+            <xwalk:condition argument-field="public-url" operator="has-value" />
+            <xwalk:result>
+              <xwalk:field-source from="public-url" />
+            </xwalk:result>
+          </xwalk:when>
+        </xwalk:choose>
+      </xwalk:field-mapping>
+      <!-- publisher => dc.publisher -->
+      <xwalk:field-mapping to="dc.publisher">
+        <xwalk:field-source from="publisher" />
+      </xwalk:field-mapping>
+      <!-- issn, eissn => dc.identifier.issn -->
+      <xwalk:field-mapping to="dc.identifier.issn">
+        <xwalk:field-source from="issn" />
+        <xwalk:field-source from="eissn" />
+      </xwalk:field-mapping>
+      <!-- isbn-10 isbn-13 => dc.identifier.isbn-->
+      <xwalk:field-mapping to="dc.identifier.isbn">
+        <xwalk:field-source from="isbn-10" />
+        <xwalk:field-source from="isbn-13" />
+      </xwalk:field-mapping>
+      <!-- references => dc.identifier.citedreference -->
+      <xwalk:field-mapping to="dc.identifier.citedreference">
+        <xwalk:field-source from="references" />
+      </xwalk:field-mapping>
+      <!-- 'volume' -->
+      <xwalk:field-mapping to="dc.identifier.volume">
+        <xwalk:field-source from="volume" />
+      </xwalk:field-mapping>
+      <!-- issue-->
+      <xwalk:field-mapping to="dc.identifier.issue">
+        <xwalk:field-source from="issue" />
+      </xwalk:field-mapping>
+      <!-- series-->
+      <xwalk:field-mapping to="dc.relation.ispartofseries">
+        <xwalk:field-source from="serie" />
+      </xwalk:field-mapping>
+      <!-- medium => dc.description.medium -->
+      <xwalk:field-mapping to="dc.format.medium">
+        <xwalk:field-source from="medium" />
+      </xwalk:field-mapping>
+      <!-- various fields => dc.identifier.citation -->
+      <!--<xwalk:field-mapping to="dc.identifier.citation" separator=", ">
+	    <xwalk:field-source concatenate-with-separator="; ">
+	      <xwalk:field-source from="authors" format="person:lastname-initials" format-delimiter=", "/>
+	    </xwalk:field-source>
+	    <xwalk:field-source from="title"/>
+	    <xwalk:field-source from="journal"/>
+	    <xwalk:field-source from="parent-title"/>
+	    <xwalk:field-source from="c-book-anthology-journal-title"/>
+	    <xwalk:field-source from="publication-date" format="date:year"/>
+	    <xwalk:field-source from="edition"/>
+	    <xwalk:field-source concatenate-with-separator=" ">
+	      <xwalk:field-source from="volume"/>
+	      <xwalk:field-source prefix="(" from="issue" suffix=")"/>
+	    </xwalk:field-source>
+	    <xwalk:field-source prefix="pp. " from="pagination" format=number"pagination:start-end" format-delimiter="-"/>
+	  </xwalk:field-mapping>-->
+      <!-- dc.description.thesisdegreename -->
+      <xwalk:field-mapping to="dc.description.thesisdegreename">
+        <xwalk:field-source from="'thesis-type" />
+      </xwalk:field-mapping>
+      <!-- number-->
+      <xwalk:field-mapping to="dc.relation.haspart">
+        <xwalk:field-source from="number" />
+      </xwalk:field-mapping>
+      <!-- parent-title => dc.relation.ispartof  -->
+      <xwalk:field-mapping to="dc.relation.ispartof">
+        <xwalk:field-source from="parent-title" />
+      </xwalk:field-mapping>
+      <!--  pagination => dc.identifier.startpage and to dc.identifier.endpage-->
+      <xwalk:field-mapping to="dc.identifier.endpage">
+        <xwalk:field-source from="pagination" data-part="pagination:end-page" />
+      </xwalk:field-mapping>
+      <xwalk:field-mapping to="dc.identifier.startpage">
+        <xwalk:field-source from="pagination" data-part="pagination:begin-page" />
+      </xwalk:field-mapping>
+      <!-- filed-date => dc.date.submitted-->
+      <xwalk:field-mapping to="dc.date.submitted">
+        <xwalk:field-source from="filed-date" />
+      </xwalk:field-mapping>
+      <!-- commissioning-body => dc.description.sponsorship-->
+      <xwalk:field-mapping to="dc.description.sponsorship">
+        <xwalk:field-source from="commissioning-body" />
+      </xwalk:field-mapping>
+      <!-- location => dc.coverage.spatial-->
+      <xwalk:field-mapping to="dc.coverage.spatial">
+        <xwalk:field-source from="location" />
+      </xwalk:field-mapping>
+      <!-- journal =>dc.identifier.source-->
+      <xwalk:field-mapping to="dc.identifier.source">
+        <xwalk:field-source from="journal" />
+      </xwalk:field-mapping>
+      <!--dc.format.extent-->
+      <xwalk:field-mapping to="dc.format.extent">
+        <xwalk:field-source from="number-of-pieces" />
+      </xwalk:field-mapping>
+      <!-- publication-date, online-publication-date => dc.date.issued -->
+      <xwalk:field-mapping to="dc.date.issued">
+        <xwalk:choose>
+          <!-- if publication-date has a vaule, use that -->
+          <xwalk:when>
+            <xwalk:condition argument-field="publication-date" operator="has-value" />
+            <xwalk:result>
+              <xwalk:field-source from="publication-date" format="date:YYYY-MM-DD" />
+            </xwalk:result>
+          </xwalk:when>
+          <!-- otherwise, fall back to online-publication-date -->
+          <xwalk:otherwise>
+            <xwalk:result>
+              <xwalk:field-source from="online-publication-date" format="date:YYYY-MM-DD" />
+            </xwalk:result>
+          </xwalk:otherwise>
+        </xwalk:choose>
+      </xwalk:field-mapping>
+      <!-- acceptance-date => dcterms.dateAccepted -->
+      <!-- N.B. DSpace's default Qualified DC schema has no place for acceptance-date, so we turn to the dcterms schema instead -->
+      <!--<xwalk:field-mapping to="dcterms.dateAccepted">
+        <xwalk:field-source from="acceptance-date" format="date:YYYY-MM-DD"/>
+      </xwalk:field-mapping>-->
+      <!-- funding-acknowledgements -->
+      <xwalk:field-mapping to="dc.description.sponsorship">
+        <!-- The first dc.description.sponsorship field will be any funding acknowledgement text -->
+        <xwalk:field-source from="funding-acknowledgements" data-part="funding-acknowledgements:acknowledgement-text" />
+        <!-- subsequent fields will be grant ID & funder info, formatted as "Grant 12345: Funder Name" -->
+        <xwalk:field-source from="funding-acknowledgements" data-part="funding-acknowledgements:grant" concatenate-with-separator=": ">
+          <xwalk:field-source prefix="Grant " data-part="funding-acknowledgements-grant:id" />
+          <xwalk:field-source data-part="funding-acknowledgements-grant:org" />
+        </xwalk:field-source>
+      </xwalk:field-mapping>
+      <!-- When depositing to dc.subject fields, we crosswalk from the object-level 'labels' field. This ensures that ALL labels -->
+      <!-- (i.e. keywords) on the object are passed to the repository, not just the ones in the deposited record. Since record-level  -->
+      <!-- keywords bubble up to object-level labels, this will include keywords from ALL data sources as well as manually added ones -->
+      <!-- object.labels => dc.subject -->
+      <xwalk:field-mapping to="dc.subject">
+        <xwalk:field-source from="keywords" data-part="keyword:value" />
+        <!-- an alternative is to crosswalk the object-level labels -->
+        <!--<xwalk:field-source from="object.labels" data-part="keyword:value"/>-->
+      </xwalk:field-mapping>
+      <!-- language => dc.language -->
+      <xwalk:field-mapping to="dc.language">
+        <xwalk:field-source from="language" />
+      </xwalk:field-mapping>
+      <!-- language => dc.language.iso -->
+      <xwalk:field-mapping to="dc.language.iso">
+        <!-- We want to take only the first available field source. To do this, we concatenate all values present with an unusual separator, then use a value 
+             map to extract the substring before the first occurence of that separator -->
+        <xwalk:field-source value-map="select-substring-before-first-!#!#!" evaluate-children-first="true">
+          <xwalk:field-source concatenate-with-separator="!#!#!">
+            <!-- 1) attempt to match the language string in the ISO639 value map -->
+            <xwalk:field-source from="language" value-map="language-to-ISO639-1" />
+            <!-- 2) if (1) does not match and if the value of 'language' is less the 4 characters long, use it as-is -->
+            <xwalk:field-source select-using="xpath" from="/api:push-object/api:object/api:view/api:field[@api:name='language' and string-length(api:text) &lt; 4]/api:text" />
+          </xwalk:field-source>
+        </xwalk:field-source>
+      </xwalk:field-mapping>
+      <!-- publisher-licence -->
+      <!--<xwalk:field-mapping to="dc.rights.licence">
+        <xwalk:field-source from="publisher-licence" />
+      </xwalk:field-mapping>-->
+      <!-- c-description-tableofcontents => dc.description.tableofcontents-->
+      <xwalk:field-mapping to="dc.description.tableofcontents">
+        <xwalk:field-source from="c-description-tableofcontents" />
+      </xwalk:field-mapping>
+      <!-- dc.identifier.pmid -->
+      <xwalk:field-mapping to="dc.identifier.pmid">
+        <xwalk:field-source from="external-identifiers" value-map="filter-to-pubmed-identifiers">
+          <xwalk:field-source data-part="identifier:value" />
+        </xwalk:field-source>
+      </xwalk:field-mapping>
+      <!-- doi -->
+      <xwalk:field-mapping to="dc.identifier.doi">
+        <xwalk:field-source from="doi" />
+      </xwalk:field-mapping>
+      <!-- c-relation-isformatof => dc.relation.isformatof-->
+      <xwalk:field-mapping to="dc.relation.isformatof">
+        <xwalk:field-source from=" c-relation-isformatof" />
+      </xwalk:field-mapping>
+      <!-- c-relation-uri => dc.relation.uri-->
+      <xwalk:field-mapping to="dc.relation.uri">
+        <xwalk:field-source from="c-relation-uri" />
+      </xwalk:field-mapping>
+      <!-- c-title-alternative-->
+      <xwalk:field-mapping to="dc.title.alternative">
+        <xwalk:field-source from="c-title-alternative" />
+      </xwalk:field-mapping>
+    </xwalk:field-map>
+  </xwalk:field-maps>
+  <!-- === VALUE MAPS ==================================================================================================================== -->
+  <!-- Optionally defines value-map(s) used for: -->
+  <!--   - translating Elements field values to DSpace values -->
+  <!--   - filtering values -->
+  <!--   - other processing required to make the data suitable for DSpace -->
+  <xwalk:value-maps>
+    <xwalk:value-map name="format-requested-embargo" matchMode="regex">
+      <xwalk:value-mapping from="^(\d+) months$" to="WITHHELD_$1_MONTHS" />
+      <xwalk:value-mapping from="^Indefinite$" to="WITHHELD_INDEFINITELY" />
+      <xwalk:otherwise-mapping action="ignore-this-value" />
+    </xwalk:value-map>
+    <!-- dictionary to translate values of Elements object.type to DSpace dc.type -->
+    <!-- edit as necessary -->
+    <xwalk:value-map name="object.type-to-dc.type" matchMode="full">
+      <xwalk:value-mapping from="book" to="Book" />
+      <xwalk:value-mapping from="chapter" to="Book Chapter" />
+      <xwalk:value-mapping from="dataset" to="Dataset" />
+      <xwalk:value-mapping from="conference" to="Conference Paper" />
+      <xwalk:value-mapping from="journal-article" to="Article" />
+      <xwalk:value-mapping from="patent" to="Patent" />
+      <xwalk:value-mapping from="report" to="Report" />
+      <xwalk:value-mapping from="software" to="Software" />
+      <xwalk:value-mapping from="performance" to="Performance" />
+      <xwalk:value-mapping from="artefact" to="Artefact" />
+      <xwalk:value-mapping from="design" to="Design" />
+      <xwalk:value-mapping from="exhibition" to="Exhbition" />
+      <xwalk:value-mapping from="scholarly-edition" to="Scholarly edition" />
+      <xwalk:value-mapping from="thesis-dissertation" to="Thesis" />
+      <xwalk:value-mapping from="other" to="Other" />
+      <xwalk:value-mapping from="poster" to="Poster" />
+      <xwalk:value-mapping from="composition" to="Musical Score" />
+      <xwalk:value-mapping from="internet-publication" to="Internet publication" />
+      <xwalk:value-mapping from="figure" to="Map" />
+      <xwalk:value-mapping from="fileset" to="Fileset" />
+      <xwalk:value-mapping from="media" to="Media" />
+      <xwalk:value-mapping from="presentation" to="Presentation" />
+      <xwalk:value-mapping from="preprint" to="Preprint" />
+    </xwalk:value-map>
+    <!-- dictionary to translate values of Elements publication-status to DSpace dc.description.version -->
+    <xwalk:value-map name="publication-status-to-dc.description.version" matchMode="full">
+      <xwalk:value-mapping from="Published" to="Published version" />
+      <xwalk:value-mapping from="In preparation" to="Article in Press" />
+      <xwalk:value-mapping from="Accepted" to="Accepted version" />
+      <xwalk:value-mapping from="Submitted" to="Submitted version" />
+      <xwalk:value-mapping from="Unpublished" to="Unpublished" />
+      <xwalk:value-mapping from="Published online" to="Published online" />
+      <!-- alternative mappings following definitions made by NISO/ALPSP Working Group, 2008
+      <xwalk:value-mapping from="Published"        to="Version of Record (VoR)"/>
+      <xwalk:value-mapping from="In preparation"   to="Proof (P)"/>
+      <xwalk:value-mapping from="Accepted"         to="Accepted Manuscript (AM)"/>
+      <xwalk:value-mapping from="Submitted"        to="Submitted Version Under Review (SMUR)"/>
+      <xwalk:value-mapping from="Unpublished"      to="Author's Original (AO)"/>
+      <xwalk:value-mapping from="Published online" to="Published online"/>
+-->
+    </xwalk:value-map>
+    <!-- use the 'keyword:scheme' data-part to filter for MeSH keywords-->
+    <xwalk:value-map name="filter-for-mesh-scheme" data-part="keyword:scheme">
+      <xwalk:value-mapping from="mesh" action="continue" />
+      <xwalk:otherwise-mapping action="ignore-this-value" />
+    </xwalk:value-map>
+    <!-- use the 'keyword:scheme' data-part to filter out MeSH keywords-->
+    <xwalk:value-map name="filter-out-mesh-scheme" data-part="keyword:scheme">
+      <xwalk:value-mapping from="mesh" action="ignore-this-value" />
+      <xwalk:otherwise-mapping action="continue" />
+    </xwalk:value-map>
+    <xwalk:value-map name="filter-for-no-begin-page" data-part="pagination:begin-page" matchMode="regex">
+      <!-- if pagination:begin-page matches any non-empty value, ignore the passed-in pagination field -->
+      <xwalk:value-mapping from=".+" action="ignore-this-value" />
+      <!-- otherwise continue -->
+      <xwalk:otherwise-mapping action="continue" />
+    </xwalk:value-map>
+    <xwalk:value-map name="filter-to-orcid-identifiers" data-part="identifier:scheme" matchMode="full">
+      <xwalk:value-mapping from="orcid" action="continue" />
+      <xwalk:otherwise-mapping action="ignore-this-value" />
+    </xwalk:value-map>
+    <xwalk:value-map name="filter-to-pubmed-identifiers" data-part="identifier:scheme" matchMode="full">
+      <xwalk:value-mapping from="pubmed" action="continue" />
+      <xwalk:otherwise-mapping action="ignore-this-value" />
+    </xwalk:value-map>
+    <!-- Used to check that values sent to dc.identifier.name-orcid do in fact contain an ORCID iD -->
+    <xwalk:value-map name="ignore-names-without-orcids" matchMode="regex">
+      <xwalk:value-mapping from="^.*; \d{4}-\d{4}-\d{4}-\d{3}[\dX]$" action="continue" />
+      <xwalk:otherwise-mapping action="continue" />
+      <!-- DEBUG -->
+    </xwalk:value-map>
+    <xwalk:value-map name="licence-to-dc.rights">
+      <xwalk:value-mapping from="Apache-2.0" to="Apache License, Version 2.0" />
+      <xwalk:value-mapping from="BSD-3-Clause" to="3-Clause BSD License" />
+      <xwalk:value-mapping from="CC-0" to="Creative Commons CC0 1.0 Universal (Public Domain Dedication)" />
+      <xwalk:value-mapping from="CC BY" to="Creative Commons Attribution 4.0 International" />
+      <xwalk:value-mapping from="CC BY-ND" to="Creative Commons Attribution-NoDerivatives 4.0 International" />
+      <xwalk:value-mapping from="CC BY-SA" to="Creative Commons Attribution-ShareAlike 4.0 International" />
+      <xwalk:value-mapping from="CC BY-NC" to="Creative Commons Attribution-NonCommercial 4.0 International" />
+      <xwalk:value-mapping from="CC BY-NC-ND" to="Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International" />
+      <xwalk:value-mapping from="CC BY-NC-SA" to="Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International" />
+      <xwalk:value-mapping from="CC-Public-Domain" to="Creative Commons Copyright-Only Dedication or Public Domain Certification" />
+      <xwalk:value-mapping from="GPL" to="GNU General Public License, version 1" />
+      <xwalk:value-mapping from="GPL-2.0" to="GNU General Public License, version 2" />
+      <xwalk:value-mapping from="GPL-3.0" to="GNU General Public License, version 3" />
+      <xwalk:value-mapping from="InCopyright" to="In copyright" />
+      <xwalk:value-mapping from="InCopyright-RUU" to="In copyright - rights-holder(s) unlocatable or unidentifiable" />
+      <xwalk:value-mapping from="MIT" to="MIT License" />
+      <xwalk:value-mapping from="MLP-2.0" to="Mozilla Public License Version 2.0" />
+      <xwalk:value-mapping from="OGL" to="Open Government Licence" />
+      <xwalk:value-mapping from="RLT" to="Restrictive Licence Template" />
+      <xwalk:otherwise-mapping action="continue" />
+    </xwalk:value-map>
+    <xwalk:value-map name="licence-to-dc.rights.uri">
+      <xwalk:value-mapping from="Apache-2.0" to="http://www.apache.org/licenses/LICENSE-2.0" />
+      <xwalk:value-mapping from="BSD-3-Clause" to="http://opensource.org/licenses/BSD-3-Clause" />
+      <xwalk:value-mapping from="CC-0" to="http://creativecommons.org/publicdomain/zero/1.0/" />
+      <xwalk:value-mapping from="CC BY" to="http://creativecommons.org/licenses/by/4.0/" />
+      <xwalk:value-mapping from="CC BY-ND" to="http://creativecommons.org/licenses/by-nd/4.0/" />
+      <xwalk:value-mapping from="CC BY-SA" to="http://creativecommons.org/licenses/by-sa/4.0/" />
+      <xwalk:value-mapping from="CC BY-NC" to="http://creativecommons.org/licenses/by-nc/4.0/" />
+      <xwalk:value-mapping from="CC BY-NC-ND" to="http://creativecommons.org/licenses/by-nc-nd/4.0/" />
+      <xwalk:value-mapping from="CC BY-NC-SA" to="http://creativecommons.org/licenses/by-nc-sa/4.0/" />
+      <xwalk:value-mapping from="CC-Public-Domain" to="http://creativecommons.org/licenses/publicdomain/" />
+      <xwalk:value-mapping from="GPL" to="http://www.gnu.org/licenses/gpl-1.0" />
+      <xwalk:value-mapping from="GPL-2.0" to="http://www.gnu.org/licenses/gpl-2.0" />
+      <xwalk:value-mapping from="GPL-3.0" to="http://www.gnu.org/licenses/gpl-3.0" />
+      <xwalk:value-mapping from="InCopyright" to="http://rightsstatements.org/page/InC/1.0/" />
+      <xwalk:value-mapping from="InCopyright-RUU" to="http://rightsstatements.org/page/InC-RUU/1.0/" />
+      <xwalk:value-mapping from="MIT" to="http://opensource.org/licenses/MIT/" />
+      <xwalk:value-mapping from="MLP-2.0" to="http://www.mozilla.org/MPL/2.0/" />
+      <xwalk:value-mapping from="OGL" to="http://www.nationalarchives.gov.uk/doc/open-government-licence/" />
+      <xwalk:value-mapping from="RLT" to="http://www.ausgoal.gov.au/restrictive-licence-template" />
+      <xwalk:otherwise-mapping action="ignore-this-value" />
+    </xwalk:value-map>
+    <!-- returns the substring before the first occurence of "!#!#!", or the whole string if "!#!#!" is not found -->
+    <xwalk:value-map name="select-substring-before-first-!#!#!" matchMode="regex">
+      <xwalk:value-mapping from="(?s)^(.*?)!#!#!.*$" to="$1" />
+      <xwalk:otherwise-mapping action="continue" />
+    </xwalk:value-map>
+    <!-- dictionary to look up ISO 639-1 language code from language name ================================================ -->
+    <xwalk:value-map name="language-to-ISO639-1">
+      <xwalk:value-mapping from="Abkhaz" to="ab" />
+      <xwalk:value-mapping from="Afar" to="aa" />
+      <xwalk:value-mapping from="Afrikaans" to="af" />
+      <xwalk:value-mapping from="Akan" to="ak" />
+      <xwalk:value-mapping from="Albanian" to="sq" />
+      <xwalk:value-mapping from="Amharic" to="am" />
+      <xwalk:value-mapping from="Arabic" to="ar" />
+      <xwalk:value-mapping from="Aragonese" to="an" />
+      <xwalk:value-mapping from="Armenian" to="hy" />
+      <xwalk:value-mapping from="Assamese" to="as" />
+      <xwalk:value-mapping from="Avaric" to="av" />
+      <xwalk:value-mapping from="Avestan" to="ae" />
+      <xwalk:value-mapping from="Aymara" to="ay" />
+      <xwalk:value-mapping from="Azerbaijani" to="az" />
+      <xwalk:value-mapping from="Bambara" to="bm" />
+      <xwalk:value-mapping from="Bashkir" to="ba" />
+      <xwalk:value-mapping from="Basque" to="eu" />
+      <xwalk:value-mapping from="Belarusian" to="be" />
+      <xwalk:value-mapping from="Bengali" to="bn" />
+      <xwalk:value-mapping from="Bangla" to="bn" />
+      <xwalk:value-mapping from="Bihari" to="bh" />
+      <xwalk:value-mapping from="Bislama" to="bi" />
+      <xwalk:value-mapping from="Bosnian" to="bs" />
+      <xwalk:value-mapping from="Breton" to="br" />
+      <xwalk:value-mapping from="Bulgarian" to="bg" />
+      <xwalk:value-mapping from="Burmese" to="my" />
+      <xwalk:value-mapping from="Catalan" to="ca" />
+      <xwalk:value-mapping from="Chamorro" to="ch" />
+      <xwalk:value-mapping from="Chechen" to="ce" />
+      <xwalk:value-mapping from="Chichewa" to="ny" />
+      <xwalk:value-mapping from="Chewa" to="ny" />
+      <xwalk:value-mapping from="Nyanja" to="ny" />
+      <xwalk:value-mapping from="Chinese" to="zh" />
+      <xwalk:value-mapping from="Chuvash" to="cv" />
+      <xwalk:value-mapping from="Cornish" to="kw" />
+      <xwalk:value-mapping from="Corsican" to="co" />
+      <xwalk:value-mapping from="Cree" to="cr" />
+      <xwalk:value-mapping from="Croatian" to="hr" />
+      <xwalk:value-mapping from="Czech" to="cs" />
+      <xwalk:value-mapping from="Danish" to="da" />
+      <xwalk:value-mapping from="Divehi" to="dv" />
+      <xwalk:value-mapping from="Dhivehi" to="dv" />
+      <xwalk:value-mapping from="Maldivian" to="dv" />
+      <xwalk:value-mapping from="Dutch" to="nl" />
+      <xwalk:value-mapping from="Dzongkha" to="dz" />
+      <xwalk:value-mapping from="English" to="en" />
+      <xwalk:value-mapping from="Esperanto" to="eo" />
+      <xwalk:value-mapping from="Estonian" to="et" />
+      <xwalk:value-mapping from="Ewe" to="ee" />
+      <xwalk:value-mapping from="Faroese" to="fo" />
+      <xwalk:value-mapping from="Fijian" to="fj" />
+      <xwalk:value-mapping from="Finnish" to="fi" />
+      <xwalk:value-mapping from="French" to="fr" />
+      <xwalk:value-mapping from="Fula" to="ff" />
+      <xwalk:value-mapping from="Fulah" to="ff" />
+      <xwalk:value-mapping from="Pulaar" to="ff" />
+      <xwalk:value-mapping from="Pular" to="ff" />
+      <xwalk:value-mapping from="Galician" to="gl" />
+      <xwalk:value-mapping from="Georgian" to="ka" />
+      <xwalk:value-mapping from="German" to="de" />
+      <xwalk:value-mapping from="Greek" to="el" />
+      <xwalk:value-mapping from="Greek (modern)" to="el" />
+      <xwalk:value-mapping from="Guaraní" to="gn" />
+      <xwalk:value-mapping from="Gujarati" to="gu" />
+      <xwalk:value-mapping from="Haitian" to="ht" />
+      <xwalk:value-mapping from="Haitian Creole" to="ht" />
+      <xwalk:value-mapping from="Hausa" to="ha" />
+      <xwalk:value-mapping from="Hebrew" to="he" />
+      <xwalk:value-mapping from="Hebrew (modern)" to="he" />
+      <xwalk:value-mapping from="Herero" to="hz" />
+      <xwalk:value-mapping from="Hindi" to="hi" />
+      <xwalk:value-mapping from="Hiri Motu" to="ho" />
+      <xwalk:value-mapping from="Hungarian" to="hu" />
+      <xwalk:value-mapping from="Interlingua" to="ia" />
+      <xwalk:value-mapping from="Indonesian" to="id" />
+      <xwalk:value-mapping from="Interlingue" to="ie" />
+      <xwalk:value-mapping from="Irish" to="ga" />
+      <xwalk:value-mapping from="Igbo" to="ig" />
+      <xwalk:value-mapping from="Inupiaq" to="ik" />
+      <xwalk:value-mapping from="Ido" to="io" />
+      <xwalk:value-mapping from="Icelandic" to="is" />
+      <xwalk:value-mapping from="Italian" to="it" />
+      <xwalk:value-mapping from="Inuktitut" to="iu" />
+      <xwalk:value-mapping from="Japanese" to="ja" />
+      <xwalk:value-mapping from="Javanese" to="jv" />
+      <xwalk:value-mapping from="Kalaallisut" to="kl" />
+      <xwalk:value-mapping from="Greenlandic" to="kl" />
+      <xwalk:value-mapping from="Kannada" to="kn" />
+      <xwalk:value-mapping from="Kanuri" to="kr" />
+      <xwalk:value-mapping from="Kashmiri" to="ks" />
+      <xwalk:value-mapping from="Kazakh" to="kk" />
+      <xwalk:value-mapping from="Khmer" to="km" />
+      <xwalk:value-mapping from="Kikuyu" to="ki" />
+      <xwalk:value-mapping from="Gikuyu" to="ki" />
+      <xwalk:value-mapping from="Kinyarwanda" to="rw" />
+      <xwalk:value-mapping from="Kyrgyz" to="ky" />
+      <xwalk:value-mapping from="Komi" to="kv" />
+      <xwalk:value-mapping from="Kongo" to="kg" />
+      <xwalk:value-mapping from="Korean" to="ko" />
+      <xwalk:value-mapping from="Kurdish" to="ku" />
+      <xwalk:value-mapping from="Kwanyama" to="kj" />
+      <xwalk:value-mapping from="Kuanyama" to="kj" />
+      <xwalk:value-mapping from="Latin" to="la" />
+      <xwalk:value-mapping from="Luxembourgish" to="lb" />
+      <xwalk:value-mapping from="Letzeburgesch" to="lb" />
+      <xwalk:value-mapping from="Ganda" to="lg" />
+      <xwalk:value-mapping from="Limburgish" to="li" />
+      <xwalk:value-mapping from="Limburgan" to="li" />
+      <xwalk:value-mapping from="Limburger" to="li" />
+      <xwalk:value-mapping from="Lingala" to="ln" />
+      <xwalk:value-mapping from="Lao" to="lo" />
+      <xwalk:value-mapping from="Lithuanian" to="lt" />
+      <xwalk:value-mapping from="Luba-Katanga" to="lu" />
+      <xwalk:value-mapping from="Latvian" to="lv" />
+      <xwalk:value-mapping from="Manx" to="gv" />
+      <xwalk:value-mapping from="Macedonian" to="mk" />
+      <xwalk:value-mapping from="Malagasy" to="mg" />
+      <xwalk:value-mapping from="Malay" to="ms" />
+      <xwalk:value-mapping from="Malayalam" to="ml" />
+      <xwalk:value-mapping from="Maltese" to="mt" />
+      <xwalk:value-mapping from="Māori" to="mi" />
+      <xwalk:value-mapping from="Marathi" to="mr" />
+      <xwalk:value-mapping from="Marāṭhī" to="mr" />
+      <xwalk:value-mapping from="Marathi (Marāṭhī)" to="mr" />
+      <xwalk:value-mapping from="Marshallese" to="mh" />
+      <xwalk:value-mapping from="Mongolian" to="mn" />
+      <xwalk:value-mapping from="Nauruan" to="na" />
+      <xwalk:value-mapping from="Navajo" to="nv" />
+      <xwalk:value-mapping from="Navaho" to="nv" />
+      <xwalk:value-mapping from="Northern Ndebele" to="nd" />
+      <xwalk:value-mapping from="Nepali" to="ne" />
+      <xwalk:value-mapping from="Ndonga" to="ng" />
+      <xwalk:value-mapping from="Norwegian Bokmål" to="nb" />
+      <xwalk:value-mapping from="Norwegian Nynorsk" to="nn" />
+      <xwalk:value-mapping from="Norwegian" to="no" />
+      <xwalk:value-mapping from="Nuosu" to="ii" />
+      <xwalk:value-mapping from="Southern Ndebele" to="nr" />
+      <xwalk:value-mapping from="Occitan" to="oc" />
+      <xwalk:value-mapping from="Ojibwe" to="oj" />
+      <xwalk:value-mapping from="Ojibwa" to="oj" />
+      <xwalk:value-mapping from="Old Church Slavonic" to="cu" />
+      <xwalk:value-mapping from="Church Slavonic" to="cu" />
+      <xwalk:value-mapping from="Old Bulgarian" to="cu" />
+      <xwalk:value-mapping from="Oromo" to="om" />
+      <xwalk:value-mapping from="Oriya" to="or" />
+      <xwalk:value-mapping from="Ossetian" to="os" />
+      <xwalk:value-mapping from="Ossetic" to="os" />
+      <xwalk:value-mapping from="(Eastern) Punjabi" to="pa" />
+      <xwalk:value-mapping from="Punjabi" to="pa" />
+      <xwalk:value-mapping from="Pāli" to="pi" />
+      <xwalk:value-mapping from="Persian (Farsi)" to="fa" />
+      <xwalk:value-mapping from="Persian" to="fa" />
+      <xwalk:value-mapping from="Farsi" to="fa" />
+      <xwalk:value-mapping from="Polish" to="pl" />
+      <xwalk:value-mapping from="Pashto" to="ps" />
+      <xwalk:value-mapping from="Pushto" to="ps" />
+      <xwalk:value-mapping from="Portuguese" to="pt" />
+      <xwalk:value-mapping from="Quechua" to="qu" />
+      <xwalk:value-mapping from="Romansh" to="rm" />
+      <xwalk:value-mapping from="Kirundi" to="rn" />
+      <xwalk:value-mapping from="Romanian" to="ro" />
+      <xwalk:value-mapping from="Russian" to="ru" />
+      <xwalk:value-mapping from="Sanskrit (Saṁskṛta)" to="sa" />
+      <xwalk:value-mapping from="Sanskrit" to="sa" />
+      <xwalk:value-mapping from="Saṁskṛta" to="sa" />
+      <xwalk:value-mapping from="Sardinian" to="sc" />
+      <xwalk:value-mapping from="Sindhi" to="sd" />
+      <xwalk:value-mapping from="Northern Sami" to="se" />
+      <xwalk:value-mapping from="Samoan" to="sm" />
+      <xwalk:value-mapping from="Sango" to="sg" />
+      <xwalk:value-mapping from="Serbian" to="sr" />
+      <xwalk:value-mapping from="Scottish Gaelic" to="gd" />
+      <xwalk:value-mapping from="Gaelic" to="gd" />
+      <xwalk:value-mapping from="Shona" to="sn" />
+      <xwalk:value-mapping from="Sinhalese" to="si" />
+      <xwalk:value-mapping from="Sinhala" to="si" />
+      <xwalk:value-mapping from="Slovak" to="sk" />
+      <xwalk:value-mapping from="Slovene" to="sl" />
+      <xwalk:value-mapping from="Somali" to="so" />
+      <xwalk:value-mapping from="Southern Sotho" to="st" />
+      <xwalk:value-mapping from="Spanish" to="es" />
+      <xwalk:value-mapping from="Sundanese" to="su" />
+      <xwalk:value-mapping from="Swahili" to="sw" />
+      <xwalk:value-mapping from="Swati" to="ss" />
+      <xwalk:value-mapping from="Swedish" to="sv" />
+      <xwalk:value-mapping from="Tamil" to="ta" />
+      <xwalk:value-mapping from="Telugu" to="te" />
+      <xwalk:value-mapping from="Tajik" to="tg" />
+      <xwalk:value-mapping from="Thai" to="th" />
+      <xwalk:value-mapping from="Tigrinya" to="ti" />
+      <xwalk:value-mapping from="Tibetan Standard" to="bo" />
+      <xwalk:value-mapping from="Tibetan" to="bo" />
+      <xwalk:value-mapping from="Central" to="bo" />
+      <xwalk:value-mapping from="Turkmen" to="tk" />
+      <xwalk:value-mapping from="Tagalog" to="tl" />
+      <xwalk:value-mapping from="Tswana" to="tn" />
+      <xwalk:value-mapping from="Tonga (Tonga Islands)" to="to" />
+      <xwalk:value-mapping from="Tonga" to="to" />
+      <xwalk:value-mapping from="Tonga Islands" to="to" />
+      <xwalk:value-mapping from="Turkish" to="tr" />
+      <xwalk:value-mapping from="Tsonga" to="ts" />
+      <xwalk:value-mapping from="Tatar" to="tt" />
+      <xwalk:value-mapping from="Twi" to="tw" />
+      <xwalk:value-mapping from="Tahitian" to="ty" />
+      <xwalk:value-mapping from="Uyghur" to="ug" />
+      <xwalk:value-mapping from="Ukrainian" to="uk" />
+      <xwalk:value-mapping from="Urdu" to="ur" />
+      <xwalk:value-mapping from="Uzbek" to="uz" />
+      <xwalk:value-mapping from="Venda" to="ve" />
+      <xwalk:value-mapping from="Vietnamese" to="vi" />
+      <xwalk:value-mapping from="Volapük" to="vo" />
+      <xwalk:value-mapping from="Walloon" to="wa" />
+      <xwalk:value-mapping from="Welsh" to="cy" />
+      <xwalk:value-mapping from="Wolof" to="wo" />
+      <xwalk:value-mapping from="Western Frisian" to="fy" />
+      <xwalk:value-mapping from="Xhosa" to="xh" />
+      <xwalk:value-mapping from="Yiddish" to="yi" />
+      <xwalk:value-mapping from="Yoruba" to="yo" />
+      <xwalk:value-mapping from="Zhuang" to="za" />
+      <xwalk:value-mapping from="Chuang" to="za" />
+      <xwalk:value-mapping from="Zulu" to="zu" />
+      <!-- if none of the above match, ignore the value so that an alternate field source can be found -->
+      <xwalk:otherwise-mapping action="ignore-this-value" />
+    </xwalk:value-map>
+  </xwalk:value-maps>
+  <!-- === FIELD MAP SELECTOR ============================================================================================================ -->
+  <!-- Selects which field map to use -->
+  <xwalkout:field-map-selector>
+    <xwalk:choose>
+      <!-- Handle subsequent deposit -->
+      <xwalk:when>
+        <xwalk:condition argument-field="deposit.type" operator="equals">subsequent</xwalk:condition>
+        <xwalk:result>
+          <xwalk:field-map-selection field-map="subsequent-deposit" />
+        </xwalk:result>
+      </xwalk:when>
+      <!-- Else choose a field map for an initial deposit -->
+      <xwalk:when>
+        <xwalk:condition operator="or">
+          <xwalk:condition argument-field="object.type" operator="equals">book</xwalk:condition>
+          <xwalk:condition argument-field="object.type" operator="equals">chapter</xwalk:condition>
+          <xwalk:condition argument-field="object.type" operator="equals">dataset</xwalk:condition>
+          <xwalk:condition argument-field="object.type" operator="equals">conference</xwalk:condition>
+          <xwalk:condition argument-field="object.type" operator="equals">journal-article</xwalk:condition>
+          <xwalk:condition argument-field="object.type" operator="equals">patent</xwalk:condition>
+          <xwalk:condition argument-field="object.type" operator="equals">report</xwalk:condition>
+          <xwalk:condition argument-field="object.type" operator="equals">software</xwalk:condition>
+          <xwalk:condition argument-field="object.type" operator="equals">performance</xwalk:condition>
+          <xwalk:condition argument-field="object.type" operator="equals">artefact</xwalk:condition>
+          <xwalk:condition argument-field="object.type" operator="equals">design</xwalk:condition>
+          <xwalk:condition argument-field="object.type" operator="equals">exhibition</xwalk:condition>
+          <xwalk:condition argument-field="object.type" operator="equals">scholarly-edition</xwalk:condition>
+          <xwalk:condition argument-field="object.type" operator="equals">thesis-dissertation</xwalk:condition>
+          <xwalk:condition argument-field="object.type" operator="equals">other</xwalk:condition>
+          <xwalk:condition argument-field="object.type" operator="equals">poster</xwalk:condition>
+          <xwalk:condition argument-field="object.type" operator="equals">composition</xwalk:condition>
+          <xwalk:condition argument-field="object.type" operator="equals">internet-publication</xwalk:condition>
+          <xwalk:condition argument-field="object.type" operator="equals">figure</xwalk:condition>
+          <xwalk:condition argument-field="object.type" operator="equals">preprint</xwalk:condition>
+          <xwalk:condition argument-field="object.type" operator="equals">fileset</xwalk:condition>
+          <xwalk:condition argument-field="object.type" operator="equals">media</xwalk:condition>
+          <xwalk:condition argument-field="object.type" operator="equals">presentation</xwalk:condition>
+        </xwalk:condition>
+        <xwalk:result>
+          <xwalk:field-map-selection field-map="default-deposit" />
+        </xwalk:result>
+      </xwalk:when>
+    </xwalk:choose>
+  </xwalkout:field-map-selector>
+  <!-- Selects which collection to deposit into -->
+  <xwalkout:collection-selector>
+    <!-- "Michigan Research Experts Deposits" does not exist in staging. -->
+    <!-- Using "Symplectic Test Collection" for deposit staging. -->
+    <!-- TODO: Restore to the production collection name+UUID before applying to production. -->
+    <xwalkout:collection-selection name="Symplectic Test Collection" id="601cbd93-df76-4d5e-a309-41f05ae1ebdf" />
+  </xwalkout:collection-selector>
+</xwalkout:consolidated-maps>
