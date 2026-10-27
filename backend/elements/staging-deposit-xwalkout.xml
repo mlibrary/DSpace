@@ -339,23 +339,28 @@
         <xwalk:field-source from="number-of-pieces" />
       </xwalk:field-mapping>
       <!-- publication-date, online-publication-date => dc.date.issued -->
-      <xwalk:field-mapping to="dc.date.issued">
+	  <xwalk:field-mapping to="dc.date.issued">
         <xwalk:choose>
-          <!-- if publication-date has a vaule, use that -->
           <xwalk:when>
             <xwalk:condition argument-field="publication-date" operator="has-value" />
-            <xwalk:result>
+             <xwalk:result>
               <xwalk:field-source from="publication-date" format="date:YYYY-MM-DD" />
+             </xwalk:result>
+          </xwalk:when>
+          <xwalk:when>
+           <xwalk:condition argument-field="online-publication-date" operator="has-value" />
+            <xwalk:result>
+             <xwalk:field-source from="online-publication-date" format="date:YYYY-MM-DD" />
+              </xwalk:result>
+       	  </xwalk:when>
+          <xwalk:when>
+            <xwalk:condition argument-field="acceptance-date" operator="has-value" />
+            <xwalk:result>
+            <xwalk:field-source from="acceptance-date" format="date:YYYY" />
             </xwalk:result>
           </xwalk:when>
-          <!-- otherwise, fall back to online-publication-date -->
-          <xwalk:otherwise>
-            <xwalk:result>
-              <xwalk:field-source from="online-publication-date" format="date:YYYY-MM-DD" />
-            </xwalk:result>
-          </xwalk:otherwise>
-        </xwalk:choose>
-      </xwalk:field-mapping>
+    	</xwalk:choose>
+	  </xwalk:field-mapping>
       <!-- acceptance-date => dcterms.dateAccepted -->
       <!-- N.B. DSpace's default Qualified DC schema has no place for acceptance-date, so we turn to the dcterms schema instead -->
       <!--<xwalk:field-mapping to="dcterms.dateAccepted">
