@@ -291,7 +291,7 @@
 	    <xwalk:field-source from="journal"/>
 	    <xwalk:field-source from="parent-title"/>
 	    <xwalk:field-source from="c-book-anthology-journal-title"/>
-	    <xwalk:field-source from="publication-date" format="date:year"/>
+	    <xwalk:field-source from="publication-date" format="date:Y"/>
 	    <xwalk:field-source from="edition"/>
 	    <xwalk:field-source concatenate-with-separator=" ">
 	      <xwalk:field-source from="volume"/>
@@ -356,7 +356,7 @@
           <xwalk:when>
             <xwalk:condition argument-field="acceptance-date" operator="has-value" />
             <xwalk:result>
-            <xwalk:field-source from="acceptance-date" format="date:YYYY" />
+            <xwalk:field-source from="acceptance-date" format="date:Y" />
             </xwalk:result>
           </xwalk:when>
     	</xwalk:choose>
