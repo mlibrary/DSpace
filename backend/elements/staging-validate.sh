@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 xmllint --noout --nonet \
   --schema XwalkOut.xsd \
   staging-deposit-xwalkout.xml

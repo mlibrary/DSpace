@@ -522,11 +522,17 @@
       <xwalk:value-mapping from="Apache-2.0" to="Apache License, Version 2.0" />
       <xwalk:value-mapping from="BSD-3-Clause" to="3-Clause BSD License" />
       <xwalk:value-mapping from="CC-0" to="Creative Commons CC0 1.0 Universal (Public Domain Dedication)" />
+      <xwalk:value-mapping from="CC-BY" to="Creative Commons Attribution 4.0 International" />
       <xwalk:value-mapping from="CC BY" to="Creative Commons Attribution 4.0 International" />
+      <xwalk:value-mapping from="CC-BY-ND" to="Creative Commons Attribution-NoDerivatives 4.0 International" />
       <xwalk:value-mapping from="CC BY-ND" to="Creative Commons Attribution-NoDerivatives 4.0 International" />
+      <xwalk:value-mapping from="CC-BY-SA" to="Creative Commons Attribution-ShareAlike 4.0 International" />
       <xwalk:value-mapping from="CC BY-SA" to="Creative Commons Attribution-ShareAlike 4.0 International" />
+      <xwalk:value-mapping from="CC-BY-NC" to="Creative Commons Attribution-NonCommercial 4.0 International" />
       <xwalk:value-mapping from="CC BY-NC" to="Creative Commons Attribution-NonCommercial 4.0 International" />
+      <xwalk:value-mapping from="CC-BY-NC-ND" to="Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International" />
       <xwalk:value-mapping from="CC BY-NC-ND" to="Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International" />
+      <xwalk:value-mapping from="CC-BY-NC-SA" to="Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International" />
       <xwalk:value-mapping from="CC BY-NC-SA" to="Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International" />
       <xwalk:value-mapping from="CC-Public-Domain" to="Creative Commons Copyright-Only Dedication or Public Domain Certification" />
       <xwalk:value-mapping from="GPL" to="GNU General Public License, version 1" />
@@ -544,11 +550,17 @@
       <xwalk:value-mapping from="Apache-2.0" to="http://www.apache.org/licenses/LICENSE-2.0" />
       <xwalk:value-mapping from="BSD-3-Clause" to="http://opensource.org/licenses/BSD-3-Clause" />
       <xwalk:value-mapping from="CC-0" to="http://creativecommons.org/publicdomain/zero/1.0/" />
+      <xwalk:value-mapping from="CC-BY" to="http://creativecommons.org/licenses/by/4.0/" />
       <xwalk:value-mapping from="CC BY" to="http://creativecommons.org/licenses/by/4.0/" />
+      <xwalk:value-mapping from="CC-BY-ND" to="http://creativecommons.org/licenses/by-nd/4.0/" />
       <xwalk:value-mapping from="CC BY-ND" to="http://creativecommons.org/licenses/by-nd/4.0/" />
+      <xwalk:value-mapping from="CC-BY-SA" to="http://creativecommons.org/licenses/by-sa/4.0/" />
       <xwalk:value-mapping from="CC BY-SA" to="http://creativecommons.org/licenses/by-sa/4.0/" />
+      <xwalk:value-mapping from="CC-BY-NC" to="http://creativecommons.org/licenses/by-nc/4.0/" />
       <xwalk:value-mapping from="CC BY-NC" to="http://creativecommons.org/licenses/by-nc/4.0/" />
+      <xwalk:value-mapping from="CC-BY-NC-ND" to="http://creativecommons.org/licenses/by-nc-nd/4.0/" />
       <xwalk:value-mapping from="CC BY-NC-ND" to="http://creativecommons.org/licenses/by-nc-nd/4.0/" />
+      <xwalk:value-mapping from="CC-BY-NC-SA" to="http://creativecommons.org/licenses/by-nc-sa/4.0/" />
       <xwalk:value-mapping from="CC BY-NC-SA" to="http://creativecommons.org/licenses/by-nc-sa/4.0/" />
       <xwalk:value-mapping from="CC-Public-Domain" to="http://creativecommons.org/licenses/publicdomain/" />
       <xwalk:value-mapping from="GPL" to="http://www.gnu.org/licenses/gpl-1.0" />
@@ -575,6 +587,7 @@
       <xwalk:value-mapping from="Akan" to="ak" />
       <xwalk:value-mapping from="Albanian" to="sq" />
       <xwalk:value-mapping from="Amharic" to="am" />
+      <xwalk:value-mapping from="Anishinaabe" to="oj" />
       <xwalk:value-mapping from="Arabic" to="ar" />
       <xwalk:value-mapping from="Aragonese" to="an" />
       <xwalk:value-mapping from="Armenian" to="hy" />
