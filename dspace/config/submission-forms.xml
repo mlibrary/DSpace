@@ -1952,7 +1952,8 @@
                     <required></required>
                 </field>
             </row>
-
+            
+        <!-- date.issued NOT required so that Elements deposits validate -->
             <row>
                 <field>
                     <dc-schema>dc</dc-schema>
@@ -1961,8 +1962,7 @@
                     <repeatable>false</repeatable>
                     <label>Date of Issue</label>
                     <input-type>date</input-type>
-                    <hint>Use today's date if Deep Blue is this work's first place of publication. (* YYYY required)</hint>
-                    <required>You must enter at least the year (YYYY). Day and month are not required.</required>
+                    <required></required>
                 </field>
             </row>
 
