@@ -116,7 +116,7 @@
         </xwalk:field-source>
         <!-- requested licence info -->
         <xwalk:field-source prefix="Depositor requested a reuse licence: " concatenate-with-separator="&#xD;&#xA;">
-          <xwalk:field-source from="requested-embargo.display-name" />
+          <xwalk:field-source from="requested-reuse-licence.display-name" />
           <xwalk:field-source prefix="Licence ID: " from="requested-reuse-licence.id" />
           <xwalk:field-source prefix="Depositor's comment: " from="requested-reuse-licence.comment" />
         </xwalk:field-source>
@@ -228,8 +228,8 @@
         <xwalk:field-source from="editors" format="person:lastname-firstnames" />
       </xwalk:field-mapping>
       <!-- associated-authors => dc.contributor-->
-      <xwalk:field-mapping to="associated-authors">
-        <xwalk:field-source from="dc.contributor" />
+      <xwalk:field-mapping to="dc.contributor">
+        <xwalk:field-source from="associated-authors" format="person:lastname-firstnames" />
       </xwalk:field-mapping>
       <!--  author-url, public-url -->
       <xwalk:field-mapping to="dc.identifier.uri">
@@ -276,7 +276,7 @@
       </xwalk:field-mapping>
       <!-- series-->
       <xwalk:field-mapping to="dc.relation.ispartofseries">
-        <xwalk:field-source from="serie" />
+        <xwalk:field-source from="series" />
       </xwalk:field-mapping>
       <!-- medium => dc.description.medium -->
       <xwalk:field-mapping to="dc.format.medium">
@@ -301,7 +301,7 @@
 	  </xwalk:field-mapping>-->
       <!-- dc.description.thesisdegreename -->
       <xwalk:field-mapping to="dc.description.thesisdegreename">
-        <xwalk:field-source from="'thesis-type" />
+        <xwalk:field-source from="thesis-type" />
       </xwalk:field-mapping>
       <!-- number-->
       <xwalk:field-mapping to="dc.relation.haspart">
@@ -422,7 +422,7 @@
       </xwalk:field-mapping>
       <!-- c-relation-isformatof => dc.relation.isformatof-->
       <xwalk:field-mapping to="dc.relation.isformatof">
-        <xwalk:field-source from=" c-relation-isformatof" />
+        <xwalk:field-source from="c-relation-isformatof" />
       </xwalk:field-mapping>
       <!-- c-relation-uri => dc.relation.uri-->
       <xwalk:field-mapping to="dc.relation.uri">
@@ -459,7 +459,7 @@
       <xwalk:value-mapping from="performance" to="Performance" />
       <xwalk:value-mapping from="artefact" to="Artefact" />
       <xwalk:value-mapping from="design" to="Design" />
-      <xwalk:value-mapping from="exhibition" to="Exhbition" />
+      <xwalk:value-mapping from="exhibition" to="Exhibition" />
       <xwalk:value-mapping from="scholarly-edition" to="Scholarly edition" />
       <xwalk:value-mapping from="thesis-dissertation" to="Thesis" />
       <xwalk:value-mapping from="other" to="Other" />
@@ -516,8 +516,7 @@
     <!-- Used to check that values sent to dc.identifier.name-orcid do in fact contain an ORCID iD -->
     <xwalk:value-map name="ignore-names-without-orcids" matchMode="regex">
       <xwalk:value-mapping from="^.*; \d{4}-\d{4}-\d{4}-\d{3}[\dX]$" action="continue" />
-      <xwalk:otherwise-mapping action="continue" />
-      <!-- DEBUG -->
+      <xwalk:otherwise-mapping action="ignore-this-value" />
     </xwalk:value-map>
     <xwalk:value-map name="licence-to-dc.rights">
       <xwalk:value-mapping from="Apache-2.0" to="Apache License, Version 2.0" />
