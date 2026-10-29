@@ -105,14 +105,6 @@
             <!-- *                                                                                * -->
             <!-- ********************************************************************************** -->
 
-            <!--override record-created-at-source-date auto-crosswalked field-->
-            <xwalk:field-mapping to="record-created-at-source-date">
-                <xwalk:field-source from="dc.date.available" />
-            </xwalk:field-mapping>
-            <!--override record-created-at-source-date auto-crosswalked field-->
-            <xwalk:field-mapping to="record-made-public-at-source-date">
-                <xwalk:field-source from="dc.date.accessioned" />
-            </xwalk:field-mapping>
             <!-- There is no default mapping to Elements object-level underlying field 'embargo-release-date'. A mapping
                  is not required, as the file-level 'embargo-release-date' field used in OA Monitor calculations is
                  crosswalked automatically. -->
@@ -177,16 +169,12 @@
             <xwalk:field-mapping to="abstract">
                 <xwalk:field-source from="dc.description.abstract" />
             </xwalk:field-mapping>
-            <!-- dc.description.sponsorship -->
-            <!-- This mapping uses an if/else structure to change its behaviour depending on the input -->
-            <!-- Also, select-using="xpath" allows us to use XPath functions to access and process the input data -->
             <!-- dc.description.sponsorship => funding-acknowledgements -->
-            <!-- DSpace 7: complex XPath condition (starts-with on first value) removed.
-                 All dc.description.sponsorship values are mapped as grants.
-                 This is equivalent to the original <xwalk:else> branch and is
-                 fully compatible with the DSpace 7 JSON API. -->
+            <!-- Only entries formatted as "Grant ID: Funder" or "Grant ID" are grants.
+                 Preserve other sponsorship values as acknowledgement text. -->
             <xwalk:field-mapping to="funding-acknowledgements">
-                <xwalk:field-source data-part="funding-acknowledgements:grant" from="dc.description.sponsorship">
+                <xwalk:field-source data-part="funding-acknowledgements:acknowledgement-text" from="dc.description.sponsorship" value-map="filter-to-funding-text" concatenate-with-separator="&#xA;" />
+                <xwalk:field-source data-part="funding-acknowledgements:grant" from="dc.description.sponsorship" value-map="filter-to-grants">
                     <xwalk:field-source data-part="funding-acknowledgements-grant:id" value-map="dc.description.sponsorship-to-grant-id" />
                     <xwalk:field-source data-part="funding-acknowledgements-grant:org" value-map="dc.description.sponsorship-to-grant-org" />
                 </xwalk:field-source>
@@ -442,39 +430,39 @@
         <!-- Looks for the URI anywhere in the input string. -->
         <xwalk:value-map name="licence-uri-to-author-licence-choices" matchMode="regex">
             <!-- In Copyright -->
-            <xwalk:value-mapping from="^.*?https?://rightsstatements.org/page/InC-RUU/1.0/.*$" to="InCopyright-RUU" />
-            <xwalk:value-mapping from="^.*?https?://rightsstatements.org/page/InC/1.0/.*$" to="InCopyright" />
+            <xwalk:value-mapping from="^.*?https?://rightsstatements\.org/page/InC-RUU/1\.0/.*$" to="InCopyright-RUU" />
+            <xwalk:value-mapping from="^.*?https?://rightsstatements\.org/page/InC/1\.0/.*$" to="InCopyright" />
             <!-- Creative Commons licences -->
             <!-- Elements does not distinguish between CC licence version numbers or localisations. Therefore we map all to the appropriate generic licence. -->
-            <xwalk:value-mapping from="^.*?https?://creativecommons.org/licenses/by-nc-nd/.*$" to="CC-BY-NC-ND" />
-            <xwalk:value-mapping from="^.*?https?://creativecommons.org/licenses/by-nc-sa/.*$" to="CC-BY-NC-SA" />
-            <xwalk:value-mapping from="^.*?https?://creativecommons.org/licenses/by-nc/.*$" to="CC-BY-NC" />
-            <xwalk:value-mapping from="^.*?https?://creativecommons.org/licenses/by-nd/.*$" to="CC-BY-ND" />
-            <xwalk:value-mapping from="^.*?https?://creativecommons.org/licenses/by-sa/.*$" to="CC-BY-SA" />
-            <xwalk:value-mapping from="^.*?https?://creativecommons.org/licenses/by/.*$" to="CC-BY" />
-            <xwalk:value-mapping from="^.*?https?://creativecommons.org/publicdomain/zero/1.0/.*$" to="CC-0" />
-            <xwalk:value-mapping from="^.*?https?://creativecommons.org/publicdomain/mark/1.0/.*$" to="CC-Public-Domain" />
+            <xwalk:value-mapping from="^.*?https?://creativecommons\.org/licenses/by-nc-nd/.*$" to="CC-BY-NC-ND" />
+            <xwalk:value-mapping from="^.*?https?://creativecommons\.org/licenses/by-nc-sa/.*$" to="CC-BY-NC-SA" />
+            <xwalk:value-mapping from="^.*?https?://creativecommons\.org/licenses/by-nc/.*$" to="CC-BY-NC" />
+            <xwalk:value-mapping from="^.*?https?://creativecommons\.org/licenses/by-nd/.*$" to="CC-BY-ND" />
+            <xwalk:value-mapping from="^.*?https?://creativecommons\.org/licenses/by-sa/.*$" to="CC-BY-SA" />
+            <xwalk:value-mapping from="^.*?https?://creativecommons\.org/licenses/by/.*$" to="CC-BY" />
+            <xwalk:value-mapping from="^.*?https?://creativecommons\.org/publicdomain/zero/1\.0/.*$" to="CC-0" />
+            <xwalk:value-mapping from="^.*?https?://creativecommons\.org/(publicdomain/mark/1\.0/|licenses/publicdomain/).*$" to="CC-Public-Domain" />
             <!-- GNU General Public License -->
             <!-- Matches to 'old-licences', version- and language-specific forms as well the generic URI -->
             <!-- As of 16 Jan 2019, the latest GPL licence is version 3. Therefore https://www.gnu.org/licenses/gpl.html maps to this version. -->
-            <xwalk:value-mapping from="^.*?https?://www.gnu.org/licenses/gpl.(\.[a-z-]{2,5})?\.html.*$" to="GPL-3.0" />
-            <xwalk:value-mapping from="^.*?https?://www.gnu.org/licenses(/old-licenses)?/gpl-3.0(\.[a-z-]{2,5})?\.html.*$" to="GPL-3.0" />
-            <xwalk:value-mapping from="^.*?https?://www.gnu.org/licenses(/old-licenses)?/gpl-2.0(\.[a-z-]{2,5})?\.html.*$" to="GPL-2.0" />
-            <xwalk:value-mapping from="^.*?https?://www.gnu.org/licenses(/old-licenses)?/gpl-1.0(\.[a-z-]{2,5})?\.html.*$" to="GPL" />
+            <xwalk:value-mapping from="^.*?https?://www\.gnu\.org/licenses/gpl(\.[a-z-]{2,5})?\.html([?#].*)?$" to="GPL-3.0" />
+            <xwalk:value-mapping from="^.*?https?://www\.gnu\.org/licenses(/old-licenses)?/gpl-3\.0(\.[a-z-]{2,5})?(\.html)?([/?#].*)?$" to="GPL-3.0" />
+            <xwalk:value-mapping from="^.*?https?://www\.gnu\.org/licenses(/old-licenses)?/gpl-2\.0(\.[a-z-]{2,5})?(\.html)?([/?#].*)?$" to="GPL-2.0" />
+            <xwalk:value-mapping from="^.*?https?://www\.gnu\.org/licenses(/old-licenses)?/gpl-1\.0(\.[a-z-]{2,5})?(\.html)?([/?#].*)?$" to="GPL" />
             <!-- MIT licence -->
-            <xwalk:value-mapping from="^.*?https?://opensource.org/licenses/MIT.*$" to="MIT" />
+            <xwalk:value-mapping from="^.*?https?://opensource\.org/licenses/MIT.*$" to="MIT" />
             <!-- Apache License, Version 2.0 -->
-            <xwalk:value-mapping from="^.*?https?://www.apache.org/licenses/LICENSE-2.0.*$" to="Apache-2.0" />
+            <xwalk:value-mapping from="^.*?https?://www\.apache\.org/licenses/LICENSE-2\.0.*$" to="Apache-2.0" />
             <!-- Mozilla Public License 2.0 -->
-            <xwalk:value-mapping from="^.*?https?://www.mozilla.org(/[a-z]{2}(-[A-Z]{2})?)?/MPL/2.0/.*$" to="MLP-2.0" />
-            <xwalk:value-mapping from="^.*?https?://opensource.org/licenses/MPL-2.0.*$" to="MLP-2.0" />
+            <xwalk:value-mapping from="^.*?https?://www\.mozilla\.org(/[a-z]{2}(-[A-Z]{2})?)?/MPL/2\.0/.*$" to="MLP-2.0" />
+            <xwalk:value-mapping from="^.*?https?://opensource\.org/licenses/MPL-2\.0.*$" to="MLP-2.0" />
             <!-- 3-Clause BSD License (Berkeley Software Distribution) -->
-            <xwalk:value-mapping from="^.*?https?://opensource.org/licenses/BSD-3-Clause.*$" to="BSD-3-Clause" />
+            <xwalk:value-mapping from="^.*?https?://opensource\.org/licenses/BSD-3-Clause.*$" to="BSD-3-Clause" />
             <!-- Open Government Licence for public sector information -->
             <!-- As of 16 Jan 2019, has three versions. Version 3 has a Welsh translation available. All match the regex below. -->
-            <xwalk:value-mapping from="^.*?https?://www.nationalarchives.gov.uk/doc/open-government-licence.*$" to="OGL" />
+            <xwalk:value-mapping from="^.*?https?://www\.nationalarchives\.gov\.uk/doc/open-government-licence.*$" to="OGL" />
             <!-- AusGOAL Restrictive Licence Template (website now defunct) -->
-            <xwalk:value-mapping from="^.*?https?://www.ausgoal.gov.au/restrictive-licence-template.*$" to="RLT" />
+            <xwalk:value-mapping from="^.*?https?://www\.ausgoal\.gov\.au/restrictive-licence-template.*$" to="RLT" />
             <!-- If non of the above match, ignore the value -->
             <xwalk:otherwise-mapping action="ignore-this-value" />
         </xwalk:value-map>
@@ -497,11 +485,21 @@
             <xwalk:value-mapping from="[^\d-]" to="" />
         </xwalk:value-map>
 
+        <xwalk:value-map name="filter-to-grants" matchMode="regex">
+            <xwalk:value-mapping from="(?is)^Grant\s+[^\s:][^:]*(?::\s*\S.*)?$" action="continue" />
+            <xwalk:otherwise-mapping action="ignore-this-value" />
+        </xwalk:value-map>
+
+        <xwalk:value-map name="filter-to-funding-text" matchMode="regex">
+            <xwalk:value-mapping from="(?is)^Grant\s+[^\s:][^:]*(?::\s*\S.*)?$" action="ignore-this-value" />
+            <xwalk:otherwise-mapping action="continue" />
+        </xwalk:value-map>
+
         <!-- Parse dc.description.sponsorship into funding-acknowledgement data -->
         <xwalk:value-map name="dc.description.sponsorship-to-grant-id" matchMode="regex">
             <!-- When the string starts with the word "Grant" (case-insensitive), matches text after the word "Grant" up to the first
                  colon (":") or the end of the string. Strips leading and trailing spaces. -->
-            <xwalk:value-mapping from="(?i)^Grant\s*([^:]+?)\s*(?::.*)?$" to="$1" />
+            <xwalk:value-mapping from="(?is)^Grant\s+([^:]+?)\s*(?::.*)?$" to="$1" />
             <!-- If no match, ignore the value completely -->
             <xwalk:otherwise-mapping action="ignore-this-value" />
         </xwalk:value-map>
@@ -509,9 +507,8 @@
         <xwalk:value-map name="dc.description.sponsorship-to-grant-org" matchMode="regex">
             <!-- When the string starts with the word "Grant" (case-insensitive) and contains at least one colon, matches text after
                  first colon up to the end of the string. Strips leading and trailing spaces. -->
-            <xwalk:value-mapping from="(?i)^Grant[^:]*:\s*(.*?)\s*$" to="$1" />
-            <!-- If no match, continue i.e. use the whole string as the funder name. -->
-            <xwalk:otherwise-mapping action="continue" />
+            <xwalk:value-mapping from="(?is)^Grant\s+[^:]*:\s*(.*?)\s*$" to="$1" />
+            <xwalk:otherwise-mapping action="ignore-this-value" />
         </xwalk:value-map>
 
         <xwalk:value-map name="language-none-custom">
@@ -583,7 +580,6 @@
             <xwalk:value-mapping from="gl" to="Galician" />
             <xwalk:value-mapping from="ka" to="Georgian" />
             <xwalk:value-mapping from="de" to="German" />
-            <xwalk:value-mapping from="GE" to="Georgia" />
             <xwalk:value-mapping from="el" to="Greek (modern)" />
             <xwalk:value-mapping from="gn" to="Guaraní" />
             <xwalk:value-mapping from="gu" to="Gujarati" />
@@ -653,7 +649,6 @@
             <xwalk:value-mapping from="ii" to="Nuosu" />
             <xwalk:value-mapping from="nr" to="Southern Ndebele" />
             <xwalk:value-mapping from="oc" to="Occitan" />
-            <xwalk:value-mapping from="oj" to="Ojibwe, Ojibwa" />
             <xwalk:value-mapping from="cu" to="Old Church Slavonic, Church Slavonic, Old Bulgarian" />
             <xwalk:value-mapping from="om" to="Oromo" />
             <xwalk:value-mapping from="or" to="Oriya" />
@@ -664,7 +659,6 @@
             <xwalk:value-mapping from="Persian" to="Persian" />
             <xwalk:value-mapping from="pl" to="Polish" />
             <xwalk:value-mapping from="ps" to="Pashto, Pushto" />
-            <xwalk:value-mapping from="PN" to="Pitcairn Islands" />
             <xwalk:value-mapping from="pt" to="Portuguese" />
             <xwalk:value-mapping from="qu" to="Quechua" />
             <xwalk:value-mapping from="rm" to="Romansh" />
@@ -718,7 +712,7 @@
             <xwalk:value-mapping from="wo" to="Wolof" />
             <xwalk:value-mapping from="fy" to="Western Frisian" />
             <xwalk:value-mapping from="xh" to="Xhosa" />
-            <xwalk:value-mapping from="yi" to="Yi" />
+            <xwalk:value-mapping from="yi" to="Yiddish" />
             <xwalk:value-mapping from="yo" to="Yoruba" />
             <xwalk:value-mapping from="za" to="Zhuang, Chuang" />
             <xwalk:value-mapping from="zu" to="Zulu" />
@@ -743,7 +737,7 @@
               1. Journal article
               2. Book
               3. Chapter
-              4. Journal article (with sub type Preprint)
+              4. Preprint
               5. Thesis / Dissertation
               6. Report (with sub type Technical Report)
               7. Report (with sub type Working Paper)
@@ -812,7 +806,7 @@
                 <!-- there exists at least one value of dc.type that CONTAINS "preprint"  -->
                 <xwalk:condition select-using="jsonpath" argument-field="$.metadata['dc.type'][?(@.value =~ /preprint/i)].value" operator="has-value" />
                 <xwalk:result>
-                    <xwalkin:object-type-selection category="publication" object-type="journal-article" field-map="default-harvest" />
+                    <xwalkin:object-type-selection category="publication" object-type="preprint" field-map="default-harvest" />
                 </xwalk:result>
             </xwalk:when>
             <!--thesis-->
@@ -968,6 +962,68 @@
                 </xwalk:result>
             </xwalk:when>
 
+            <!-- Exact reversals for remaining types emitted by the deposit crosswalk.
+                 Keep these below the existing subtype-specific precedence rules. -->
+            <xwalk:when>
+                <xwalk:condition argument-field="dc.type" operator="equals">Report</xwalk:condition>
+                <xwalk:result>
+                    <xwalkin:object-type-selection category="publication" object-type="report" field-map="default-harvest" />
+                </xwalk:result>
+            </xwalk:when>
+            <xwalk:when>
+                <xwalk:condition argument-field="dc.type" operator="equals">Media</xwalk:condition>
+                <xwalk:result>
+                    <xwalkin:object-type-selection category="publication" object-type="media" field-map="default-harvest" />
+                </xwalk:result>
+            </xwalk:when>
+            <xwalk:when>
+                <xwalk:condition argument-field="dc.type" operator="equals">Patent</xwalk:condition>
+                <xwalk:result>
+                    <xwalkin:object-type-selection category="publication" object-type="patent" field-map="default-harvest" />
+                </xwalk:result>
+            </xwalk:when>
+            <xwalk:when>
+                <xwalk:condition argument-field="dc.type" operator="equals">Performance</xwalk:condition>
+                <xwalk:result>
+                    <xwalkin:object-type-selection category="publication" object-type="performance" field-map="default-harvest" />
+                </xwalk:result>
+            </xwalk:when>
+            <xwalk:when>
+                <xwalk:condition argument-field="dc.type" operator="equals">Artefact</xwalk:condition>
+                <xwalk:result>
+                    <xwalkin:object-type-selection category="publication" object-type="artefact" field-map="default-harvest" />
+                </xwalk:result>
+            </xwalk:when>
+            <xwalk:when>
+                <xwalk:condition argument-field="dc.type" operator="equals">Design</xwalk:condition>
+                <xwalk:result>
+                    <xwalkin:object-type-selection category="publication" object-type="design" field-map="default-harvest" />
+                </xwalk:result>
+            </xwalk:when>
+            <xwalk:when>
+                <xwalk:condition argument-field="dc.type" operator="equals">Exhibition</xwalk:condition>
+                <xwalk:result>
+                    <xwalkin:object-type-selection category="publication" object-type="exhibition" field-map="default-harvest" />
+                </xwalk:result>
+            </xwalk:when>
+            <xwalk:when>
+                <xwalk:condition argument-field="dc.type" operator="equals">Scholarly edition</xwalk:condition>
+                <xwalk:result>
+                    <xwalkin:object-type-selection category="publication" object-type="scholarly-edition" field-map="default-harvest" />
+                </xwalk:result>
+            </xwalk:when>
+            <xwalk:when>
+                <xwalk:condition argument-field="dc.type" operator="equals">Internet publication</xwalk:condition>
+                <xwalk:result>
+                    <xwalkin:object-type-selection category="publication" object-type="internet-publication" field-map="default-harvest" />
+                </xwalk:result>
+            </xwalk:when>
+            <xwalk:when>
+                <xwalk:condition argument-field="dc.type" operator="equals">Fileset</xwalk:condition>
+                <xwalk:result>
+                    <xwalkin:object-type-selection category="publication" object-type="fileset" field-map="default-harvest" />
+                </xwalk:result>
+            </xwalk:when>
             <!-- other -->
             <xwalk:when>
                 <!--there exists at least one value of dc.type that CONTAINS "Other" -->
