@@ -7,8 +7,7 @@
  */
 package org.dspace.app.rest.submit.factory.impl;
 
-import javax.servlet.http.HttpServletRequest;
-
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.dspace.content.InProgressSubmission;
 import org.dspace.content.Item;
@@ -44,15 +43,16 @@ public class CCLicenseRemovePatchOperation extends RemovePatchOperation<String> 
 
     @Override
     void remove(Context context, HttpServletRequest currentRequest, InProgressSubmission source, String path,
-            Object value) throws Exception {
+                Object value) throws Exception {
         Item item = source.getItem();
 
 
-        if (StringUtils.isNotBlank(creativeCommonsService.getLicenseName(item))) {
+        // Check the license uri, as the name is only stored when cc.submit.setname is enabled
+        if (StringUtils.isNotBlank(creativeCommonsService.getLicenseURI(item))) {
             creativeCommonsService.removeLicense(context, item);
         } else {
             throw new IllegalArgumentException("No CC license can be removed since none is present on submission: "
-                                                       + source.getID());
+                    + source.getID());
         }
 
     }
