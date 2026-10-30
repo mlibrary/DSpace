@@ -201,7 +201,12 @@ initial draft.
 `SELECT item_id, count(*) FROM item2bundle WHERE … HAVING count(*) > 1`, which
 finds items with *more than one ORIGINAL bundle*. The initial description said
 "more than one bitstream in their ORIGINAL bundle," which is a different (and
-less severe) condition.
+less severe) condition. The report includes every matching item, one per line,
+and prints only the heading when no items match. Previously, it overwrote each
+result and printed only the final matching item.
+
+Run the report regression tests with
+`prove backend/test/cronjobs/report-double-original.t` (no database required).
 
 [¹³] **`report-embargo` actual logic** — The initial description said the script
 "produces a report listing each embargoed item's handle and scheduled release
