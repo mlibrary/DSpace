@@ -51,12 +51,12 @@ my $statement = qq{select item_id, count(*) from item2bundle where bundle_id in 
     $sth->execute()             # Execute the query
       or die "Couldn't execute statement: " . $sth->errstr;
 
-    my ($story);
+    my $story = '';
     my $count = 1;
     my ( @data );
     while (@data = $sth->fetchrow_array()) {
       my $handle = &GetHandle( $data[0] );
-      $story = qq{$handle has these many ORIGINAL bundles = $data[1]\n};
+      $story .= qq{$handle has these many ORIGINAL bundles = $data[1]\n};
     }
 
 $sth->finish;
@@ -97,6 +97,5 @@ $sth->finish;
   }
 
 __END__;
-
 
 
