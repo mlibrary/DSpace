@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
 /**
  * This is the repository that is responsible to manage CCLicense Rest objects
  */
-@Component(SubmissionCCLicenseRest.CATEGORY + "." + SubmissionCCLicenseRest.PLURAL_NAME)
+@Component(SubmissionCCLicenseRest.CATEGORY + "." + SubmissionCCLicenseRest.NAME)
 public class SubmissionCCLicenseRestRepository extends DSpaceRestRepository<SubmissionCCLicenseRest, String> {
 
     @Autowired
