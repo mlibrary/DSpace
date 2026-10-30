@@ -448,7 +448,7 @@ GONE   <name-map collection-handle="2027.42/21609"  submission-name="ipc" />
             <!-- <step id="extractionstep"/> -->
 
             <!-- Uncomment this step to allow the user to select a Creative Commons License -->
-             <!-- <step id="cclicense"/> -->
+              <step id="cclicense"/> 
 
             <!--Step will be to Sign off on the required DSpace License agreement -->
             <step id="license"/>
@@ -786,7 +786,7 @@ GONE   <name-map collection-handle="2027.42/21609"  submission-name="ipc" />
             <step id="upload"/>
 
             <!-- Uncomment this step to allow the user to select a Creative Commons License -->
-            <!-- <step id="cclicense"/> -->
+             <step id="cclicense"/>
 
             <!--Step will be to Sign off on the required DSpace License agreement -->
             <step id="license"/>
