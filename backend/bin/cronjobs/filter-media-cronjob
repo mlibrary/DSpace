@@ -46,10 +46,11 @@ my @item_ids = &GetAllItems();
 
 foreach my $item_id ( @item_ids )
   {
-    my $command = qq{/dspace/bin/dspace filter-media -i $item_id\n};
-    print $command;
+    my $command = qq{/dspace/bin/dspace filter-media -i $item_id};
+    print "$command\n";
 
-my $output = `$command`;
+# Redirect stderr to stdout so errors are included in the emailed report
+my $output = `$command 2>&1`;
 
 # Print the output
 print $output;
