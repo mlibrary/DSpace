@@ -68,6 +68,35 @@ public class TikaTextExtractionFilterTest extends AbstractUnitTest {
     }
 
     /**
+     * Test that temp file extraction matches in-memory extraction for every sample format.
+     * Guards against a bug where Writer.append(CharSequence, start, end) was called with a length
+     * instead of an end index, causing "Unexpected RuntimeException from ...Parser" whenever
+     * Tika passed characters() a non-zero offset.
+     *
+     * @throws java.lang.Exception passed through.
+     */
+    @Test
+    public void testGetDestinationStreamWithUseTempFileAllFormats()
+        throws Exception {
+        TikaTextExtractionFilter instance = new TikaTextExtractionFilter();
+        String[] files = {"test.pdf", "test.doc", "test.docx", "test.odt", "test.rtf", "test.html",
+            "test.txt", "test.csv", "test.xls", "test.xlsx", "test.ods", "test.ppt", "test.pptx", "test.odp"};
+
+        for (String file : files) {
+            configurationService.setProperty("textextractor.use-temp-file", "true");
+            String tempFileExtractedText = readAll(
+                instance.getDestinationStream(null, getClass().getResourceAsStream(file), false));
+
+            configurationService.setProperty("textextractor.use-temp-file", "false");
+            String inMemoryExtractedText = readAll(
+                instance.getDestinationStream(null, getClass().getResourceAsStream(file), false));
+
+            assertEquals("Extracted text via temp file differs from in-memory for " + file,
+                         inMemoryExtractedText, tempFileExtractedText);
+        }
+    }
+
+    /**
      * Test of getDestinationStream method when max characters is less than file size
      *
      * @throws java.lang.Exception passed through.
