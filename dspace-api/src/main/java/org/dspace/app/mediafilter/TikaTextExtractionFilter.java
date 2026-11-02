@@ -92,17 +92,23 @@ public class TikaTextExtractionFilter
             throw oe;
         }
 
-        if (StringUtils.isNotEmpty(extractedText)) {
-            // if verbose flag is set, print out extracted text to STDOUT
+        if (StringUtils.isEmpty(extractedText)) {
+            // No text found (e.g. image-only PDF). Return an empty stream so an empty .txt bitstream
+            // is created, marking this bitstream as processed so it is not re-filtered on every run.
             if (verbose) {
-                System.out.println("(Verbose mode) Extracted text:");
-                System.out.println(extractedText);
+                System.out.println("(Verbose mode) No text extracted; creating empty text file.");
             }
-
-            // return the extracted text as a UTF-8 stream.
-            return new ByteArrayInputStream(extractedText.getBytes(StandardCharsets.UTF_8));
+            return new ByteArrayInputStream(new byte[0]);
         }
-        return null;
+
+        // if verbose flag is set, print out extracted text to STDOUT
+        if (verbose) {
+            System.out.println("(Verbose mode) Extracted text:");
+            System.out.println(extractedText);
+        }
+
+        // return the extracted text as a UTF-8 stream.
+        return new ByteArrayInputStream(extractedText.getBytes(StandardCharsets.UTF_8));
     }
 
     /**

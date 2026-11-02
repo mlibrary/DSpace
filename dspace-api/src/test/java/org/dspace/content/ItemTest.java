@@ -18,6 +18,7 @@ import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -1126,8 +1127,9 @@ public class ItemTest extends AbstractDSpaceObjectTest {
     public void testWithdrawAuth() throws Exception {
         // Allow Item WRITE perms
         doNothing().when(authorizeServiceSpy).authorizeAction(context, it, Constants.WRITE);
-        // Allow Collection ADMIN perms
-        when(authorizeServiceSpy.authorizeActionBoolean(context, collection, Constants.ADMIN)).thenReturn(true);
+        // UM Change: ItemServiceImpl.withdraw() only allows system admins to withdraw items,
+        // so collection ADMIN perms are no longer sufficient. Grant system admin instead.
+        doReturn(true).when(authorizeServiceSpy).isAdmin(context);
 
         itemService.withdraw(context, it, "");
         assertTrue("testWithdrawAuth 0", it.isWithdrawn());

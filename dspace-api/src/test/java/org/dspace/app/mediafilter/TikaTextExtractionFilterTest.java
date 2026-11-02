@@ -9,13 +9,18 @@ package org.dspace.app.mediafilter;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
 import org.dspace.AbstractUnitTest;
 import org.dspace.services.ConfigurationService;
 import org.dspace.services.factory.DSpaceServicesFactory;
@@ -163,6 +168,29 @@ public class TikaTextExtractionFilterTest extends AbstractUnitTest {
         InputStream source = getClass().getResourceAsStream("test.pdf");
         InputStream result = instance.getDestinationStream(null, source, false);
         assertTrue("Known content was not found in .pdf", readAll(result).contains("quick brown fox"));
+    }
+
+    /**
+     * Test of getDestinationStream method using a PDF with no text (e.g. image-only/scanned PDF).
+     * An empty (non-null) stream should be returned so an empty text bitstream is created.
+     *
+     * @throws java.lang.Exception passed through.
+     */
+    @Test
+    public void testGetDestinationStreamWithPDFWithoutText()
+        throws Exception {
+        TikaTextExtractionFilter instance = new TikaTextExtractionFilter();
+
+        ByteArrayOutputStream pdfBytes = new ByteArrayOutputStream();
+        try (PDDocument doc = new PDDocument()) {
+            doc.addPage(new PDPage());
+            doc.save(pdfBytes);
+        }
+
+        InputStream result = instance.getDestinationStream(null,
+            new ByteArrayInputStream(pdfBytes.toByteArray()), false);
+        assertNotNull("PDF without text should produce a non-null stream", result);
+        assertTrue("PDF without text should produce empty text", readAll(result).isBlank());
     }
 
     /**
