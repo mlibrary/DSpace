@@ -235,47 +235,71 @@ public class CCLicenseConnectorServiceImpl implements CCLicenseConnectorService 
     /**
      * Resolves the canonical URL for a license selection.
      *
-     * For CC0, PDM, and PDUS the URL is looked up directly by IDENTIFIER in the CSV.
+     * <p>The license is looked up by the generated row id published by {@link #retrieveLicenses(String)}
+     * (e.g. {@code license265}), <strong>not</strong> by the CSV {@code IDENTIFIER} column, which is never
+     * exposed to clients. The entry row is then dispatched on the same {@code ENTRY_POINT} value used when
+     * listing, so the two methods cannot disagree about a license's type:</p>
+     * <ul>
+     *   <li>{@code DIRECT} (CC0, PDM, certification, ...) — the entry row's own canonical URL</li>
+     *   <li>{@code RECOMBO_GROUP} — the {@code sampling} answer selects the unit</li>
+     *   <li>{@code CC_GROUP} — the {@code commercial} and {@code derivatives} answers are mapped to a CC unit
+     *       string (e.g. {@code by-nc-sa}), then the CSV is searched for a row matching
+     *       version + unit + jurisdiction; the jurisdiction answer is only used for 3.0</li>
+     * </ul>
      *
-     * For CC 4.0 and CC 3.0, the {@code commercial} and {@code derivatives}
-     * answers are mapped to a CC unit string (e.g. {@code by-nc-sa}), then the
-     * CSV is searched for a row matching version + unit + jurisdiction.
-     *
-     * @param licenseId The id of the given license
+     * @param licenseId The id of the given license, as published by {@link #retrieveLicenses(String)}
      * @param language The current language
      * @param answerMap The current answers
      *
-     * @return The canonical URL for a license selection
+     * @return The canonical URL for a license selection, or {@code null} if the id is unknown or the
+     *         answers are not a valid selection for that license
      */
     @Override
     public String retrieveRightsByQuestion(String licenseId, String language,
                                            Map<String, String> answerMap) {
 
-        CCLicenseCSVRow entry = csvRepo.getByIdentifier(licenseId);
+        CCLicenseCSVRow entry = csvRepo.getById(licenseId);
 
         if (entry == null) {
             log.warn("Unknown licenseId: {}", licenseId);
             return null;
         }
 
-        // Direct lookup licenses (CC0, PDM, PDUS, etc.)
-        if (isDirectLicense(entry)) {
+        String entryPoint = StringUtils.trimToEmpty(entry.getEntryPoint());
+
+        // Standalone licenses (CC0, PDM, certification, ...): the entry row IS the license
+        if ("DIRECT".equals(entryPoint)) {
+            if (StringUtils.isBlank(entry.getUrl())) {
+                log.warn("DIRECT license {} has no CANONICAL_URL in the CSV", licenseId);
+                return null;
+            }
             return entry.getUrl();
         }
 
         // CC Sampling licenses (recombo)
-        if ("RECOMBO_GROUP".equals(entry.getEntryPoint())) {
-            String unit = SAMPLING_UNITS.get(answerMap.get(FIELD_SAMPLING));
-            return unit == null ? null : csvRepo.findUri(entry.getVersion(), unit, "");
+        if ("RECOMBO_GROUP".equals(entryPoint)) {
+            // Map.of() based maps throw NullPointerException on get(null), so guard a missing answer
+            String samplingAnswer = answerMap.get(FIELD_SAMPLING);
+            String unit = samplingAnswer == null ? null : SAMPLING_UNITS.get(samplingAnswer);
+            if (unit == null) {
+                log.warn("Invalid sampling selection for {}: {}", licenseId, samplingAnswer);
+                return null;
+            }
+            return csvRepo.findUri(entry.getVersion(), unit, "");
         }
 
         // CC licenses (3.0 / 4.0)
-        if (isCreativeCommons(entry)) {
+        if ("CC_GROUP".equals(entryPoint)) {
             String version = entry.getVersion();
             String commercial = answerMap.get(FIELD_COMMERCIAL);
             String derivatives = answerMap.get(FIELD_DERIVATIVES);
 
             String unit = resolveUnit(commercial, derivatives);
+            if (unit == null) {
+                log.warn("Invalid commercial/derivatives selection for {}: commercial={}, derivatives={}",
+                        licenseId, commercial, derivatives);
+                return null;
+            }
 
             String jurisdiction = "";
             if ("3.0".equals(version)) {
@@ -285,7 +309,7 @@ public class CCLicenseConnectorServiceImpl implements CCLicenseConnectorService 
             return csvRepo.findUri(version, unit, jurisdiction);
         }
 
-        log.warn("Unhandled license type: {}", licenseId);
+        log.warn("Unhandled ENTRY_POINT '{}' for license {}", entryPoint, licenseId);
         return null;
     }
 
@@ -296,32 +320,34 @@ public class CCLicenseConnectorServiceImpl implements CCLicenseConnectorService 
      * <p>This method encodes the Creative Commons license decision matrix and
      * determines the correct license component string (e.g. {@code by-nc-sa}).</p>
      *
-     * <p>Valid combinations correspond to standard CC license variants.</p>
-     * @param commercial the commercial license
-     * @param derivatives the derivative answers of that license
-     * @return The license usage string
+     * <p>Only the six valid combinations are accepted. Any other value (missing, blank or
+     * unknown) yields {@code null} rather than silently falling back to a more restrictive
+     * license.</p>
+     *
+     * @param commercial the commercial answer ({@code y}|{@code n})
+     * @param derivatives the derivatives answer ({@code y}|{@code sa}|{@code n})
+     * @return The license usage string, or {@code null} if the combination is invalid
      */
     private String resolveUnit(String commercial, String derivatives) {
-        boolean allowCommercial = "y".equals(commercial);
-        boolean allowDerivatives = "y".equals(derivatives);
-        boolean shareAlike = "sa".equals(derivatives);
+        boolean allowCommercial;
+        if ("y".equals(commercial)) {
+            allowCommercial = true;
+        } else if ("n".equals(commercial)) {
+            allowCommercial = false;
+        } else {
+            return null;
+        }
 
-        if (allowCommercial && allowDerivatives) {
-            return "by";
+        if ("y".equals(derivatives)) {
+            return allowCommercial ? "by" : "by-nc";
         }
-        if (allowCommercial && shareAlike) {
-            return "by-sa";
+        if ("sa".equals(derivatives)) {
+            return allowCommercial ? "by-sa" : "by-nc-sa";
         }
-        if (allowCommercial) {
-            return "by-nd";
+        if ("n".equals(derivatives)) {
+            return allowCommercial ? "by-nd" : "by-nc-nd";
         }
-        if (allowDerivatives) {
-            return "by-nc";
-        }
-        if (shareAlike) {
-            return "by-nc-sa";
-        }
-        return "by-nc-nd";
+        return null;
     }
 
     @Override
@@ -333,12 +359,5 @@ public class CCLicenseConnectorServiceImpl implements CCLicenseConnectorService 
         }
         return row.getTitle();
     }
-
-    private boolean isDirectLicense(CCLicenseCSVRow row) {
-        return "publicdomain".equalsIgnoreCase(row.getCategory());
-    }
-
-    private boolean isCreativeCommons(CCLicenseCSVRow row) {
-        return "licenses".equalsIgnoreCase(row.getCategory());
-    }
 }
+
