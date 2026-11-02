@@ -1,0 +1,1 @@
+Grid legend for underlying fields: [M] = Mandatory field, [L] = Locked field, [S] = Summary field
