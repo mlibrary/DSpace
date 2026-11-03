@@ -44,15 +44,27 @@ my $dbhP = DBI->connect("dbi:Pg:dbname=$gDbName;host=$gDbService;port=$gDbPort",
 
 my @item_ids = &GetAllItems();
 
+# DSpace CLI log (see dspace/config/log4j2-cli.xml); full stack traces only go here
+my $gCliLog = $ENV{'DSPACE_CLI_LOG'} || '/dspace/data/log/dspace-cli.log';
+
 foreach my $item_id ( @item_ids )
   {
-    my $command = qq{/dspace/bin/dspace filter-media -i $item_id\n};
-    print $command;
+    my $command = qq{/dspace/bin/dspace filter-media -i $item_id};
+    print "$command\n";
 
-my $output = `$command`;
+    my $logOffset = -s $gCliLog || 0;
+
+# Redirect stderr to stdout so errors are included in the emailed report
+my $output = `$command 2>&1`;
 
 # Print the output
 print $output;
+
+    # stderr only has the error message; pull the root cause from the log
+    if ( $output =~ m,ERROR filtering, )
+      {
+        print &GetLogCauses ( $gCliLog, $logOffset );
+      }
 
   }
 
@@ -204,6 +216,29 @@ sub GetHandle
     }
     $sth->finish;
     return $handle;
+  }
+
+sub GetLogCauses
+  {
+    my ( $logfile, $offset ) = @_;
+
+    open ( my $fh, '<', $logfile ) or return "    (could not read $logfile: $!)\n";
+    # Log was rotated since the offset was taken; read from the start
+    $offset = 0 if ( $offset > ( -s $fh ) );
+    seek ( $fh, $offset, 0 );
+
+    my %seen;
+    my $causes = '';
+    while ( my $line = <$fh> )
+      {
+        if ( $line =~ m,^\s*Caused by:, && !$seen{$line}++ )
+          {
+            $causes .= "    $line";
+          }
+      }
+    close $fh;
+
+    return $causes ? "Root cause(s) from $logfile:\n$causes" : "    (no 'Caused by' found in $logfile)\n";
   }
 
 sub SortUniquifyList
