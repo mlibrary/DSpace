@@ -3,6 +3,9 @@
 #   which is located outside of the repository.
 .agents
 
+# Ignore Symplectic Elements proprietary schema files for cross walk between systems.
+backend/elements/*.xsd
+
 ## Ignore the MVN compiled output directories from version tracking
 target/
 
