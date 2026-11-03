@@ -18,52 +18,52 @@
     <!-- for handle "default". -->
     <submission-map>
         <!-- Default submission process -->
-        <name-map collection-handle="default"     submission-name="traditionalCC_um"/>
+        <name-map collection-handle="default" submission-name="traditionalCC_um"/>
 
-<!-- For testing:
+        <!-- For testing:
 
-   <name-map collection-handle="123456789/124"  submission-name="rossseniorthesis" />
+   <name-map collection-handle="123456789/124" submission-name="rossseniorthesis" />
    <name-map collection-handle="123456789/125" submission-name="rossseniorthesis" />
-   <name-map collection-handle="123456789/126"  submission-name="honorsthesis" />
-   <name-map collection-handle="123456789/127"  submission-name="meche" />
-   <name-map collection-handle="123456789/128"  submission-name="paleo" />
-   <name-map collection-handle="123456789/129"  submission-name="thesis" />   
-   <name-map collection-handle="123456789/130"  submission-name="umtri" />
-   <name-map collection-handle="123456789/131"  submission-name="biostation" />
+   <name-map collection-handle="123456789/126" submission-name="honorsthesis" />
+   <name-map collection-handle="123456789/127" submission-name="meche" />
+   <name-map collection-handle="123456789/128" submission-name="paleo" />
+   <name-map collection-handle="123456789/129" submission-name="thesis" />
+   <name-map collection-handle="123456789/130" submission-name="umtri" />
+   <name-map collection-handle="123456789/131" submission-name="biostation" />
 
 -->
 
 
-   <name-map collection-handle="2027.42/64026"  submission-name="rossseniorthesis" />
-   <name-map collection-handle="2027.42/149471" submission-name="rossseniorthesis" />
-   <name-map collection-handle="2027.42/55461"  submission-name="honorsthesis" />
-   <name-map collection-handle="2027.42/49548"  submission-name="meche" />
-   <name-map collection-handle="2027.42/41251"  submission-name="paleo" />
-   <name-map collection-handle="2027.42/39366"  submission-name="thesis" />
-   <name-map collection-handle="2027.42/13914"  submission-name="umtri" />
-   <name-map collection-handle="2027.42/49252"  submission-name="biostation" />
-    <name-map collection-handle="123456789/2" submission-name="elements"/>
+        <name-map collection-handle="2027.42/64026" submission-name="rossseniorthesis" />
+        <name-map collection-handle="2027.42/149471" submission-name="rossseniorthesis" />
+        <name-map collection-handle="2027.42/55461" submission-name="honorsthesis" />
+        <name-map collection-handle="2027.42/49548" submission-name="meche" />
+        <name-map collection-handle="2027.42/41251" submission-name="paleo" />
+        <name-map collection-handle="2027.42/39366" submission-name="thesis" />
+        <name-map collection-handle="2027.42/13914" submission-name="umtri" />
+        <name-map collection-handle="2027.42/49252" submission-name="biostation" />
+        <name-map collection-handle="123456789/2" submission-name="elements"/>
 
 
 
 
 
-<!-- working...
+        <!-- working...
 Pick the one that has the most fields.
-COM   <name-map collection-handle="2027.42/64026"  submission-name="busadisp" />
+COM   <name-map collection-handle="2027.42/64026" submission-name="busadisp" />
 COM   <name-map collection-handle="2027.42/149471" submission-name="rossseniorthesis" />
 
-GONE   <name-map collection-handle="2027.42/57190"  submission-name="grocs" />
-GONE   <name-map collection-handle="2027.42/35324"  submission-name="busadwp" />
-GONE   <name-map collection-handle="2027.42/21609"  submission-name="ipc" />
+GONE   <name-map collection-handle="2027.42/57190" submission-name="grocs" />
+GONE   <name-map collection-handle="2027.42/35324" submission-name="busadwp" />
+GONE   <name-map collection-handle="2027.42/21609" submission-name="ipc" />
 
-   <name-map collection-handle="2027.42/55461"  submission-name="honorsthesis" />
-   <name-map collection-handle="2027.42/49548"  submission-name="meche" />
-   <name-map collection-handle="2027.42/41251"  submission-name="paleo" />
-   <name-map collection-handle="2027.42/39366"  submission-name="thesis" />
-   
-   <name-map collection-handle="2027.42/13914"  submission-name="umtri" />
-   <name-map collection-handle="2027.42/49252"  submission-name="biostation" />
+   <name-map collection-handle="2027.42/55461" submission-name="honorsthesis" />
+   <name-map collection-handle="2027.42/49548" submission-name="meche" />
+   <name-map collection-handle="2027.42/41251" submission-name="paleo" />
+   <name-map collection-handle="2027.42/39366" submission-name="thesis" />
+
+   <name-map collection-handle="2027.42/13914" submission-name="umtri" />
+   <name-map collection-handle="2027.42/49252" submission-name="biostation" />
 
 
    <name-map collection-handle="2027.42/40243" submission-name="" />
@@ -99,17 +99,17 @@ GONE   <name-map collection-handle="2027.42/21609"  submission-name="ipc" />
         <name-map collection-handle="123456789/29" submission-name="JournalVolume"/>
         <name-map collection-handle="123456789/30" submission-name="JournalIssue"/>
         -->
-        <!-- These configurations enable default submission forms per Entity type 
-            
+        <!-- These configurations enable default submission forms per Entity type
+
             The  collection-entity-type will be the entity-type attribute associated with a collection,
-            typically the entity name that is associated with a collection if any created or loaded 
+            typically the entity name that is associated with a collection if any created or loaded
             (that is usually specified in relationship-types.xml).
             - - - - - -
             PLEASE NOTICE THAT YOU WILL HAVE TO RESTART DSPACE
             - - - - - -
             Uncomment if you intend to use them
-        -->  
-        <!-- 
+        -->
+        <!--
         <name-map collection-entity-type="Publication" submission-name="Publication"/>
         <name-map collection-entity-type="Person" submission-name="Person"/>
         <name-map collection-entity-type="Project" submission-name="Project"/>
@@ -204,17 +204,17 @@ GONE   <name-map collection-handle="2027.42/21609"  submission-name="ipc" />
             <processing-class>org.dspace.app.rest.submit.step.DescribeStep</processing-class>
             <type>submission-form</type>
         </step-definition>
-         <step-definition id="traditionalpageone_thesis" mandatory="true">
+        <step-definition id="traditionalpageone_thesis" mandatory="true">
             <heading>submit.progressbar.describe.stepone</heading>
             <processing-class>org.dspace.app.rest.submit.step.DescribeStep</processing-class>
             <type>submission-form</type>
-        </step-definition> 
+        </step-definition>
         <step-definition id="traditionalpageone_umtri" mandatory="true">
             <heading>submit.progressbar.describe.stepone</heading>
             <processing-class>org.dspace.app.rest.submit.step.DescribeStep</processing-class>
             <type>submission-form</type>
         </step-definition>
-         <step-definition id="traditionalpageone_rossseniorthesis" mandatory="true">
+        <step-definition id="traditionalpageone_rossseniorthesis" mandatory="true">
             <heading>submit.progressbar.describe.stepone</heading>
             <processing-class>org.dspace.app.rest.submit.step.DescribeStep</processing-class>
             <type>submission-form</type>
@@ -305,10 +305,10 @@ GONE   <name-map collection-handle="2027.42/21609"  submission-name="ipc" />
         <step-definition id="cclicense" mandatory="false">
             <heading>submit.progressbar.CClicense</heading>
             <processing-class>org.dspace.app.rest.submit.step.CCLicenseStep</processing-class>
-	        <type>cclicense</type>
+            <type>cclicense</type>
         </step-definition>
 
-		<!-- This optional step may allow the user to select access conditions on the item -->
+        <!-- This optional step may allow the user to select access conditions on the item -->
         <step-definition id="itemAccessConditions">
             <heading>submit.progressbar.accessCondition</heading>
             <processing-class>org.dspace.app.rest.submit.step.AccessConditionStep</processing-class>
@@ -418,7 +418,7 @@ GONE   <name-map collection-handle="2027.42/21609"  submission-name="ipc" />
             <!-- <step id="extractionstep"/> -->
 
             <!-- Uncomment this step to allow the user to select a Creative Commons License -->
-             <!-- <step id="cclicense"/> -->
+            <!-- <step id="cclicense"/> -->
 
             <!--Step will be to Sign off on the required DSpace License agreement -->
             <step id="license"/>
@@ -448,15 +448,15 @@ GONE   <name-map collection-handle="2027.42/21609"  submission-name="ipc" />
             <!-- <step id="extractionstep"/> -->
 
             <!-- Uncomment this step to allow the user to select a Creative Commons License -->
-             <!-- <step id="cclicense"/> -->
+            <!-- <step id="cclicense"/> -->
 
             <!--Step will be to Sign off on the required DSpace License agreement -->
             <step id="license"/>
         </submission-process>
 
-<!-- UM Config -->
+        <!-- UM Config -->
 
-         <submission-process name="traditional_um">
+        <submission-process name="traditional_um">
             <!--Uncommment to display the SAMPLE step as your first step -->
             <!--<step id="sample"/> -->
 
@@ -479,13 +479,13 @@ GONE   <name-map collection-handle="2027.42/21609"  submission-name="ipc" />
             <!-- <step id="extractionstep"/> -->
 
             <!-- Uncomment this step to allow the user to select a Creative Commons License -->
-             <!-- <step id="cclicense"/> -->
+            <!-- <step id="cclicense"/> -->
 
             <!--Step will be to Sign off on the required DSpace License agreement -->
             <step id="license"/>
         </submission-process>
 
-         <submission-process name="traditionalCC_um">
+        <submission-process name="traditionalCC_um">
             <!--Uncommment to display the SAMPLE step as your first step -->
             <!--<step id="sample"/> -->
 
@@ -517,7 +517,7 @@ GONE   <name-map collection-handle="2027.42/21609"  submission-name="ipc" />
 
 
 
-         <submission-process name="busadisp">
+        <submission-process name="busadisp">
             <!--Uncommment to display the SAMPLE step as your first step -->
             <!--<step id="sample"/> -->
 
@@ -542,7 +542,7 @@ GONE   <name-map collection-handle="2027.42/21609"  submission-name="ipc" />
             <!-- <step id="extractionstep"/> -->
 
             <!-- Uncomment this step to allow the user to select a Creative Commons License -->
-             <!-- <step id="cclicense"/> -->
+            <!-- <step id="cclicense"/> -->
 
             <!--Step will be to Sign off on the required DSpace License agreement -->
             <step id="license"/>
@@ -573,7 +573,7 @@ GONE   <name-map collection-handle="2027.42/21609"  submission-name="ipc" />
             <step id="license"/>
         </submission-process>
 
-         <submission-process name="grocs">
+        <submission-process name="grocs">
             <!--Uncommment to display the SAMPLE step as your first step -->
             <!--<step id="sample"/> -->
 
@@ -607,7 +607,7 @@ GONE   <name-map collection-handle="2027.42/21609"  submission-name="ipc" />
                  that identifiers.cfg and identifier-service.xml are properly configured. -->
             <step id="identifiers"/>
             <!--Step will be to Describe the item. -->
-            <step id="traditionalpageone_honorsthesis"/>          
+            <step id="traditionalpageone_honorsthesis"/>
 
             <!-- Uncomment this step to allow the user to embargo or access restrict the entire item -->
             <!-- <step id="itemAccessConditions"/> -->
@@ -695,7 +695,7 @@ GONE   <name-map collection-handle="2027.42/21609"  submission-name="ipc" />
             <step id="license"/>
         </submission-process>
 
-       <submission-process name="ipc">
+        <submission-process name="ipc">
             <!--Uncommment to display the SAMPLE step as your first step -->
             <!--<step id="sample"/> -->
 
@@ -753,7 +753,7 @@ GONE   <name-map collection-handle="2027.42/21609"  submission-name="ipc" />
                  that identifiers.cfg and identifier-service.xml are properly configured. -->
             <step id="identifiers"/>
             <!--Step will be to Describe the item. -->
-            <step id="traditionalpageone_umtri"/>            
+            <step id="traditionalpageone_umtri"/>
 
             <!-- Uncomment this step to allow the user to embargo or access restrict the entire item -->
             <!-- <step id="itemAccessConditions"/> -->
@@ -777,7 +777,7 @@ GONE   <name-map collection-handle="2027.42/21609"  submission-name="ipc" />
                  that identifiers.cfg and identifier-service.xml are properly configured. -->
             <step id="identifiers"/>
             <!--Step will be to Describe the item. -->
-            <step id="traditionalpageone_rossseniorthesis"/>           
+            <step id="traditionalpageone_rossseniorthesis"/>
 
             <!-- Uncomment this step to allow the user to embargo or access restrict the entire item -->
             <!-- <step id="itemAccessConditions"/> -->
@@ -790,10 +790,10 @@ GONE   <name-map collection-handle="2027.42/21609"  submission-name="ipc" />
 
             <!--Step will be to Sign off on the required DSpace License agreement -->
             <step id="license"/>
-        </submission-process>  
+        </submission-process>
 
 
-<!-- End UM Config -->
+        <!-- End UM Config -->
 
 
         <!--
@@ -905,7 +905,7 @@ GONE   <name-map collection-handle="2027.42/21609"  submission-name="ipc" />
             <step id="openAIREOrganizationForm"/>
         </submission-process>
 
-       <!-- unique Elements submission without license -->
+        <!-- unique Elements submission without license -->
         <submission-process name="elements">
             <step id="collection"/>
             <step id="identifiers"/>

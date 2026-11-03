@@ -513,6 +513,7 @@
     </build>
 
     <profiles>
+
         <!-- Allow for passing extra memory to Unit/Integration tests.
              By default this gives unit tests 1GB of memory max (when tests are enabled),
              unless tweaked on commandline (e.g. "-Dtest.argLine=-Xmx512m"). Since
