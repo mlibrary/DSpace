@@ -62,6 +62,12 @@
 </dc-type>
 <dc-type>
     <schema>dc</schema>
+    <element>contributor</element>
+    <qualifier>affiliationumcampus</qualifier>
+    <scope_note>Used to specify the campus from which the work/author originated.</scope_note>
+</dc-type>
+<dc-type>
+    <schema>dc</schema>
     <element>identifier</element>
     <qualifier>uniqname</qualifier>
 </dc-type>
