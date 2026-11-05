@@ -107,25 +107,34 @@ embargoed items, licence choices, and each publication type.
 
 ## Harvest XwalkIn mapping
 
-* Harvest uses the automatic creation and public-availability date mappings:
-  `dc.date.accessioned` and `dc.date.available`, respectively.
+* Harvest overrides the automatic date mappings: `dc.date.available` supplies
+  `record-created-at-source-date`, and `dc.date.accessioned` supplies
+  `record-made-public-at-source-date`. These reverse the RT2 defaults; confirm
+  the intended effect on deposit-timeliness reporting before deployment.
 * Harvest emits hyphenated Creative Commons identifiers.
-* Harvest preserves all publication types emitted by the deposit crosswalk,
-  including `preprint`. Existing subtype-specific selection rules retain
-  precedence when an item has multiple types.
-* Sponsorship entries formatted as `Grant ID: Funder` or `Grant ID` are harvested
-  as grants. Other entries are preserved as acknowledgement text, with multiple
-  text entries joined by newlines. Since `dc.description.sponsorship` also holds
-  commissioning-body data, this convention cannot distinguish all original
-  Elements funding and commissioning fields.
-* `oj` has one harvest mapping, to the existing local label `Anishinaabe`;
-  `yi` maps to `Yiddish`. The incorrect country-name mappings for `GE` and `PN`
-  have been removed; unmatched values still pass through for the existing
-  Elements validation.
+* Publication types do not all round-trip unchanged. Deposited `patent`,
+  `performance`, `artefact`, `design`, `exhibition`, `scholarly-edition`,
+  `internet-publication`, and `fileset` values have no matching harvest branch
+  and fall back to `other`. `preprint` maps to `journal-article`. Selection uses
+  the first matching branch, so branch order matters when an item has multiple
+  types. These coverage gaps remain unresolved.
+* All `dc.description.sponsorship` values are harvested as
+  `funding-acknowledgements:grant` entries. The grant-ID parser extracts the ID
+  from strings beginning with `Grant` (case-insensitive), such as
+  `Grant 12345: Funder` or `Grant 12345`. The organization parser extracts text
+  after the colon in a `Grant` string; otherwise it uses the whole input as the
+  organization name. Free-text acknowledgements and commissioning bodies are
+  therefore not preserved as separate acknowledgement text or distinct fields.
+* The language value map still contains conflicting `oj` entries for
+  `Anishinaabe` and `Ojibwe, Ojibwa`, maps `yi` to `Yi` rather than `Yiddish`,
+  and includes the country-name entries `GE` to `Georgia` and `PN` to
+  `Pitcairn Islands`. These are unresolved mapping issues, not corrected
+  behavior; unmatched values pass through for Elements validation.
 * Author ORCID reconstruction is deferred pending a supported RT2 mapping
   example. Authors still come from `dc.contributor.author`, and ORCIDs from
   `dc.identifier.orcid` are harvested as record-level associated identifiers.
   `dc.identifier.name-orcid` does not currently restore author/ORCID associations.
 
-Before deploying, exercise representative harvests in Elements, including
-funding text mixed with grants.
+Before deploying, confirm the date overrides and exercise representative
+harvests in Elements, including publication-type round trips, language values,
+and funding text mixed with grants.
