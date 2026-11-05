@@ -1065,7 +1065,9 @@
 
        ⚠ A collection UUID is environment-specific. It MUST be re-pointed when this map is promoted to prod.
 
-       FIXED: this pointed at name="Symplectic Test Collection" id="601cbd93-df76-4d5e-a309-41f05ae1ebdf",
+       REVERTED: the proposed replacement below was based on the wrong DSpace instance.
+       The original rationale is retained for reference, not as evidence about the intended backend:
+       This pointed at name="Symplectic Test Collection" id="601cbd93-df76-4d5e-a309-41f05ae1ebdf",
        which does not exist on the dev backend — there is no such UUID and no such name in the 14 collections
        the dev instance exposes. Every deposit failed at workspace-item creation before it could even reach
        the metadata step. The collection the client actually created for this work is below ("Symptic
@@ -1076,6 +1078,9 @@
        TODO before prod: replace with the production Deep Blue collection ("Michigan Research Experts
        Deposits") and its prod UUID. -->
   <xwalkout:collection-selector>
+    <xwalkout:collection-selection name="Symplectic Test Collection" id="601cbd93-df76-4d5e-a309-41f05ae1ebdf" />
+    <!-- Reverted: this collection belongs to the wrong DSpace instance.
     <xwalkout:collection-selection name="Symptic Elements" id="d366ffb9-8376-45e3-ac3d-1c3527425583" />
+    -->
   </xwalkout:collection-selector>
 </xwalkout:consolidated-maps>
