@@ -45,7 +45,7 @@ public class SubmissionCCLicenseRestRepositoryIT extends AbstractControllerInteg
                         ),
                         SubmissionCCLicenseMatcher.matchLicenseEntry(
                                 "license265",
-                                "Creative Commons License (4.0)",
+                                "Creative Commons License 4.0 International",
                                 new int[]{2, 3}
                         ),
                         SubmissionCCLicenseMatcher.matchLicenseEntry(
@@ -64,7 +64,7 @@ public class SubmissionCCLicenseRestRepositoryIT extends AbstractControllerInteg
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(contentType))
                 .andExpect(jsonPath("$.id", Matchers.is("license265")))
-                .andExpect(jsonPath("$.name", Matchers.is("Creative Commons License (4.0)")))
+                .andExpect(jsonPath("$.name", Matchers.is("Creative Commons License 4.0 International")))
                 .andExpect(jsonPath("$.fields", Matchers.hasSize(2)))
                 // commercial field
                 .andExpect(jsonPath("$.fields[0].id", Matchers.is("commercial")))

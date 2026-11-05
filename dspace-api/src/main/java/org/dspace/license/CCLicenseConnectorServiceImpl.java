@@ -87,13 +87,16 @@ public class CCLicenseConnectorServiceImpl implements CCLicenseConnectorService 
                     continue;
                 }
                 boolean includeJurisdiction = "3.0".equals(row.getVersion());
+                String licenseName = "4.0".equals(row.getVersion())
+                        ? "Creative Commons License 4.0 International"
+                        : "Creative Commons License (" + row.getVersion() + ")";
 
                 // The row ID is used as license ID because the IDENTIFIER column contains spaces,
                 // which the REST repository does not accept
                 licenses.put(row.getId(),
                         buildCCLicense(
                                 row.getId(),
-                                "Creative Commons License (" + row.getVersion() + ")",
+                                licenseName,
                                 includeJurisdiction
                         )
                 );
@@ -360,4 +363,3 @@ public class CCLicenseConnectorServiceImpl implements CCLicenseConnectorService 
         return row.getTitle();
     }
 }
-
