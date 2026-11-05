@@ -1,0 +1,129 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+    cat <<'EOF'
+Usage: delete-empty-bundle [--delete] BUNDLE_UUID
+
+By default, report whether the bundle exists and would be deleted.
+Pass --delete to delete it only if it exists and its bitstream list is empty.
+Requires curl and jq.
+
+Required environment variables:
+  DSPACE_API_URL  REST API base URL, ending in /server/api
+  DSPACE_TOKEN        Bearer token with bundle-delete permission
+  DSPACE_XSRF_TOKEN   CSRF token matching the session cookies
+  DSPACE_COOKIE_FILE  Readable curl cookie jar for that session
+
+Example:
+  export DSPACE_API_URL=https://your-backend.example.org/server/api
+  # Set DSPACE_TOKEN, DSPACE_XSRF_TOKEN, and DSPACE_COOKIE_FILE from an authenticated session.
+  bash backend/scripts/delete-empty-bundle 394a23eb-ad5b-4cb3-b56c-1d772af88222
+  bash backend/scripts/delete-empty-bundle --delete 394a23eb-ad5b-4cb3-b56c-1d772af88222
+
+Missing and nonempty bundles are reported and left unchanged (exit 0).
+Invalid input, failed requests, and unexpected responses exit nonzero.
+Do not run while another process may add bitstreams: the emptiness check
+and deletion are separate requests, and bundle deletion removes its contents.
+EOF
+}
+
+die() {
+    printf 'Error: %s\n' "$*" >&2
+    exit 1
+}
+
+delete=false
+bundle_id=
+for argument in "$@"; do
+    case "$argument" in
+        --delete) delete=true ;;
+        --help|-h)
+            usage
+            exit 0
+            ;;
+        -*) die "Unknown option: $argument" ;;
+        *)
+            [[ -z $bundle_id ]] || die "Expected exactly one bundle UUID."
+            bundle_id=$argument
+            ;;
+    esac
+done
+if [[ -z $bundle_id ]]; then
+    usage >&2
+    exit 1
+fi
+
+[[ $bundle_id =~ ^[[:xdigit:]]{8}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{12}$ ]] \
+    || die "Expected a bundle UUID."
+
+for tool in curl jq; do
+    command -v "$tool" >/dev/null 2>&1 || die "Required command not found: $tool"
+done
+for variable in DSPACE_API_URL DSPACE_TOKEN DSPACE_XSRF_TOKEN DSPACE_COOKIE_FILE; do
+    [[ -n ${!variable:-} ]] || die "Set $variable before running this script."
+done
+[[ -r $DSPACE_COOKIE_FILE && -f $DSPACE_COOKIE_FILE ]] || die "DSPACE_COOKIE_FILE must be a readable cookie jar."
+
+api_url=${DSPACE_API_URL%/}
+[[ $api_url == https://*/server/api || $api_url == http://*/server/api ]] \
+    || die "DSPACE_API_URL must be an HTTP(S) URL ending in /server/api."
+bundle_url="$api_url/core/bundles/$bundle_id"
+response_file=$(mktemp)
+trap 'rm -f "$response_file"' EXIT
+
+request() {
+    local method=$1 url=$2 status
+    if ! status=$(curl --disable --silent --show-error \
+        --connect-timeout 15 --max-time 60 \
+        --request "$method" \
+        --header "Authorization: Bearer $DSPACE_TOKEN" \
+        --header "X-XSRF-TOKEN: $DSPACE_XSRF_TOKEN" \
+        --header 'Accept: application/json' \
+        --cookie "$DSPACE_COOKIE_FILE" \
+        --output "$response_file" --write-out '%{http_code}' \
+        "$url"); then
+        die "$method request failed; bundle deletion was not confirmed."
+    fi
+    printf '%s' "$status"
+}
+
+status=$(request GET "$bundle_url")
+case "$status" in
+    200) ;;
+    404)
+        printf 'Bundle %s does not exist; nothing deleted.\n' "$bundle_id"
+        exit 0
+        ;;
+    *) die "Bundle lookup returned HTTP $status; nothing deleted." ;;
+esac
+jq -e --arg id "$bundle_id" \
+    '(.uuid | ascii_downcase) == ($id | ascii_downcase) and .type == "bundle"' \
+    "$response_file" >/dev/null \
+    || die "Bundle lookup returned unexpected JSON; nothing deleted."
+
+status=$(request GET "$bundle_url/bitstreams?size=1")
+[[ $status == 200 ]] || die "Bitstream lookup returned HTTP $status; nothing deleted."
+jq -e '
+    (._embedded.bitstreams | type == "array") and
+    (.page.totalElements | type == "number") and
+    (.page.totalElements >= 0) and
+    (.page.totalElements == (.page.totalElements | floor))
+' "$response_file" >/dev/null \
+    || die "Bitstream lookup returned unexpected JSON; nothing deleted."
+
+if ! jq -e '.page.totalElements == 0 and (._embedded.bitstreams | length) == 0' \
+    "$response_file" >/dev/null; then
+    printf 'Bundle %s exists and is not empty; it will not be deleted.\n' "$bundle_id"
+    exit 0
+fi
+
+if [[ $delete == false ]]; then
+    printf 'Dry run: bundle %s exists and is empty; it would be deleted with --delete. Nothing deleted.\n' "$bundle_id"
+    exit 0
+fi
+
+printf 'Bundle %s exists and is empty; deleting it.\n' "$bundle_id"
+status=$(request DELETE "$bundle_url")
+[[ $status == 204 ]] || die "Deletion returned HTTP $status; deletion was not confirmed."
+printf 'Deleted empty bundle %s.\n' "$bundle_id"
