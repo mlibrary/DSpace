@@ -117,7 +117,7 @@
       <!-- * dc.date.available                      => record-made-public-at-source-date    * -->
       <!-- *                                                                                * -->
       <!-- ********************************************************************************** -->
-      
+
       <!-- ========================================================================================================
            DATE OVERRIDES — these two deliberately INVERT the automatic mappings listed above
            ========================================================================================================
@@ -187,19 +187,19 @@
         <xwalk:field-source from="dc.identifier.startpage" data-part="pagination:begin-page" />
         <xwalk:field-source from="dc.identifier.endpage" data-part="pagination:end-page" />
       </xwalk:field-mapping>
-      
+
       <!-- dc.contributor.author => authors -->
       <!-- DSpace 7: ORCID-count XPath condition removed (XPath arithmetic cannot
                  operate on JSON). Always uses dc.contributor.author. -->
       <xwalk:field-mapping to="authors">
         <xwalk:field-source from="dc.contributor.author" />
       </xwalk:field-mapping>
-      
+
       <!-- dc.contributor.editor => editors -->
       <xwalk:field-mapping to="editors">
         <xwalk:field-source from="dc.contributor.editor" />
       </xwalk:field-mapping>
-      
+
       <!-- series-->
       <xwalk:field-mapping to="series">
         <xwalk:field-source from="dc.relation.ispartofseries" />
@@ -502,32 +502,32 @@
   </xwalk:field-maps>
   <!-- === VALUE MAPS ==================================================================================================================== -->
   <xwalk:value-maps>
-    
+
     <xwalk:value-map name="replace-authors-with-name-orcids" matchMode="regex">
       <!-- Attach ORCID iDs to author names (N.B. duplicate names will all get the first matching ORCID iD) -->
       <xwalk:value-mapping from="##AUTHOR##([^#]*)(?=.*?##NAME-ORCID##\1; (\d{4}-\d{4}-\d{4}-\d{3}[\dX]))" to="##AUTHOR##$1; $2" />
       <!-- Remove the name-orcid substrings -->
       <xwalk:value-mapping from="##NAME-ORCID##[^#]*" to="" />
     </xwalk:value-map>
-    
+
     <xwalk:value-map name="extract-name-from-name-orcid" matchMode="regex">
       <xwalk:value-mapping from="^(.*); \d{4}-\d{4}-\d{4}-\d{3}[\dX]$" to="$1" />
     </xwalk:value-map>
-    
+
     <xwalk:value-map name="extract-orcid-from-name-orcid" matchMode="regex">
       <xwalk:value-mapping from="^.*; (\d{4}-\d{4}-\d{4}-\d{3}[\dX])$" to="$1" />
       <xwalk:otherwise-mapping action="ignore-this-value" />
     </xwalk:value-map>
-    
+
     <xwalk:value-map name="extract-lastname-from-name-orcid" matchMode="regex">
       <xwalk:value-mapping from="^(.*?)(?:,[^,]*)?(; \d{4}-\d{4}-\d{4}-\d{3}[\dX])?$" to="$1" />
     </xwalk:value-map>
-    
+
     <xwalk:value-map name="guess-identifier-scheme" matchMode="regex">
       <xwalk:value-mapping from="^\d{4}-\d{4}-\d{4}-\d{3}[\dX]$" to="orcid" />
       <xwalk:otherwise-mapping action="ignore-this-value" />
     </xwalk:value-map>
-    
+
     <!-- ============================================================================================================
          dc.rights.uri => Elements author-licence   (the reverse of the deposit map's licence-to-dc.rights.uri)
          ============================================================================================================
@@ -584,7 +584,7 @@
       <!-- If non of the above match, ignore the value -->
       <xwalk:otherwise-mapping action="ignore-this-value" />
     </xwalk:value-map>
-    
+
     <!-- strips invalid characters from ISBN-10s and ISSNs -->
     <xwalk:value-map name="strip-invalid-characters-from-ISBN-10-or-ISSN" matchMode="regex">
       <!-- spaces are translated to hyphens for consistent presentation in Elements -->
@@ -594,7 +594,7 @@
       <!-- all remaining invalid characters are then removed-->
       <xwalk:value-mapping from="[^\dX-]" to="" />
     </xwalk:value-map>
-    
+
     <!-- strips invalid characters from ISBN-13s -->
     <xwalk:value-map name="strip-invalid-characters-from-ISBN-13" matchMode="regex">
       <!-- spaces are translated to hyphens for consistent presentation in Elements -->
@@ -602,7 +602,7 @@
       <!-- all remaining invalid characters are then removed-->
       <xwalk:value-mapping from="[^\d-]" to="" />
     </xwalk:value-map>
-    
+
     <!-- Parse dc.description.sponsorship into funding-acknowledgement data -->
     <xwalk:value-map name="dc.description.sponsorship-to-grant-id" matchMode="regex">
       <!-- When the string starts with the word "Grant" (case-insensitive), matches text after the word "Grant" up to the first
@@ -611,7 +611,7 @@
       <!-- If no match, ignore the value completely -->
       <xwalk:otherwise-mapping action="ignore-this-value" />
     </xwalk:value-map>
-    
+
     <xwalk:value-map name="dc.description.sponsorship-to-grant-org" matchMode="regex">
       <!-- When the string starts with the word "Grant" (case-insensitive) and contains at least one colon, matches text after
                  first colon up to the end of the string. Strips leading and trailing spaces. -->
@@ -619,13 +619,13 @@
       <!-- If no match, continue i.e. use the whole string as the funder name. -->
       <xwalk:otherwise-mapping action="continue" />
     </xwalk:value-map>
-    
+
     <xwalk:value-map name="language-none-custom">
       <xwalk:value-mapping from="eng" to="English" />
       <!-- if none of the above match, pass the value as-is -->
       <xwalk:otherwise-mapping action="continue" />
     </xwalk:value-map>
-    
+
     <!-- value map to look up languages from ISO 639-1 language code ================================================ -->
     <xwalk:value-map name="ISO639-1-to-language">
       <xwalk:value-mapping from="eng" to="English" />
@@ -831,7 +831,7 @@
       <!-- if none of the above match, pass the value as-is -->
       <xwalk:otherwise-mapping action="continue" />
     </xwalk:value-map>
-    
+
     <!-- DSpace 7 reports items in a submission workflow step as "Private (in review)", where pre-7 DSpace
          reported "Private". This map holds the pre-upgrade value. Both are valid Elements choice values —
          see the fuller note on the repository-status mapping in the default-harvest field map. -->
@@ -841,7 +841,7 @@
       <xwalk:otherwise-mapping action="continue" />
     </xwalk:value-map>
   </xwalk:value-maps>
-  
+
   <!-- === OBJECT TYPE SELECTOR ========================================================================================================== -->
   <!-- ==================================================================================================================================
        Decides, for each harvested DSpace item, (a) the Elements publication type and (b) which field map runs.
@@ -1112,7 +1112,7 @@
           <xwalkin:object-type-selection category="publication" object-type="media" field-map="default-harvest" />
         </xwalk:result>
       </xwalk:when>
-      
+
       <!-- other -->
       <xwalk:when>
         <!--there exists at least one value of dc.type that CONTAINS "Other" -->
@@ -1121,13 +1121,13 @@
           <xwalkin:object-type-selection category="publication" object-type="other" field-map="other-harvest" />
         </xwalk:result>
       </xwalk:when>
-      
+
       <xwalk:otherwise>
         <xwalk:result>
           <xwalkin:object-type-selection category="publication" object-type="other" field-map="other-harvest" />
         </xwalk:result>
       </xwalk:otherwise>
-      
+
     </xwalk:choose>
   </xwalkin:object-type-selector>
 </xwalkin:consolidated-maps>

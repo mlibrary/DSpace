@@ -1,4 +1,4 @@
-#  [Deep Blue Documents](https://deepblue.lib.umich.edu/documents) <=> [Michigan Experts](https://experts.umich.edu/) 
+#  [Deep Blue Documents](https://deepblue.lib.umich.edu/documents) <=> [Michigan Experts](https://experts.umich.edu/)
 (DSpace <=> Symplectic Elements) crosswalks and supporting field reference files:
 
 * `dspace-XwalkOut-map.xml` maps Elements metadata to DSpace for deposits.
@@ -14,7 +14,7 @@
 ## Prerequisites and reference files
 
 * Install `xmllint` and ensure it is available on `PATH` to run the validation
-commands below. 
+commands below.
 * Download the proprietary XSD files from [Symplectic Elements Michigan Experts Google Drive folder](https://drive.google.com/drive/folders/155Ji42mKJab__ds4JaW5UlT6kIO0Sv58?usp=share_link) and place them in the `schemas/` directory.
 * For guidance on building an AI-assisted crosswalk maintenance workflow, see
 [Building an AI skill for updating RT2 DSpace crosswalks](BUILDING-A-CROSSWALK-SKILL.md).
