@@ -1,7 +1,32 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <xwalkout:consolidated-maps xmlns:xwalk="http://www.symplectic.co.uk/elements/xwalkcommon" xmlns:xwalkout="http://www.symplectic.co.uk/elements/xwalkout" xmlns:api="http://www.symplectic.co.uk/publications/api">
+  <!-- ===================================================================================================================================
+       DEV ENVIRONMENT — Deep Blue demo backend (backend.demo.deepblue-documents.lib.umich.edu, DSpace 7.6)
+       ===================================================================================================================================
+       ⚠ KNOWN BLOCKER — SIX TARGET FIELDS ARE NOT IN THE DEV METADATA REGISTRY
+       The dev instance runs a STOCK DSpace 7 registry (286 fields, incl. oaire/datacite/person schemas).
+       It is NOT a clone of the Deep Blue production registry. The following fields are used below but do
+       not exist in dev, and DSpace 7 turns ANY unregistered field into a 500 on PUT /core/items/{id} —
+       which fails the WHOLE deposit at step 3 of 6 (AddItemMetadata), with an uninformative response body:
+
+           dc.identifier.volume      dc.identifier.issue       dc.identifier.startpage
+           dc.identifier.endpage     dc.identifier.pmid        dc.identifier.name-orcid
+
+       These mappings are deliberately LEFT IN PLACE: production Deep Blue carries all six, and the prod
+       and dev crosswalks use an identical DSpace field set. The fix belongs in the dev registry, not here
+       — otherwise dev stops testing what prod actually runs. Create them with
+       POST /server/api/core/metadatafields (an RT2 account with Administrator rights can do this).
+       Until then every deposit to dev will 500.
+       =================================================================================================================================== -->
   <!-- === PARAMETERS ==================================================================================================================== -->
   <xwalk:parameters>
+    <!-- SUBSEQUENT DEPOSIT (re-deposit) metadata POST.
+         Enables the "subsequent-deposit" field map below, which APPENDS metadata to an item that Elements
+         has already deposited. ⚠ This path is implemented for DSpace 5/6 only — DSpace 7 does not support it.
+         On this DSpace 7.6 instance the setting has no useful effect and the subsequent-deposit map will not
+         run. Left as-is pending the client decision recorded in the Asana task; if re-deposit behaviour has
+         to be suppressed at the Elements end, the undocumented appSetting
+         "dspace7plus-submit-to-workflow-on-redeposit" is the emergency off-switch. -->
     <xwalk:parameter name="dspace-xwalkout-enable-metadata-post-for-redeposit" value="true" />
     <!-- CURRENCY -->
     <!-- Currency to use when none is specified. Defaults to "USD". Options are:
@@ -95,7 +120,25 @@
       <xwalk:field-mapping to="[Repository field for OA Location file version]">
         <xwalk:field-source from="oa-location-file-version"/>
       </xwalk:field-mapping>-->
-      <!-- deposit data => dc.description.provenance -->
+      <!-- ========================================================================================================
+           DEPOSIT AUDIT TRAIL => dc.description.provenance
+           ========================================================================================================
+           Writes a human-readable record of WHO deposited, under WHICH deposit licence, and WHAT embargo and
+           reuse licence the depositor asked for. This is an audit note only — it does NOT enforce anything.
+           The embargo that DSpace actually applies comes from dc.date.available (see the next mapping) and from
+           the file-level resource policies RT2 sets when it uploads the bitstreams.
+
+           The sources here are RT2 deposit-time pseudo-fields, not Elements record fields — they exist only
+           during a deposit and carry what the user chose on the Elements deposit screen:
+             depositor.*              the Elements user who pressed Deposit
+             deposit-licence.*        the deposit (distribution) licence they accepted
+             requested-embargo.*      the embargo they asked for  (.display-name / .id / .comment)
+             requested-reuse-licence.* the reuse licence they asked for (.name / .short-name / .id / .comment)
+
+           Each top-level <field-source> block becomes one paragraph, separated by the rule in the mapping's
+           "separator" attribute; a block whose children are all empty contributes nothing, so the prefix
+           text never appears on its own.
+           ⚠ Do NOT add dc.description.provenance to field-authority-lists — it holds curation notes. -->
       <xwalk:field-mapping to="dc.description.provenance" separator="&#xD;&#xA;----------&#xD;&#xA;">
         <!-- depositor info -->
         <xwalk:field-source prefix="Item deposited via Symplectic Elements by user: " concatenate-with-separator="&#xD;&#xA;">
@@ -114,9 +157,13 @@
           <xwalk:field-source prefix="Embargo ID: " from="requested-embargo.id" />
           <xwalk:field-source prefix="Depositor's comment: " from="requested-embargo.comment" />
         </xwalk:field-source>
-        <!-- requested licence info -->
+        <!-- requested reuse licence info -->
+        <!-- FIXED: this block previously read requested-embargo.display-name — a copy/paste from the embargo
+             block above, which repeated the embargo name under the "reuse licence" heading and never showed
+             the licence the depositor actually chose. The reuse-licence pseudo-field has no ".display-name";
+             its human-readable form is ".name" (".short-name" is the code used by the licence value-maps). -->
         <xwalk:field-source prefix="Depositor requested a reuse licence: " concatenate-with-separator="&#xD;&#xA;">
-          <xwalk:field-source from="requested-embargo.display-name" />
+          <xwalk:field-source from="requested-reuse-licence.name" />
           <xwalk:field-source prefix="Licence ID: " from="requested-reuse-licence.id" />
           <xwalk:field-source prefix="Depositor's comment: " from="requested-reuse-licence.comment" />
         </xwalk:field-source>
@@ -125,8 +172,25 @@
         <!-- Confidential -->
         <xwalk:field-source prefix="Confidential? " from="confidential" />
       </xwalk:field-mapping>
-      <!-- requested-embargo => dc.date.available -->
-      <!-- Using format "WITHHELD_{# months}_MONTHS" -->
+      <!-- ========================================================================================================
+           EMBARGO => dc.date.available
+           ========================================================================================================
+           Deep Blue does not take an embargo END DATE here. It takes one of its own sentinel tokens in
+           dc.date.available, and the Deep Blue ingest workflow turns that token into the real release date
+           and the matching bitstream resource policies:
+
+               WITHHELD_6_MONTHS / WITHHELD_12_MONTHS / ...   release N months after accession
+               WITHHELD_INDEFINITELY                          no automatic release
+
+           The translation is done by the "format-requested-embargo" value map (see VALUE MAPS below), which
+           regex-rewrites the Elements embargo display name ("6 months", "12 months", "Indefinite") into the
+           token. Anything that matches neither pattern is dropped rather than written through — a literal
+           Elements label in dc.date.available would be read by DSpace as a malformed date.
+
+           ⚠ The embargo the depositor sees enforced comes from the FILE-level resource policies RT2 applies
+           at upload time; this field is what drives Deep Blue's own release automation. The two must agree,
+           so if the client changes their embargo option labels in Elements, this value map must change too.
+           ⚠ Elements' OA Monitor reads embargo state from the harvested FILE metadata, never from this field. -->
       <xwalk:field-mapping to="dc.date.available">
         <xwalk:field-source from="requested-embargo.display-name" value-map="format-requested-embargo" />
       </xwalk:field-mapping>
@@ -134,6 +198,30 @@
       <xwalk:field-mapping to="dc.description.version">
         <xwalk:field-source from="publication-status" value-map="publication-status-to-dc.description.version" />
       </xwalk:field-mapping>
+      <!-- ========================================================================================================
+           REUSE LICENCES => dc.rights (human-readable) and dc.rights.uri (machine-readable)
+           ========================================================================================================
+           THREE different licence sources are deposited, and they are NOT interchangeable:
+
+             requested-reuse-licence.short-name   what the depositor picked on the deposit screen, for THIS
+                                                  version of THIS file. Deposit-time pseudo-field.
+             author-licence                       Elements record field. Choice values are HYPHENATED:
+                                                  CC-BY, CC-BY-NC-ND, CC-0, MIT, GPL-3.0, InCopyright, ...
+             publisher-licence                    Elements record field. Choice values use SPACES:
+                                                  "CC BY", "CC BY-NC-ND", "Publisher's own licence", "Unknown"
+
+           ⚠ THE TWO SPELLINGS ARE THE TRAP. Elements genuinely stores "CC-BY" on author-licence and "CC BY"
+           on publisher-licence (verified against UMICH-DEV choice values, Elements 7.0.0.4562). Both forms
+           therefore have to be keys in the value maps below — a map keyed only on the spaced form silently
+           drops every author-licence a depositor ever sets. That was the behaviour before this fix.
+
+           dc.rights gets a labelled prose string; dc.rights.uri gets the canonical licence URI and nothing
+           else (its "otherwise" is ignore-this-value, so an unmappable licence leaves the URI field empty
+           rather than writing junk into a field consumers treat as a URI).
+
+           ⚠ These mappings must stay in step with the harvest map's "licence-uri-to-author-licence-choices",
+           which reverses dc.rights.uri back into the hyphenated author-licence codes. If you add a licence
+           here, add it there too, or the round trip loses it. -->
       <!-- requested reuse licence, author-licence, publisher-licence => dc.rights-->
       <xwalk:field-mapping to="dc.rights">
         <xwalk:field-source prefix="Re-use licence for this version: " from="requested-reuse-licence.short-name" value-map="licence-to-dc.rights" />
@@ -195,6 +283,9 @@
         </xwalk:field-source>
       </xwalk:field-mapping>
       <!-- Resolved user and metadata ORCIDs => dc.identifier.name-orcid -->
+      <!-- ⚠ dc.identifier.name-orcid IS NOT IN THE DEV METADATA REGISTRY. On dev this single field is
+           enough to 500 the entire deposit (DSpace 7 rejects the whole PUT, not just the field). Register
+           it on dev, or comment this mapping out to test the rest. See the header note at the top. -->
       <xwalk:field-mapping to="dc.identifier.name-orcid">
         <xwalk:field-source from="authors">
           <!-- We do not want to list names that do not have an ORCID iD associated with them. This outer value map ensures that is the case.
@@ -228,8 +319,13 @@
         <xwalk:field-source from="editors" format="person:lastname-firstnames" />
       </xwalk:field-mapping>
       <!-- associated-authors => dc.contributor-->
-      <xwalk:field-mapping to="associated-authors">
-        <xwalk:field-source from="dc.contributor" />
+      <!-- FIXED: "to" and "from" were the wrong way round — a harvest-direction row pasted into the deposit
+           map. It asked Elements for a field called "dc.contributor" (which does not exist in Elements) and
+           tried to write it to a DSpace field called "associated-authors" (which does not exist in DSpace).
+           In the deposit direction "to" is always the DSpace field and "from" is always the Elements field.
+           associated-authors is a person-list and, in UMICH's instance, exists on the "patent" type only. -->
+      <xwalk:field-mapping to="dc.contributor">
+        <xwalk:field-source from="associated-authors" format="person:lastname-firstnames" />
       </xwalk:field-mapping>
       <!--  author-url, public-url -->
       <xwalk:field-mapping to="dc.identifier.uri">
@@ -263,20 +359,29 @@
         <xwalk:field-source from="isbn-13" />
       </xwalk:field-mapping>
       <!-- references => dc.identifier.citedreference -->
-      <xwalk:field-mapping to="dc.identifier.citedreference">
+      <!-- DISABLED: "references" is not an underlying field on ANY of the 24 publication types in UMICH's
+           Elements instance (verified against UMICH-DEV, Elements 7.0.0.4562). The mapping has never
+           produced a value. Left commented rather than deleted so the intent is still visible — re-enable
+           only if the field is added to the Elements type configuration. -->
+      <!--<xwalk:field-mapping to="dc.identifier.citedreference">
         <xwalk:field-source from="references" />
-      </xwalk:field-mapping>
+      </xwalk:field-mapping>-->
       <!-- 'volume' -->
+      <!-- ⚠ dc.identifier.volume IS NOT IN THE DEV METADATA REGISTRY — 500s the whole deposit on dev.
+           Register it on dev, or comment this mapping out to test the rest. See the header note. -->
       <xwalk:field-mapping to="dc.identifier.volume">
         <xwalk:field-source from="volume" />
       </xwalk:field-mapping>
       <!-- issue-->
+      <!-- ⚠ dc.identifier.issue IS NOT IN THE DEV METADATA REGISTRY — same as volume above. -->
       <xwalk:field-mapping to="dc.identifier.issue">
         <xwalk:field-source from="issue" />
       </xwalk:field-mapping>
       <!-- series-->
+      <!-- FIXED: was from="serie". The Elements field is "series" (text; present on book, chapter and other).
+           The harvest map already reads it correctly, so only the deposit direction was broken. -->
       <xwalk:field-mapping to="dc.relation.ispartofseries">
-        <xwalk:field-source from="serie" />
+        <xwalk:field-source from="series" />
       </xwalk:field-mapping>
       <!-- medium => dc.description.medium -->
       <xwalk:field-mapping to="dc.format.medium">
@@ -300,8 +405,11 @@
 	    <xwalk:field-source prefix="pp. " from="pagination" format=number"pagination:start-end" format-delimiter="-"/>
 	  </xwalk:field-mapping>-->
       <!-- dc.description.thesisdegreename -->
+      <!-- FIXED: was from="'thesis-type" — a stray leading apostrophe meant the field name never resolved,
+           so the degree name was never deposited. thesis-type is a CHOICE field on thesis-dissertation only;
+           its values are "PhD Thesis", "Master's Thesis", "Undergraduate Dissertation". -->
       <xwalk:field-mapping to="dc.description.thesisdegreename">
-        <xwalk:field-source from="'thesis-type" />
+        <xwalk:field-source from="thesis-type" />
       </xwalk:field-mapping>
       <!-- number-->
       <xwalk:field-mapping to="dc.relation.haspart">
@@ -312,6 +420,9 @@
         <xwalk:field-source from="parent-title" />
       </xwalk:field-mapping>
       <!--  pagination => dc.identifier.startpage and to dc.identifier.endpage-->
+      <!-- ⚠ NEITHER dc.identifier.startpage NOR dc.identifier.endpage IS IN THE DEV METADATA REGISTRY —
+           each one 500s the whole deposit on dev. Register both, or comment both out to test the rest.
+           See the header note at the top of this file. -->
       <xwalk:field-mapping to="dc.identifier.endpage">
         <xwalk:field-source from="pagination" data-part="pagination:end-page" />
       </xwalk:field-mapping>
@@ -322,10 +433,12 @@
       <xwalk:field-mapping to="dc.date.submitted">
         <xwalk:field-source from="filed-date" />
       </xwalk:field-mapping>
-      <!-- commissioning-body => dc.description.sponsorship-->
-      <xwalk:field-mapping to="dc.description.sponsorship">
-        <xwalk:field-source from="commissioning-body" />
-      </xwalk:field-mapping>
+      <!-- commissioning-body => dc.description.sponsorship
+           MOVED: this was a SECOND <field-mapping> to dc.description.sponsorship. Only one field-mapping per
+           destination field takes effect, so the later funding-acknowledgements mapping won and
+           commissioning-body was never deposited. The source has been folded into that single mapping below
+           — search for "dc.description.sponsorship (CONSOLIDATED)". -->
+
       <!-- location => dc.coverage.spatial-->
       <xwalk:field-mapping to="dc.coverage.spatial">
         <xwalk:field-source from="location" />
@@ -339,42 +452,62 @@
         <xwalk:field-source from="number-of-pieces" />
       </xwalk:field-mapping>
       <!-- publication-date, online-publication-date => dc.date.issued -->
-	  <xwalk:field-mapping to="dc.date.issued">
+      <xwalk:field-mapping to="dc.date.issued">
         <xwalk:choose>
           <xwalk:when>
             <xwalk:condition argument-field="publication-date" operator="has-value" />
-             <xwalk:result>
+            <xwalk:result>
               <xwalk:field-source from="publication-date" format="date:YYYY-MM-DD" />
-             </xwalk:result>
+            </xwalk:result>
           </xwalk:when>
           <xwalk:when>
-           <xwalk:condition argument-field="online-publication-date" operator="has-value" />
+            <xwalk:condition argument-field="online-publication-date" operator="has-value" />
             <xwalk:result>
-             <xwalk:field-source from="online-publication-date" format="date:YYYY-MM-DD" />
-              </xwalk:result>
-       	  </xwalk:when>
+              <xwalk:field-source from="online-publication-date" format="date:YYYY-MM-DD" />
+            </xwalk:result>
+          </xwalk:when>
           <xwalk:when>
             <xwalk:condition argument-field="acceptance-date" operator="has-value" />
             <xwalk:result>
-            <xwalk:field-source from="acceptance-date" format="date:Y" />
+              <xwalk:field-source from="acceptance-date" format="date:Y" />
             </xwalk:result>
           </xwalk:when>
-    	</xwalk:choose>
-	  </xwalk:field-mapping>
+        </xwalk:choose>
+      </xwalk:field-mapping>
       <!-- acceptance-date => dcterms.dateAccepted -->
       <!-- N.B. DSpace's default Qualified DC schema has no place for acceptance-date, so we turn to the dcterms schema instead -->
       <!--<xwalk:field-mapping to="dcterms.dateAccepted">
         <xwalk:field-source from="acceptance-date" format="date:YYYY-MM-DD"/>
       </xwalk:field-mapping>-->
-      <!-- funding-acknowledgements -->
+      <!-- ========================================================================================================
+           FUNDING + COMMISSIONING BODY => dc.description.sponsorship   (CONSOLIDATED)
+           ========================================================================================================
+           Deep Blue has exactly one field for funder information, so three different Elements sources share it.
+           Each <field-source> below emits its own repeated dc.description.sponsorship value:
+
+             1. funding-acknowledgements:acknowledgement-text  — the free-text acknowledgement, verbatim
+             2. funding-acknowledgements:grant                 — one value per grant, as "Grant 12345: Funder Name"
+             3. commissioning-body                             — the commissioning body (report/other types)
+
+           ⚠ The "Grant {id}: {org}" shape is a CONTRACT with the harvest map, not cosmetic. On the way back,
+           "dc.description.sponsorship-to-grant-id" and "-to-grant-org" parse exactly this shape: text after
+           the word "Grant" up to the first colon is the grant ID, everything after the colon is the funder.
+           Anything that does not start with "Grant" is treated as a plain funder name. Change the prefix or
+           the separator here and the harvest silently stops recognising grant IDs.
+
+           ⚠ A destination field may appear in only ONE <field-mapping>. There were previously two mappings to
+           dc.description.sponsorship; the duplicate was dead and commissioning-body was lost. Add new sources
+           INSIDE this mapping — never as a second mapping to the same field. -->
       <xwalk:field-mapping to="dc.description.sponsorship">
-        <!-- The first dc.description.sponsorship field will be any funding acknowledgement text -->
+        <!-- 1. free-text funding acknowledgement -->
         <xwalk:field-source from="funding-acknowledgements" data-part="funding-acknowledgements:acknowledgement-text" />
-        <!-- subsequent fields will be grant ID & funder info, formatted as "Grant 12345: Funder Name" -->
+        <!-- 2. grant ID & funder info, formatted as "Grant 12345: Funder Name" (parsed back by the harvest map) -->
         <xwalk:field-source from="funding-acknowledgements" data-part="funding-acknowledgements:grant" concatenate-with-separator=": ">
           <xwalk:field-source prefix="Grant " data-part="funding-acknowledgements-grant:id" />
           <xwalk:field-source data-part="funding-acknowledgements-grant:org" />
         </xwalk:field-source>
+        <!-- 3. commissioning body (folded in from the former duplicate mapping) -->
+        <xwalk:field-source from="commissioning-body" />
       </xwalk:field-mapping>
       <!-- When depositing to dc.subject fields, we crosswalk from the object-level 'labels' field. This ensures that ALL labels -->
       <!-- (i.e. keywords) on the object are passed to the repository, not just the ones in the deposited record. Since record-level  -->
@@ -411,6 +544,8 @@
         <xwalk:field-source from="c-description-tableofcontents" />
       </xwalk:field-mapping>
       <!-- dc.identifier.pmid -->
+      <!-- ⚠ dc.identifier.pmid IS NOT IN THE DEV METADATA REGISTRY — 500s the whole deposit on dev.
+           Register it on dev, or comment this mapping out to test the rest. See the header note. -->
       <xwalk:field-mapping to="dc.identifier.pmid">
         <xwalk:field-source from="external-identifiers" value-map="filter-to-pubmed-identifiers">
           <xwalk:field-source data-part="identifier:value" />
@@ -421,8 +556,9 @@
         <xwalk:field-source from="doi" />
       </xwalk:field-mapping>
       <!-- c-relation-isformatof => dc.relation.isformatof-->
+      <!-- FIXED: the field name had a leading space (" c-relation-isformatof"), so it never matched. -->
       <xwalk:field-mapping to="dc.relation.isformatof">
-        <xwalk:field-source from=" c-relation-isformatof" />
+        <xwalk:field-source from="c-relation-isformatof" />
       </xwalk:field-mapping>
       <!-- c-relation-uri => dc.relation.uri-->
       <xwalk:field-mapping to="dc.relation.uri">
@@ -440,13 +576,31 @@
   <!--   - filtering values -->
   <!--   - other processing required to make the data suitable for DSpace -->
   <xwalk:value-maps>
+    <!-- ============================================================================================================
+         Elements embargo label => Deep Blue's dc.date.available sentinel token
+         ============================================================================================================
+         Regex, not full-match: "$1" carries the captured month count straight into the token, so any
+         "<n> months" option configured in Elements works without a new mapping here.
+             "6 months"   -> WITHHELD_6_MONTHS
+             "Indefinite" -> WITHHELD_INDEFINITELY
+         ⚠ The "from" patterns must match the Elements embargo option DISPLAY NAMES exactly, including case.
+         Anything else is dropped (ignore-this-value) rather than written through — a non-token string in
+         dc.date.available is an invalid date to DSpace and would be a silent data error, so dropping is the
+         safe failure. If the client renames an embargo option in Elements, update these patterns. -->
     <xwalk:value-map name="format-requested-embargo" matchMode="regex">
       <xwalk:value-mapping from="^(\d+) months$" to="WITHHELD_$1_MONTHS" />
       <xwalk:value-mapping from="^Indefinite$" to="WITHHELD_INDEFINITELY" />
       <xwalk:otherwise-mapping action="ignore-this-value" />
     </xwalk:value-map>
-    <!-- dictionary to translate values of Elements object.type to DSpace dc.type -->
-    <!-- edit as necessary -->
+    <!-- ============================================================================================================
+         Elements object.type => DSpace dc.type
+         ============================================================================================================
+         ⚠ THIS MAP IS HALF OF A ROUND TRIP. Elements fetches every deposited item straight back through the
+         harvest crosswalk, and the harvest "object-type-selector" decides the Elements type by regex-matching
+         the dc.type value this map produced. A value written here that no harvest branch matches comes back
+         as "other", which is a type mismatch on the item Elements just deposited.
+         Before changing any "to" value here, check the matching <xwalk:when> in dspace-XwalkIn-map.xml.
+         The gaps that exist today are listed in that file's object-type-selector header. -->
     <xwalk:value-map name="object.type-to-dc.type" matchMode="full">
       <xwalk:value-mapping from="book" to="Book" />
       <xwalk:value-mapping from="chapter" to="Book Chapter" />
@@ -459,7 +613,7 @@
       <xwalk:value-mapping from="performance" to="Performance" />
       <xwalk:value-mapping from="artefact" to="Artefact" />
       <xwalk:value-mapping from="design" to="Design" />
-      <xwalk:value-mapping from="exhibition" to="Exhbition" />
+      <xwalk:value-mapping from="exhibition" to="Exhibition" /><!-- FIXED: was the misspelling "Exhbition" -->
       <xwalk:value-mapping from="scholarly-edition" to="Scholarly edition" />
       <xwalk:value-mapping from="thesis-dissertation" to="Thesis" />
       <xwalk:value-mapping from="other" to="Other" />
@@ -513,22 +667,48 @@
       <xwalk:value-mapping from="pubmed" action="continue" />
       <xwalk:otherwise-mapping action="ignore-this-value" />
     </xwalk:value-map>
-    <!-- Used to check that values sent to dc.identifier.name-orcid do in fact contain an ORCID iD -->
+    <!-- Used to check that values sent to dc.identifier.name-orcid do in fact contain an ORCID iD.
+         FIXED: the otherwise-mapping was "continue" with a leftover DEBUG marker comment beside it, which
+         made BOTH branches continue — the map did nothing and every author without an ORCID iD was written to
+         dc.identifier.name-orcid as a bare name. The otherwise branch must drop the value: a name-ORCID
+         pairing field whose entries have no ORCID is worse than an empty field, because consumers assume
+         the pairing is real. -->
     <xwalk:value-map name="ignore-names-without-orcids" matchMode="regex">
+      <!-- keep only "Lastname, Firstnames; 0000-0000-0000-000X" -->
       <xwalk:value-mapping from="^.*; \d{4}-\d{4}-\d{4}-\d{3}[\dX]$" action="continue" />
-      <xwalk:otherwise-mapping action="continue" />
-      <!-- DEBUG -->
+      <xwalk:otherwise-mapping action="ignore-this-value" />
     </xwalk:value-map>
+    <!-- ============================================================================================================
+         licence code => human-readable licence name, for dc.rights
+         ============================================================================================================
+         Keyed on BOTH Elements spellings, because the two licence fields genuinely differ (verified against
+         UMICH-DEV choice values):
+             author-licence     uses hyphens  — CC-BY, CC-BY-ND, CC-BY-SA, CC-BY-NC, CC-BY-NC-ND, CC-BY-NC-SA
+             publisher-licence  uses spaces   — "CC BY", "CC BY-ND", ... plus "Publisher's own licence", "Unknown"
+         The hyphenated CC keys were MISSING before this fix, so every CC licence a depositor set on
+         author-licence fell through to the otherwise branch and was written to dc.rights as a bare code.
+         The non-CC codes (Apache-2.0, MIT, GPL*, BSD-3-Clause, OGL, RLT, CC-0, CC-Public-Domain,
+         InCopyright*, MLP-2.0) are spelled identically in both fields and need only one key each.
+         requested-reuse-licence.short-name is also routed through this map; its codes follow the
+         hyphenated form. -->
     <xwalk:value-map name="licence-to-dc.rights">
       <xwalk:value-mapping from="Apache-2.0" to="Apache License, Version 2.0" />
       <xwalk:value-mapping from="BSD-3-Clause" to="3-Clause BSD License" />
       <xwalk:value-mapping from="CC-0" to="Creative Commons CC0 1.0 Universal (Public Domain Dedication)" />
+      <!-- publisher-licence spelling (spaces) -->
       <xwalk:value-mapping from="CC BY" to="Creative Commons Attribution 4.0 International" />
       <xwalk:value-mapping from="CC BY-ND" to="Creative Commons Attribution-NoDerivatives 4.0 International" />
       <xwalk:value-mapping from="CC BY-SA" to="Creative Commons Attribution-ShareAlike 4.0 International" />
       <xwalk:value-mapping from="CC BY-NC" to="Creative Commons Attribution-NonCommercial 4.0 International" />
       <xwalk:value-mapping from="CC BY-NC-ND" to="Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International" />
       <xwalk:value-mapping from="CC BY-NC-SA" to="Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International" />
+      <!-- author-licence / requested-reuse-licence spelling (hyphens) — ADDED -->
+      <xwalk:value-mapping from="CC-BY" to="Creative Commons Attribution 4.0 International" />
+      <xwalk:value-mapping from="CC-BY-ND" to="Creative Commons Attribution-NoDerivatives 4.0 International" />
+      <xwalk:value-mapping from="CC-BY-SA" to="Creative Commons Attribution-ShareAlike 4.0 International" />
+      <xwalk:value-mapping from="CC-BY-NC" to="Creative Commons Attribution-NonCommercial 4.0 International" />
+      <xwalk:value-mapping from="CC-BY-NC-ND" to="Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International" />
+      <xwalk:value-mapping from="CC-BY-NC-SA" to="Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International" />
       <xwalk:value-mapping from="CC-Public-Domain" to="Creative Commons Copyright-Only Dedication or Public Domain Certification" />
       <xwalk:value-mapping from="GPL" to="GNU General Public License, version 1" />
       <xwalk:value-mapping from="GPL-2.0" to="GNU General Public License, version 2" />
@@ -539,18 +719,40 @@
       <xwalk:value-mapping from="MLP-2.0" to="Mozilla Public License Version 2.0" />
       <xwalk:value-mapping from="OGL" to="Open Government Licence" />
       <xwalk:value-mapping from="RLT" to="Restrictive Licence Template" />
+      <!-- publisher-licence placeholders carry no rights information — do not publish them as a rights statement -->
+      <xwalk:value-mapping from="Unknown" action="ignore-this-value" />
+      <xwalk:value-mapping from="Publisher's own licence" action="ignore-this-value" />
+      <!-- any other code is passed through as-is rather than lost -->
       <xwalk:otherwise-mapping action="continue" />
     </xwalk:value-map>
+    <!-- ============================================================================================================
+         licence code => canonical licence URI, for dc.rights.uri
+         ============================================================================================================
+         Same dual-spelling rule as licence-to-dc.rights above — the hyphenated author-licence keys were
+         missing, so author-set CC licences produced NO dc.rights.uri at all (this map's otherwise branch is
+         ignore-this-value). That matters beyond cosmetics: the harvest map reverses dc.rights.uri back into
+         author-licence via "licence-uri-to-author-licence-choices", so an empty URI breaks the round trip
+         and the licence disappears from Elements on re-harvest.
+         "Unknown" and "Publisher's own licence" have no canonical URI and fall through to the otherwise
+         branch, which correctly leaves the field empty. -->
     <xwalk:value-map name="licence-to-dc.rights.uri">
       <xwalk:value-mapping from="Apache-2.0" to="http://www.apache.org/licenses/LICENSE-2.0" />
       <xwalk:value-mapping from="BSD-3-Clause" to="http://opensource.org/licenses/BSD-3-Clause" />
       <xwalk:value-mapping from="CC-0" to="http://creativecommons.org/publicdomain/zero/1.0/" />
+      <!-- publisher-licence spelling (spaces) -->
       <xwalk:value-mapping from="CC BY" to="http://creativecommons.org/licenses/by/4.0/" />
       <xwalk:value-mapping from="CC BY-ND" to="http://creativecommons.org/licenses/by-nd/4.0/" />
       <xwalk:value-mapping from="CC BY-SA" to="http://creativecommons.org/licenses/by-sa/4.0/" />
       <xwalk:value-mapping from="CC BY-NC" to="http://creativecommons.org/licenses/by-nc/4.0/" />
       <xwalk:value-mapping from="CC BY-NC-ND" to="http://creativecommons.org/licenses/by-nc-nd/4.0/" />
       <xwalk:value-mapping from="CC BY-NC-SA" to="http://creativecommons.org/licenses/by-nc-sa/4.0/" />
+      <!-- author-licence / requested-reuse-licence spelling (hyphens) — ADDED -->
+      <xwalk:value-mapping from="CC-BY" to="http://creativecommons.org/licenses/by/4.0/" />
+      <xwalk:value-mapping from="CC-BY-ND" to="http://creativecommons.org/licenses/by-nd/4.0/" />
+      <xwalk:value-mapping from="CC-BY-SA" to="http://creativecommons.org/licenses/by-sa/4.0/" />
+      <xwalk:value-mapping from="CC-BY-NC" to="http://creativecommons.org/licenses/by-nc/4.0/" />
+      <xwalk:value-mapping from="CC-BY-NC-ND" to="http://creativecommons.org/licenses/by-nc-nd/4.0/" />
+      <xwalk:value-mapping from="CC-BY-NC-SA" to="http://creativecommons.org/licenses/by-nc-sa/4.0/" />
       <xwalk:value-mapping from="CC-Public-Domain" to="http://creativecommons.org/licenses/publicdomain/" />
       <xwalk:value-mapping from="GPL" to="http://www.gnu.org/licenses/gpl-1.0" />
       <xwalk:value-mapping from="GPL-2.0" to="http://www.gnu.org/licenses/gpl-2.0" />
@@ -796,7 +998,23 @@
     </xwalk:value-map>
   </xwalk:value-maps>
   <!-- === FIELD MAP SELECTOR ============================================================================================================ -->
-  <!-- Selects which field map to use -->
+  <!-- ==================================================================================================================================
+       Picks WHICH field map runs for a given deposit. <xwalk:choose> takes the FIRST matching <when> — order matters.
+       ==================================================================================================================================
+       Branch 1 — deposit.type = "subsequent": a re-deposit onto an item Elements has already created. Uses the
+                  append-only "subsequent-deposit" map. See the parameters note at the top: this path is a
+                  DSpace 5/6 feature and does not run on DSpace 7.
+       Branch 2 — everything else: the single "default-deposit" map, listing every Elements publication type
+                  UMICH deposits. There is no per-type map here, because Deep Blue takes the same dc.* field
+                  set for all of them; the type-specific part is dc.type, handled by object.type-to-dc.type.
+
+       ⚠ THERE IS NO <xwalk:otherwise>. That is deliberate — a publication type absent from the list below is
+       REFUSED rather than deposited with a half-populated record. The consequence is that adding a type to
+       Elements is not enough: it must be added to this list as well, or its deposits fail with no field map
+       selected. The list currently covers 23 of the 24 types in UMICH's Elements instance; "c-seminar" is
+       intentionally not deposited.
+       ⚠ Every type listed here must also be recognised by the harvest object-type-selector — see the header
+       of that section in dspace-XwalkIn-map.xml for the types that currently are not. -->
   <xwalkout:field-map-selector>
     <xwalk:choose>
       <!-- Handle subsequent deposit -->
@@ -839,11 +1057,30 @@
       </xwalk:when>
     </xwalk:choose>
   </xwalkout:field-map-selector>
-  <!-- Selects which collection to deposit into -->
+  <!-- === COLLECTION SELECTOR =========================================================================================================== -->
+  <!-- ==================================================================================================================================
+       Picks the DSpace collection every deposit lands in. Routing mode is "single" (config.json) — one fixed
+       collection for all types, no <xwalk:choose>. The "id" is what RT2 actually uses; "name" is a label for
+       readers and is not matched against DSpace.
+
+       ⚠ A collection UUID is environment-specific. It MUST be re-pointed when this map is promoted to prod.
+
+       REVERTED: the proposed replacement below was based on the wrong DSpace instance.
+       The original rationale is retained for reference, not as evidence about the intended backend:
+       This pointed at name="Symplectic Test Collection" id="601cbd93-df76-4d5e-a309-41f05ae1ebdf",
+       which does not exist on the dev backend — there is no such UUID and no such name in the 14 collections
+       the dev instance exposes. Every deposit failed at workspace-item creation before it could even reach
+       the metadata step. The collection the client actually created for this work is below ("Symptic
+       Elements" — their spelling, left verbatim so it matches the DSpace UI), confirmed live on
+       backend.demo.deepblue-documents.lib.umich.edu, handle 123456789/3359, under "Community One".
+       Inventory: clients/University_of_Michigan_Umich/rt2/dspace/repository_extracts/dspace_dev_collections.tsv
+
+       TODO before prod: replace with the production Deep Blue collection ("Michigan Research Experts
+       Deposits") and its prod UUID. -->
   <xwalkout:collection-selector>
-    <!-- "Michigan Research Experts Deposits" does not exist in staging. -->
-    <!-- Using "Symplectic Test Collection" for deposit staging. -->
-    <!-- TODO: Restore to the production collection name+UUID before applying to production. -->
     <xwalkout:collection-selection name="Symplectic Test Collection" id="601cbd93-df76-4d5e-a309-41f05ae1ebdf" />
+    <!-- Reverted: this collection belongs to the wrong DSpace instance.
+    <xwalkout:collection-selection name="Symptic Elements" id="d366ffb9-8376-45e3-ac3d-1c3527425583" />
+    -->
   </xwalkout:collection-selector>
 </xwalkout:consolidated-maps>
