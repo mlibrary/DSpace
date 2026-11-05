@@ -1,230 +1,270 @@
 <?xml version="1.0" encoding="UTF-8"?>
-        <!--
-          - local-types.xml
-          -
-          - Registry for um-specific metadata.
-          - Custom fields added to production d/b via the browser will
-          - be populated by this file for new instances and migrations.
-          -->
+<!--
+  - local-types.xml
+  -
+  - Registry for um-specific metadata.
+  - Custom fields added to production d/b via the browser will
+  - be populated by this file for new instances and migrations.
+  -->
 <dspace-dc-types>
 
-<dspace-header>
-    <title>Registry of UM-specific metadata fields</title>
-    <contributor.author>DLA</contributor.author>
-    <contributor.editor>migration</contributor.editor>
-    <date.created>2026-10-16</date.created>
-    <description>
-        Local schema declaration plus dc.* qualifiers required by migrated content
-        that are missing from a stock DSpace 7 instance.
-    </description>
-</dspace-header>
+    <dspace-header>
+        <title>Registry of UM-specific metadata fields</title>
+        <contributor.author>DLA</contributor.author>
+        <contributor.editor>migration</contributor.editor>
+        <date.created>2026-10-16</date.created>
+        <description>
+            Local schema declaration plus dc.* qualifiers required by migrated content
+            that are missing from a stock DSpace 7 instance.
+        </description>
+    </dspace-header>
 
-<!-- ================================================================ -->
-<!-- 1. Local schema (institution-specific fields go here)             -->
-<!-- ================================================================ -->
+    <!-- ================================================================ -->
+    <!-- 1. Local schema (institution-specific fields go here)             -->
+    <!-- ================================================================ -->
 
-<dc-schema>
-    <name>local</name>
-    <namespace>http://dspace.org/namespace/local/</namespace>
-</dc-schema>
+    <dc-schema>
+        <name>local</name>
+        <namespace>http://dspace.org/namespace/local/</namespace>
+    </dc-schema>
 
-<!-- ================================================================ -->
-<!-- 2. dc.* qualifiers not standard Dublin Core - kept for migration fidelity -->
-<!-- ================================================================ -->
+    <!-- ================================================================ -->
+    <!-- 2. dc.* qualifiers not standard Dublin Core - kept for migration fidelity -->
+    <!-- ================================================================ -->
 
-<!-- Theses -->
-<dc-type>
-    <schema>dc</schema>
-    <element>description</element>
-    <qualifier>thesisdegreename</qualifier>
-</dc-type>
-<dc-type>
-    <schema>dc</schema>
-    <element>description</element>
-    <qualifier>thesisdegreediscipline</qualifier>
-</dc-type>
-<dc-type>
-    <schema>dc</schema>
-    <element>description</element>
-    <qualifier>thesisdegreegrantor</qualifier>
-</dc-type>
-<dc-type>
-    <schema>dc</schema>
-    <element>contributor</element>
-    <qualifier>committeemember</qualifier>
-</dc-type>
+    <!-- Theses -->
+    <dc-type>
+        <schema>dc</schema>
+        <element>description</element>
+        <qualifier>thesisdegreename</qualifier>
+    </dc-type>
+    <dc-type>
+        <schema>dc</schema>
+        <element>description</element>
+        <qualifier>thesisdegreediscipline</qualifier>
+    </dc-type>
+    <dc-type>
+        <schema>dc</schema>
+        <element>description</element>
+        <qualifier>thesisdegreegrantor</qualifier>
+    </dc-type>
+    <dc-type>
+        <schema>dc</schema>
+        <element>contributor</element>
+        <qualifier>committeemember</qualifier>
+    </dc-type>
 
-<!-- Contributors / identifiers -->
-<dc-type>
-    <schema>dc</schema>
-    <element>contributor</element>
-    <qualifier>authoremail</qualifier>
-</dc-type>
-<dc-type>
-    <schema>dc</schema>
-    <element>identifier</element>
-    <qualifier>uniqname</qualifier>
-</dc-type>
-<dc-type>
-    <schema>dc</schema>
-    <element>identifier</element>
-    <qualifier>name-orcid</qualifier>
-</dc-type>
-<dc-type>
-    <schema>dc</schema>
-    <element>identifier</element>
-    <qualifier>pmid</qualifier>
-</dc-type>
-<dc-type>
-    <schema>dc</schema>
-    <element>identifier</element>
-    <qualifier>oclc</qualifier>
-</dc-type>
-<dc-type>
-    <schema>dc</schema>
-    <element>identifier</element>
-    <qualifier>citedreference</qualifier>
-</dc-type>
-<dc-type>
-    <schema>dc</schema>
-    <element>identifier</element>
-    <qualifier>videostream</qualifier>
-</dc-type>
-<dc-type>
-    <schema>dc</schema>
-    <element>identifier</element>
-    <qualifier>imageclass</qualifier>
-</dc-type>
+    <!-- Contributors / identifiers -->
+    <dc-type>
+        <schema>dc</schema>
+        <element>contributor</element>
+        <qualifier>authoremail</qualifier>
+    </dc-type>
+    <dc-type>
+        <schema>dc</schema>
+        <element>contributor</element>
+        <qualifier>affiliationum</qualifier>
+    </dc-type>
+    <dc-type>
+        <schema>dc</schema>
+        <element>contributor</element>
+        <qualifier>affiliationother</qualifier>
+    </dc-type>
+    <dc-type>
+        <schema>dc</schema>
+        <element>contributor</element>
+        <qualifier>affiliationumcampus</qualifier>
+        <scope_note>Used to specify the campus from which the work/author originated.</scope_note>
+    </dc-type>
+    <dc-type>
+        <schema>dc</schema>
+        <element>identifier</element>
+        <qualifier>uniqname</qualifier>
+    </dc-type>
+    <dc-type>
+        <schema>dc</schema>
+        <element>identifier</element>
+        <qualifier>name-orcid</qualifier>
+    </dc-type>
+    <dc-type>
+        <schema>dc</schema>
+        <element>identifier</element>
+        <qualifier>pmid</qualifier>
+    </dc-type>
+    <dc-type>
+        <schema>dc</schema>
+        <element>identifier</element>
+        <qualifier>oclc</qualifier>
+    </dc-type>
+    <dc-type>
+        <schema>dc</schema>
+        <element>identifier</element>
+        <qualifier>citedreference</qualifier>
+    </dc-type>
+    <dc-type>
+        <schema>dc</schema>
+        <element>identifier</element>
+        <qualifier>videostream</qualifier>
+    </dc-type>
+    <dc-type>
+        <schema>dc</schema>
+        <element>identifier</element>
+        <qualifier>imageclass</qualifier>
+    </dc-type>
+    <dc-type>
+        <schema>dc</schema>
+        <element>identifier</element>
+        <qualifier>source</qualifier>
+    </dc-type>
+    <dc-type>
+        <schema>dc</schema>
+        <element>identifier</element>
+        <qualifier>orcid</qualifier>
+    </dc-type>
 
-<!-- Citation parts -->
-<dc-type>
-    <schema>dc</schema>
-    <element>identifier</element>
-    <qualifier>volume</qualifier>
-</dc-type>
-<dc-type>
-    <schema>dc</schema>
-    <element>identifier</element>
-    <qualifier>issue</qualifier>
-</dc-type>
-<dc-type>
-    <schema>dc</schema>
-    <element>identifier</element>
-    <qualifier>startpage</qualifier>
-</dc-type>
-<dc-type>
-    <schema>dc</schema>
-    <element>identifier</element>
-    <qualifier>endpage</qualifier>
-</dc-type>
+    <!-- Citation parts -->
+    <dc-type>
+        <schema>dc</schema>
+        <element>identifier</element>
+        <qualifier>volume</qualifier>
+    </dc-type>
+    <dc-type>
+        <schema>dc</schema>
+        <element>identifier</element>
+        <qualifier>issue</qualifier>
+    </dc-type>
+    <dc-type>
+        <schema>dc</schema>
+        <element>identifier</element>
+        <qualifier>startpage</qualifier>
+    </dc-type>
+    <dc-type>
+        <schema>dc</schema>
+        <element>identifier</element>
+        <qualifier>endpage</qualifier>
+    </dc-type>
 
-<!-- Subjects -->
-<dc-type>
-    <schema>dc</schema>
-    <element>subject</element>
-    <qualifier>hlbtoplevel</qualifier>
-</dc-type>
-<dc-type>
-    <schema>dc</schema>
-    <element>subject</element>
-    <qualifier>hlbsecondlevel</qualifier>
-</dc-type>
+    <!-- Subjects -->
+    <dc-type>
+        <schema>dc</schema>
+        <element>subject</element>
+        <qualifier>hlbtoplevel</qualifier>
+    </dc-type>
+    <dc-type>
+        <schema>dc</schema>
+        <element>subject</element>
+        <qualifier>hlbsecondlevel</qualifier>
+    </dc-type>
 
-<!-- Rights / access -->
-<dc-type>
-    <schema>dc</schema>
-    <element>rights</element>
-    <qualifier>access</qualifier>
-</dc-type>
-<dc-type>
-    <schema>dc</schema>
-    <element>rights</element>
-    <qualifier>copyright</qualifier>
-</dc-type>
-<dc-type>
-    <schema>dc</schema>
-    <element>rights</element>
-    <qualifier>robots</qualifier>
-</dc-type>
-<dc-type>
-    <schema>dc</schema>
-    <element>restrict</element>
-    <qualifier>um</qualifier>
-</dc-type>
-<dc-type>
-    <schema>dc</schema>
-    <element>date</element>
-    <qualifier>open</qualifier>
-</dc-type>
+    <!-- Rights / access -->
+    <dc-type>
+        <schema>dc</schema>
+        <element>rights</element>
+        <qualifier>access</qualifier>
+    </dc-type>
+    <dc-type>
+        <schema>dc</schema>
+        <element>rights</element>
+        <qualifier>copyright</qualifier>
+    </dc-type>
+    <dc-type>
+        <schema>dc</schema>
+        <element>rights</element>
+        <qualifier>robots</qualifier>
+    </dc-type>
+    <dc-type>
+        <schema>dc</schema>
+        <element>restrict</element>
+        <qualifier>um</qualifier>
+    </dc-type>
+    <dc-type>
+        <schema>dc</schema>
+        <element>date</element>
+        <qualifier>open</qualifier>
+    </dc-type>
 
-<!-- Descriptions / administrative -->
-<dc-type>
-    <schema>dc</schema>
-    <element>description</element>
-    <qualifier>peerreviewed</qualifier>
-</dc-type>
-<dc-type>
-    <schema>dc</schema>
-    <element>description</element>
-    <qualifier>withdrawalreason</qualifier>
-</dc-type>
-<dc-type>
-    <schema>dc</schema>
-    <element>description</element>
-    <qualifier>mapping</qualifier>
-</dc-type>
-<dc-type>
-    <schema>dc</schema>
-    <element>description</element>
-    <qualifier>md5checksum</qualifier>
-</dc-type>
-<dc-type>
-    <schema>dc</schema>
-    <element>description</element>
-    <qualifier>hathi</qualifier>
-</dc-type>
-<dc-type>
-    <schema>dc</schema>
-    <element>description</element>
-    <qualifier>fulcrum</qualifier>
-</dc-type>
-<dc-type>
-    <schema>dc</schema>
-    <element>description</element>
-    <qualifier>restriction</qualifier>
-</dc-type>
-<dc-type>
-    <schema>dc</schema>
-    <element>description</element>
-    <qualifier>filedescription</qualifier>
-</dc-type>
-<dc-type>
-    <schema>dc</schema>
-    <element>description</element>
-    <qualifier>filename</qualifier>
-</dc-type>
+    <!-- Descriptions / administrative -->
+    <dc-type>
+        <schema>dc</schema>
+        <element>description</element>
+        <qualifier>peerreviewed</qualifier>
+    </dc-type>
+    <dc-type>
+        <schema>dc</schema>
+        <element>description</element>
+        <qualifier>withdrawalreason</qualifier>
+    </dc-type>
+    <dc-type>
+        <schema>dc</schema>
+        <element>description</element>
+        <qualifier>mapping</qualifier>
+    </dc-type>
+    <dc-type>
+        <schema>dc</schema>
+        <element>description</element>
+        <qualifier>md5checksum</qualifier>
+    </dc-type>
+    <dc-type>
+        <schema>dc</schema>
+        <element>description</element>
+        <qualifier>hathi</qualifier>
+    </dc-type>
+    <dc-type>
+        <schema>dc</schema>
+        <element>description</element>
+        <qualifier>fulcrum</qualifier>
+    </dc-type>
+    <dc-type>
+        <schema>dc</schema>
+        <element>description</element>
+        <qualifier>restriction</qualifier>
+    </dc-type>
+    <dc-type>
+        <schema>dc</schema>
+        <element>description</element>
+        <qualifier>filedescription</qualifier>
+    </dc-type>
+    <dc-type>
+        <schema>dc</schema>
+        <element>description</element>
+        <qualifier>filename</qualifier>
+    </dc-type>
+    <dc-type>
+        <schema>dc</schema>
+        <element>description</element>
+        <qualifier>bitstreamurl</qualifier>
+    </dc-type>
+    <dc-type>
+        <schema>dc</schema>
+        <element>description</element>
+        <qualifier>depositor</qualifier>
+    </dc-type>
+    <dc-type>
+        <schema>dc</schema>
+        <element>provenance</element>
+    </dc-type>
 
-<!-- Request-a-copy -->
-<dc-type>
-    <schema>dc</schema>
-    <element>requestcopy</element>
-    <qualifier>email</qualifier>
-</dc-type>
-<dc-type>
-    <schema>dc</schema>
-    <element>requestcopy</element>
-    <qualifier>name</qualifier>
-</dc-type>
+    <!-- Request-a-copy -->
+    <dc-type>
+        <schema>dc</schema>
+        <element>requestcopy</element>
+        <qualifier>email</qualifier>
+    </dc-type>
+    <dc-type>
+        <schema>dc</schema>
+        <element>requestcopy</element>
+        <qualifier>name</qualifier>
+    </dc-type>
 
-<!-- Misc legacy -->
-<dc-type>
-    <schema>dc</schema>
-    <element>res</element>
-</dc-type>
-<dc-type>
-    <schema>dc</schema>
-    <element>working</element>
-    <qualifier>doi</qualifier>
-</dc-type>
+    <!-- Misc legacy -->
+    <dc-type>
+        <schema>dc</schema>
+        <element>res</element>
+    </dc-type>
+    <dc-type>
+        <schema>dc</schema>
+        <element>working</element>
+        <qualifier>doi</qualifier>
+    </dc-type>
 
 </dspace-dc-types>
