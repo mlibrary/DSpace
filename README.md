@@ -24,6 +24,11 @@ docker build -f dependencies.dockerfile -t dspace-dependencies .
 docker compose up -d
 docker compose exec backend /dspace/bin/dspace database migrate
 ```
+If this is a new build, or `admin/registries/metadata/dc` doesn't contain 118 fields, use `force` to add UM custom metadata fields. Submission `save` and `deposit` will not work without these fields. 
+```
+docker compose exec backend /dspace/bin/dspace database migrate force
+```
+
 ### Services Endpoints
 | URL                                     | Container | Comments                                                                     |
 |-----------------------------------------|-----------|------------------------------------------------------------------------------|
