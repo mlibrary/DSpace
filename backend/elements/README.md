@@ -1,8 +1,8 @@
 #  [Deep Blue Documents](https://deepblue.lib.umich.edu/documents) <=> [Michigan Experts](https://experts.umich.edu/) 
 (DSpace <=> Symplectic Elements) crosswalks and supporting field reference files:
 
-* `dspace-XwalkOut-map.xml` maps DSpace metadata to Elements for deposits.
-* `dspace-XwalkIn-map.xml` maps Elements metadata to DSpace for harvests.
+* `dspace-XwalkOut-map.xml` maps Elements metadata to DSpace for deposits.
+* `dspace-XwalkIn-map.xml` maps DSpace metadata to Elements for harvests.
 * `schemas/` contains the crosswalk and supporting configuration XSD files
   described below.
 * `elements-fields.csv` lists Elements fields and publication-type values.
