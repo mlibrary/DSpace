@@ -1,7 +1,9 @@
-# Crosswalk changes since the last commit
+# Crosswalk changes and staging verification
 
-Comparison: working tree against `7536de95ba`
-(`update validation script and README to reflect recent refactoring`).
+This report summarizes the mapping fixes originally compared against
+`7536de95ba` (`update validation script and README to reflect recent refactoring`)
+and the subsequent staging correction in `daafd21eed`
+(`latest analysis against staging this time (last time it was demo)`).
 
 Scope:
 
@@ -26,7 +28,7 @@ are distinguished from newly documented behavior that already existed.
 | Name/ORCID pairs | Changes the fallback in `ignore-names-without-orcids` from `continue` to `ignore-this-value`; removes the old debug comment. | Drops entries that do not match the existing name/ORCID pattern rather than writing bare author names to `dc.identifier.name-orcid`. |
 | Creative Commons licences | Adds the six hyphenated `CC-BY*` variants to both `licence-to-dc.rights` and `licence-to-dc.rights.uri`, alongside the existing spaced variants. | Produces descriptive rights statements and canonical URIs for both licence spellings. |
 | Licence placeholders | Explicitly ignores `Unknown` and `Publisher's own licence` in `licence-to-dc.rights`. | Omits these placeholders instead of publishing them as rights statements. The URI map already ignored unmapped values. |
-| Deposit collection | Replaces `Symplectic Test Collection` (`601cbd93-df76-4d5e-a309-41f05ae1ebdf`) with `Symptic Elements` (`d366ffb9-8376-45e3-ac3d-1c3527425583`). | Changes the destination collection for all deposits. The new comments identify this as the development collection and require a production-specific replacement before promotion. |
+| Deposit collection | Retains `Symplectic Test Collection` (`601cbd93-df76-4d5e-a309-41f05ae1ebdf`, handle `123456789/2`). | The proposed demo collection replacement was reverted. The supplied staging inventory confirms the original collection exists on staging; the latest update retains the history in comments and removes the inactive replacement element. Production still requires its own collection UUID. |
 
 ## Harvest: functional changes
 
@@ -46,10 +48,16 @@ fixes. Statements about live registries and instance configuration are reported
 by the new comments; they were not independently checked against the live
 systems for this review.
 
-### Development metadata registry
+### Correct staging instance and metadata registry
 
-Both files now warn that six fields used by the maps are missing from the
-development DSpace metadata registry:
+The latest analysis targets `backend.staging.deepblue-documents.lib.umich.edu`
+(DSpace 7), not the separate demo instance. Both XML headers report verification
+on 2026-11-05 of a staging registry containing 303 field definitions and all
+46 active deposit destination fields.
+
+The following six fields are registered on staging. Earlier claims that they
+were missing came from the wrong demo instance and have been removed from the
+headers and inline mapping comments:
 
 * `dc.identifier.volume`
 * `dc.identifier.issue`
@@ -58,10 +66,25 @@ development DSpace metadata registry:
 * `dc.identifier.pmid`
 * `dc.identifier.name-orcid`
 
-The mappings remain active. The comments identify missing target fields as a
-potential whole-deposit failure and missing harvest sources as a cause of
-incomplete metadata. Registering the fields is a separate environment change;
-this diff does not implement it.
+No registration change for these six fields is required by the supplied staging
+findings. Their presence does not establish that individual records contain
+values or that live deposit/harvest operations succeed.
+
+Two staging gaps remain documented: `dc.identifier.eissn` is not registered, and
+`dc.description.degreediscipline` is not registered (the actual field is
+`dc.description.thesisdegreediscipline`). The duplicate ISSN/eISSN source remains
+unchanged, and thesis discipline still has no harvest destination. The inactive
+deposit mapping for `dc.rights.licence` would need the registered US spelling,
+`dc.rights.license`, if enabled.
+
+The updated comments cite staging metadata-field and collection TSV inventories
+under `../../repository_extracts/`. These are evidence references supplied with
+the analysis, not live API checks performed for this report. Retain accessible
+verification evidence with the pull request.
+
+The latest update changes comments and removes a commented-out collection
+element only. Comparing the parsed XML before and after `daafd21eed`, excluding
+comments and formatting, confirms that active mappings are unchanged.
 
 ### Deposit behavior
 
@@ -81,7 +104,7 @@ this diff does not implement it.
   remains unchanged.
 * Adds a comment describing a leading-space correction for
   `c-relation-isformatof`; the active source was already correctly spelled in
-  the last commit, so this is documentation-only in this diff.
+  the original comparison commit, so this was documentation-only in that diff.
 
 ### Harvest behavior
 
@@ -114,7 +137,8 @@ Ran from the repository root:
 Result: both current crosswalk files passed validation against their respective
 XSDs in `schemas`.
 
-Schema validation does not establish that the development collection exists,
-that the live metadata registries contain the mapped fields, that all Elements
-choice values are accepted, or that deposit/harvest round trips behave as
-intended. No live deposit or harvest was performed for this review.
+Schema validation is separate from the registry and collection checks reported
+by the supplied staging analysis. It does not establish that Elements choice
+values are accepted or that deposit/harvest round trips behave as intended.
+No live deposit or harvest was performed for this review; outstanding tests
+and decisions are tracked in `ToDo.md`.

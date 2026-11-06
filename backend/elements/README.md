@@ -22,6 +22,37 @@ The guide covers verifying live Elements and DSpace vocabularies before editing,
 environment-specific credentials and collection UUIDs, schema validation,
 deposit/harvest round-trip contracts, and deployment safeguards.
 
+## Staging target and registry verification
+
+The crosswalks target `backend.staging.deepblue-documents.lib.umich.edu`
+(DSpace 7), not `backend.demo.deepblue-documents.lib.umich.edu`. The updated XML
+comments report a staging verification dated 2026-11-05: 303 metadata field
+definitions, including all 46 active deposit destination fields.
+`dc.identifier.volume`, `.issue`, `.startpage`, `.endpage`, `.pmid`, and
+`.name-orcid` are registered on staging; the earlier missing-field warnings
+were based on demo and have been removed.
+
+The active staging collection remains `Symplectic Test Collection`
+(`601cbd93-df76-4d5e-a309-41f05ae1ebdf`, handle `123456789/2`). The staging
+inventory reported in the XML confirms it exists. Do not substitute demo's
+`Symptic Elements` collection or reuse staging UUIDs in production.
+
+Remaining registry considerations:
+
+* Staging does not register `dc.identifier.eissn`; the harvest currently reads
+  `dc.identifier.issn` for both ISSN and eISSN. Decide whether to remove the
+  duplicate eISSN mapping or introduce a distinct field and populate it.
+* Staging registers `dc.description.thesisdegreediscipline`, not
+  `dc.description.degreediscipline`. The harvest thesis-type mapping uses only
+  the degree name; it does not transmit the discipline.
+* The commented-out `dc.rights.licence` mapping is inert. If enabled later, use
+  staging's registered spelling `dc.rights.license`.
+
+These findings are recorded by the supplied staging analysis, not a new live
+check performed for this documentation update. The latest XML update changes
+comments only, not active mappings. See [ToDo.md](ToDo.md) for remaining
+environment evidence, configuration decisions, and live deposit/harvest tests.
+
 ## Elements field reference
 
 [`elements-fields.csv`](elements-fields.csv) is a reference grid of Elements
