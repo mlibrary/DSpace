@@ -1,17 +1,24 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <xwalkin:consolidated-maps xmlns:xwalk="http://www.symplectic.co.uk/elements/xwalkcommon" xmlns:xwalkin="http://www.symplectic.co.uk/elements/xwalkin">
   <!-- ===================================================================================================================================
-       DEV ENVIRONMENT — Deep Blue demo backend (backend.demo.deepblue-documents.lib.umich.edu, DSpace 7.6)
+       DEV ENVIRONMENT — Deep Blue STAGING backend (backend.staging.deepblue-documents.lib.umich.edu, DSpace 7)
        ===================================================================================================================================
-       ⚠ SIX SOURCE FIELDS ARE NOT IN THE DEV METADATA REGISTRY, so they will always harvest empty here:
-           dc.identifier.volume   dc.identifier.issue   dc.identifier.startpage
-           dc.identifier.endpage  dc.identifier.pmid    dc.identifier.name-orcid
-       That makes volume, issue, pagination, the PubMed external-identifier and the journal-harvest
-       c-citation formula come back blank on dev — NOT a crosswalk fault. The dev instance runs a stock
-       DSpace 7 registry (286 fields) rather than a copy of Deep Blue's. Production carries all six, which
-       is why the identical prod map works. Fix belongs in the dev registry; see the matching note at the
-       top of dspace-XwalkOut-map.xml.
-       Registry inventory: ../../repository_extracts/dspace_dev_metadata_fields.tsv
+       ⚠ TARGET INSTANCE — read before editing anything below.
+       This map is verified against the STAGING backend above, NOT the demo backend
+       (backend.demo.deepblue-documents.lib.umich.edu), which is a separate instance with a different
+       metadata registry.
+
+       Registry verified 2026-11-05 against staging: 303 field definitions. dc.identifier.volume, .issue,
+       .startpage, .endpage, .pmid and .name-orcid ARE all registered there — an earlier pass against the
+       demo backend wrongly recorded them as missing, and the notes saying so have been removed.
+
+       Two genuine registry gaps do remain on staging, and the notes for them below still stand:
+           dc.identifier.eissn               — not registered (see the issn/eissn note, ~line 287)
+           dc.description.degreediscipline   — not registered; the registered name is
+                                               dc.description.thesisdegreediscipline (see ~line 401)
+
+       Registry inventory:
+         ../../repository_extracts/backend.staging.deepblue-documents.lib.umich.edu_metadata_fields.tsv
        =================================================================================================================================== -->
   <!-- === PARAMETERS ==================================================================================================================== -->
   <xwalk:parameters>
@@ -117,7 +124,7 @@
       <!-- * dc.date.available                      => record-made-public-at-source-date    * -->
       <!-- *                                                                                * -->
       <!-- ********************************************************************************** -->
-
+      
       <!-- ========================================================================================================
            DATE OVERRIDES — these two deliberately INVERT the automatic mappings listed above
            ========================================================================================================
@@ -180,35 +187,29 @@
         <xwalk:field-source from="dc.title" />
       </xwalk:field-mapping>
       <!-- pagination-->
-      <!-- ⚠ dc.identifier.startpage and dc.identifier.endpage ARE NOT IN THE DEV METADATA REGISTRY, so
-           pagination ALWAYS harvests empty on dev. No error is raised — the field is simply never there.
-           Not a crosswalk fault; production carries both. See the header note at the top of this file. -->
       <xwalk:field-mapping to="pagination">
         <xwalk:field-source from="dc.identifier.startpage" data-part="pagination:begin-page" />
         <xwalk:field-source from="dc.identifier.endpage" data-part="pagination:end-page" />
       </xwalk:field-mapping>
-
+      
       <!-- dc.contributor.author => authors -->
       <!-- DSpace 7: ORCID-count XPath condition removed (XPath arithmetic cannot
                  operate on JSON). Always uses dc.contributor.author. -->
       <xwalk:field-mapping to="authors">
         <xwalk:field-source from="dc.contributor.author" />
       </xwalk:field-mapping>
-
+      
       <!-- dc.contributor.editor => editors -->
       <xwalk:field-mapping to="editors">
         <xwalk:field-source from="dc.contributor.editor" />
       </xwalk:field-mapping>
-
+      
       <!-- series-->
       <xwalk:field-mapping to="series">
         <xwalk:field-source from="dc.relation.ispartofseries" />
       </xwalk:field-mapping>
       <!-- There is no default mapping to Elements underlying field 'edition' -->
       <!-- 'volume' -->
-      <!-- ⚠ dc.identifier.volume and dc.identifier.issue ARE NOT IN THE DEV METADATA REGISTRY, so both
-           ALWAYS harvest empty on dev, silently. Not a crosswalk fault — production carries both.
-           See the header note at the top of this file. -->
       <xwalk:field-mapping to="volume">
         <xwalk:field-source from="dc.identifier.volume" />
       </xwalk:field-mapping>
@@ -284,7 +285,8 @@
       <!-- dc.identifier.eissn => eissn-->
       <!-- ⚠ FLAGGED, not changed. Both issn and eissn read the SAME source, dc.identifier.issn, so every
            harvested item gets the identical value in both Elements fields. Deep Blue has no separate
-           eISSN field in the dev registry (dc.identifier.issn, .isbn, .ismn, .sici — no .eissn), so there
+           eISSN field in the staging registry (dc.identifier.issn, .isbn, .ismn, .sici — no .eissn; re-verified
+           against staging 2026-11-05), so there
            is nothing correct to point this at. Either drop the eissn mapping or have the client register a
            dc.identifier.eissn field; needs a client decision, so left as-is. -->
       <xwalk:field-mapping to="eissn">
@@ -398,8 +400,9 @@
       </xwalk:field-mapping>
       <!-- thesis-type
            FIXED, two separate faults:
-           1) dc.description.degreediscipline does not exist in the dev metadata registry. The registered
-              field is dc.description.thesisdegreediscipline (dev also has .thesisdegreegrantor).
+           1) dc.description.degreediscipline does not exist in the staging metadata registry (re-verified
+              2026-11-05). The registered field is dc.description.thesisdegreediscipline (staging also has
+              .thesisdegreegrantor).
            2) thesis-type is a CHOICE field in Elements, accepting exactly three values — "PhD Thesis",
               "Master's Thesis", "Undergraduate Dissertation". Joining the degree name and the discipline
               with ";" produced a string that can never match a choice value, so Elements rejected it and
@@ -419,8 +422,6 @@
         </xwalk:field-source>
       </xwalk:field-mapping>
       <!-- external-identifiers with identifier:scheme = 'pubmed' -->
-      <!-- ⚠ dc.identifier.pmid IS NOT IN THE DEV METADATA REGISTRY, so no PubMed external identifier is
-           ever harvested on dev. Silent, not an error. Production carries the field. See the header note. -->
       <xwalk:field-mapping to="external-identifiers">
         <!-- dc.identifier.pmid -->
         <xwalk:field-source from="dc.identifier.pmid">
@@ -478,10 +479,6 @@
                  trailing "; " on the last author name, which is a minor cosmetic difference from
                  the original. Revise using JSONPath with regex once the RT2 engine's JSONPath support
                  is confirmed (e.g. $.metadata['dc.contributor.author'][?(@.value =~ /,/)].value). -->
-      <!-- ⚠ FOUR of the eight sources below are NOT IN THE DEV METADATA REGISTRY — dc.identifier.volume,
-           .issue, .startpage and .endpage. On dev the citation therefore builds from authors, year, title
-           and journal only, and comes out as "Smith, J.; (2024). "Title" Journal" with no volume/issue/pages.
-           That is the registry, not the formula. Production carries all four. See the header note. -->
       <xwalk:field-mapping to="c-citation" separator="">
         <xwalk:field-source from="dc.contributor.author" suffix="; " />
         <xwalk:field-source prefix="(" from="dc.date.issued" format="date:Y" suffix="). " />
@@ -502,32 +499,32 @@
   </xwalk:field-maps>
   <!-- === VALUE MAPS ==================================================================================================================== -->
   <xwalk:value-maps>
-
+    
     <xwalk:value-map name="replace-authors-with-name-orcids" matchMode="regex">
       <!-- Attach ORCID iDs to author names (N.B. duplicate names will all get the first matching ORCID iD) -->
       <xwalk:value-mapping from="##AUTHOR##([^#]*)(?=.*?##NAME-ORCID##\1; (\d{4}-\d{4}-\d{4}-\d{3}[\dX]))" to="##AUTHOR##$1; $2" />
       <!-- Remove the name-orcid substrings -->
       <xwalk:value-mapping from="##NAME-ORCID##[^#]*" to="" />
     </xwalk:value-map>
-
+    
     <xwalk:value-map name="extract-name-from-name-orcid" matchMode="regex">
       <xwalk:value-mapping from="^(.*); \d{4}-\d{4}-\d{4}-\d{3}[\dX]$" to="$1" />
     </xwalk:value-map>
-
+    
     <xwalk:value-map name="extract-orcid-from-name-orcid" matchMode="regex">
       <xwalk:value-mapping from="^.*; (\d{4}-\d{4}-\d{4}-\d{3}[\dX])$" to="$1" />
       <xwalk:otherwise-mapping action="ignore-this-value" />
     </xwalk:value-map>
-
+    
     <xwalk:value-map name="extract-lastname-from-name-orcid" matchMode="regex">
       <xwalk:value-mapping from="^(.*?)(?:,[^,]*)?(; \d{4}-\d{4}-\d{4}-\d{3}[\dX])?$" to="$1" />
     </xwalk:value-map>
-
+    
     <xwalk:value-map name="guess-identifier-scheme" matchMode="regex">
       <xwalk:value-mapping from="^\d{4}-\d{4}-\d{4}-\d{3}[\dX]$" to="orcid" />
       <xwalk:otherwise-mapping action="ignore-this-value" />
     </xwalk:value-map>
-
+    
     <!-- ============================================================================================================
          dc.rights.uri => Elements author-licence   (the reverse of the deposit map's licence-to-dc.rights.uri)
          ============================================================================================================
@@ -584,7 +581,7 @@
       <!-- If non of the above match, ignore the value -->
       <xwalk:otherwise-mapping action="ignore-this-value" />
     </xwalk:value-map>
-
+    
     <!-- strips invalid characters from ISBN-10s and ISSNs -->
     <xwalk:value-map name="strip-invalid-characters-from-ISBN-10-or-ISSN" matchMode="regex">
       <!-- spaces are translated to hyphens for consistent presentation in Elements -->
@@ -594,7 +591,7 @@
       <!-- all remaining invalid characters are then removed-->
       <xwalk:value-mapping from="[^\dX-]" to="" />
     </xwalk:value-map>
-
+    
     <!-- strips invalid characters from ISBN-13s -->
     <xwalk:value-map name="strip-invalid-characters-from-ISBN-13" matchMode="regex">
       <!-- spaces are translated to hyphens for consistent presentation in Elements -->
@@ -602,7 +599,7 @@
       <!-- all remaining invalid characters are then removed-->
       <xwalk:value-mapping from="[^\d-]" to="" />
     </xwalk:value-map>
-
+    
     <!-- Parse dc.description.sponsorship into funding-acknowledgement data -->
     <xwalk:value-map name="dc.description.sponsorship-to-grant-id" matchMode="regex">
       <!-- When the string starts with the word "Grant" (case-insensitive), matches text after the word "Grant" up to the first
@@ -611,7 +608,7 @@
       <!-- If no match, ignore the value completely -->
       <xwalk:otherwise-mapping action="ignore-this-value" />
     </xwalk:value-map>
-
+    
     <xwalk:value-map name="dc.description.sponsorship-to-grant-org" matchMode="regex">
       <!-- When the string starts with the word "Grant" (case-insensitive) and contains at least one colon, matches text after
                  first colon up to the end of the string. Strips leading and trailing spaces. -->
@@ -619,13 +616,13 @@
       <!-- If no match, continue i.e. use the whole string as the funder name. -->
       <xwalk:otherwise-mapping action="continue" />
     </xwalk:value-map>
-
+    
     <xwalk:value-map name="language-none-custom">
       <xwalk:value-mapping from="eng" to="English" />
       <!-- if none of the above match, pass the value as-is -->
       <xwalk:otherwise-mapping action="continue" />
     </xwalk:value-map>
-
+    
     <!-- value map to look up languages from ISO 639-1 language code ================================================ -->
     <xwalk:value-map name="ISO639-1-to-language">
       <xwalk:value-mapping from="eng" to="English" />
@@ -831,7 +828,7 @@
       <!-- if none of the above match, pass the value as-is -->
       <xwalk:otherwise-mapping action="continue" />
     </xwalk:value-map>
-
+    
     <!-- DSpace 7 reports items in a submission workflow step as "Private (in review)", where pre-7 DSpace
          reported "Private". This map holds the pre-upgrade value. Both are valid Elements choice values —
          see the fuller note on the repository-status mapping in the default-harvest field map. -->
@@ -841,7 +838,7 @@
       <xwalk:otherwise-mapping action="continue" />
     </xwalk:value-map>
   </xwalk:value-maps>
-
+  
   <!-- === OBJECT TYPE SELECTOR ========================================================================================================== -->
   <!-- ==================================================================================================================================
        Decides, for each harvested DSpace item, (a) the Elements publication type and (b) which field map runs.
@@ -1112,7 +1109,7 @@
           <xwalkin:object-type-selection category="publication" object-type="media" field-map="default-harvest" />
         </xwalk:result>
       </xwalk:when>
-
+      
       <!-- other -->
       <xwalk:when>
         <!--there exists at least one value of dc.type that CONTAINS "Other" -->
@@ -1121,13 +1118,13 @@
           <xwalkin:object-type-selection category="publication" object-type="other" field-map="other-harvest" />
         </xwalk:result>
       </xwalk:when>
-
+      
       <xwalk:otherwise>
         <xwalk:result>
           <xwalkin:object-type-selection category="publication" object-type="other" field-map="other-harvest" />
         </xwalk:result>
       </xwalk:otherwise>
-
+      
     </xwalk:choose>
   </xwalkin:object-type-selector>
 </xwalkin:consolidated-maps>

@@ -1,22 +1,24 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <xwalkout:consolidated-maps xmlns:xwalk="http://www.symplectic.co.uk/elements/xwalkcommon" xmlns:xwalkout="http://www.symplectic.co.uk/elements/xwalkout" xmlns:api="http://www.symplectic.co.uk/publications/api">
   <!-- ===================================================================================================================================
-       DEV ENVIRONMENT — Deep Blue demo backend (backend.demo.deepblue-documents.lib.umich.edu, DSpace 7.6)
+       DEV ENVIRONMENT — Deep Blue STAGING backend (backend.staging.deepblue-documents.lib.umich.edu, DSpace 7)
        ===================================================================================================================================
-       ⚠ KNOWN BLOCKER — SIX TARGET FIELDS ARE NOT IN THE DEV METADATA REGISTRY
-       The dev instance runs a STOCK DSpace 7 registry (286 fields, incl. oaire/datacite/person schemas).
-       It is NOT a clone of the Deep Blue production registry. The following fields are used below but do
-       not exist in dev, and DSpace 7 turns ANY unregistered field into a 500 on PUT /core/items/{id} —
-       which fails the WHOLE deposit at step 3 of 6 (AddItemMetadata), with an uninformative response body:
+       ⚠ TARGET INSTANCE — read before editing anything below.
+       This map is verified against the STAGING backend above. It is NOT the demo backend
+       (backend.demo.deepblue-documents.lib.umich.edu), which is a different instance with a different
+       collection set and a different metadata registry. Collection UUIDs and handles do not transfer
+       between the two.
 
-           dc.identifier.volume      dc.identifier.issue       dc.identifier.startpage
-           dc.identifier.endpage     dc.identifier.pmid        dc.identifier.name-orcid
+       Registry verified 2026-11-05 against staging: 303 field definitions. All 46 DSpace fields this map
+       targets are registered there — including dc.identifier.volume, .issue, .startpage, .endpage, .pmid
+       and .name-orcid, which an earlier pass against the demo backend wrongly recorded as missing.
+       The only unregistered name appearing in this file is dc.rights.licence (line ~539), which is
+       commented out and inert; staging registers the US spelling dc.rights.license, so use that if it is
+       ever enabled.
 
-       These mappings are deliberately LEFT IN PLACE: production Deep Blue carries all six, and the prod
-       and dev crosswalks use an identical DSpace field set. The fix belongs in the dev registry, not here
-       — otherwise dev stops testing what prod actually runs. Create them with
-       POST /server/api/core/metadatafields (an RT2 account with Administrator rights can do this).
-       Until then every deposit to dev will 500.
+       Extracts behind these statements:
+         ../../repository_extracts/backend.staging.deepblue-documents.lib.umich.edu_metadata_fields.tsv
+         ../../repository_extracts/backend.staging.deepblue-documents.lib.umich.edu_collections.tsv
        =================================================================================================================================== -->
   <!-- === PARAMETERS ==================================================================================================================== -->
   <xwalk:parameters>
@@ -283,9 +285,6 @@
         </xwalk:field-source>
       </xwalk:field-mapping>
       <!-- Resolved user and metadata ORCIDs => dc.identifier.name-orcid -->
-      <!-- ⚠ dc.identifier.name-orcid IS NOT IN THE DEV METADATA REGISTRY. On dev this single field is
-           enough to 500 the entire deposit (DSpace 7 rejects the whole PUT, not just the field). Register
-           it on dev, or comment this mapping out to test the rest. See the header note at the top. -->
       <xwalk:field-mapping to="dc.identifier.name-orcid">
         <xwalk:field-source from="authors">
           <!-- We do not want to list names that do not have an ORCID iD associated with them. This outer value map ensures that is the case.
@@ -367,13 +366,10 @@
         <xwalk:field-source from="references" />
       </xwalk:field-mapping>-->
       <!-- 'volume' -->
-      <!-- ⚠ dc.identifier.volume IS NOT IN THE DEV METADATA REGISTRY — 500s the whole deposit on dev.
-           Register it on dev, or comment this mapping out to test the rest. See the header note. -->
       <xwalk:field-mapping to="dc.identifier.volume">
         <xwalk:field-source from="volume" />
       </xwalk:field-mapping>
       <!-- issue-->
-      <!-- ⚠ dc.identifier.issue IS NOT IN THE DEV METADATA REGISTRY — same as volume above. -->
       <xwalk:field-mapping to="dc.identifier.issue">
         <xwalk:field-source from="issue" />
       </xwalk:field-mapping>
@@ -420,9 +416,6 @@
         <xwalk:field-source from="parent-title" />
       </xwalk:field-mapping>
       <!--  pagination => dc.identifier.startpage and to dc.identifier.endpage-->
-      <!-- ⚠ NEITHER dc.identifier.startpage NOR dc.identifier.endpage IS IN THE DEV METADATA REGISTRY —
-           each one 500s the whole deposit on dev. Register both, or comment both out to test the rest.
-           See the header note at the top of this file. -->
       <xwalk:field-mapping to="dc.identifier.endpage">
         <xwalk:field-source from="pagination" data-part="pagination:end-page" />
       </xwalk:field-mapping>
@@ -544,8 +537,6 @@
         <xwalk:field-source from="c-description-tableofcontents" />
       </xwalk:field-mapping>
       <!-- dc.identifier.pmid -->
-      <!-- ⚠ dc.identifier.pmid IS NOT IN THE DEV METADATA REGISTRY — 500s the whole deposit on dev.
-           Register it on dev, or comment this mapping out to test the rest. See the header note. -->
       <xwalk:field-mapping to="dc.identifier.pmid">
         <xwalk:field-source from="external-identifiers" value-map="filter-to-pubmed-identifiers">
           <xwalk:field-source data-part="identifier:value" />
@@ -1063,24 +1054,23 @@
        collection for all types, no <xwalk:choose>. The "id" is what RT2 actually uses; "name" is a label for
        readers and is not matched against DSpace.
 
-       ⚠ A collection UUID is environment-specific. It MUST be re-pointed when this map is promoted to prod.
+       ⚠ A collection UUID is INSTANCE-specific — it does not transfer between demo, staging and prod.
+       It MUST be re-pointed when this map is promoted to prod.
 
-       REVERTED: the proposed replacement below was based on the wrong DSpace instance.
-       The original rationale is retained for reference, not as evidence about the intended backend:
-       This pointed at name="Symplectic Test Collection" id="601cbd93-df76-4d5e-a309-41f05ae1ebdf",
-       which does not exist on the dev backend — there is no such UUID and no such name in the 14 collections
-       the dev instance exposes. Every deposit failed at workspace-item creation before it could even reach
-       the metadata step. The collection the client actually created for this work is below ("Symptic
-       Elements" — their spelling, left verbatim so it matches the DSpace UI), confirmed live on
-       backend.demo.deepblue-documents.lib.umich.edu, handle 123456789/3359, under "Community One".
-       Inventory: clients/University_of_Michigan_Umich/rt2/dspace/repository_extracts/dspace_dev_collections.tsv
+       Verified live on backend.staging.deepblue-documents.lib.umich.edu, 2026-11-05: staging exposes two
+       collections, and "Symplectic Test Collection" id="601cbd93-df76-4d5e-a309-41f05ae1ebdf",
+       handle 123456789/2, is one of them.
+
+       HISTORY — do not re-apply the 2026-11-03 "fix". That pass checked this UUID against the DEMO backend
+       (backend.demo.deepblue-documents.lib.umich.edu), did not find it there, and repointed the selector to
+       "Symptic Elements" id="d366ffb9-8376-45e3-ac3d-1c3527425583" / handle 123456789/3359 — a collection
+       that exists ONLY on demo. The original value was correct for the staging target all along, and has
+       been restored. "Symptic Elements" must not be used here.
+       Inventory: ../../repository_extracts/backend.staging.deepblue-documents.lib.umich.edu_collections.tsv
 
        TODO before prod: replace with the production Deep Blue collection ("Michigan Research Experts
        Deposits") and its prod UUID. -->
   <xwalkout:collection-selector>
     <xwalkout:collection-selection name="Symplectic Test Collection" id="601cbd93-df76-4d5e-a309-41f05ae1ebdf" />
-    <!-- Reverted: this collection belongs to the wrong DSpace instance.
-    <xwalkout:collection-selection name="Symptic Elements" id="d366ffb9-8376-45e3-ac3d-1c3527425583" />
-    -->
   </xwalkout:collection-selector>
 </xwalkout:consolidated-maps>
