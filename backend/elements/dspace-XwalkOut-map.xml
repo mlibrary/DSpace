@@ -1054,23 +1054,8 @@
        collection for all types, no <xwalk:choose>. The "id" is what RT2 actually uses; "name" is a label for
        readers and is not matched against DSpace.
 
-       ⚠ A collection UUID is INSTANCE-specific — it does not transfer between demo, staging and prod.
-       It MUST be re-pointed when this map is promoted to prod.
-
-       Verified live on backend.staging.deepblue-documents.lib.umich.edu, 2026-11-05: staging exposes two
-       collections, and "Symplectic Test Collection" id="601cbd93-df76-4d5e-a309-41f05ae1ebdf",
-       handle 123456789/2, is one of them.
-
-       HISTORY — do not re-apply the 2026-11-03 "fix". That pass checked this UUID against the DEMO backend
-       (backend.demo.deepblue-documents.lib.umich.edu), did not find it there, and repointed the selector to
-       "Symptic Elements" id="d366ffb9-8376-45e3-ac3d-1c3527425583" / handle 123456789/3359 — a collection
-       that exists ONLY on demo. The original value was correct for the staging target all along, and has
-       been restored. "Symptic Elements" must not be used here.
-       Inventory: ../../repository_extracts/backend.staging.deepblue-documents.lib.umich.edu_collections.tsv
-
-       TODO before prod: replace with the production Deep Blue collection ("Michigan Research Experts
-       Deposits") and its prod UUID. -->
+       ⚠ A collection UUID is INSTANCE-specific — it does not transfer between demo, staging and prod. -->
   <xwalkout:collection-selector>
-    <xwalkout:collection-selection name="Symplectic Test Collection" id="601cbd93-df76-4d5e-a309-41f05ae1ebdf" />
+    <xwalkout:collection-selection name="Michigan Research Experts Deposits" id="ee9d8886-9a8f-47d9-99d0-923d687fe381" />
   </xwalkout:collection-selector>
 </xwalkout:consolidated-maps>
