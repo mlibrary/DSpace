@@ -150,6 +150,7 @@ public class Bundle extends DSpaceObject implements DSpaceObjectLegacySupport {
 
         String hidden_format = DSpaceServicesFactory.getInstance().getConfigurationService()
                                                  .getProperty("hidden.format");
+        Integer hiddenFormatId = hidden_format == null ? null : Integer.valueOf(hidden_format);
 
         String no_doi_email = DSpaceServicesFactory.getInstance().getConfigurationService()
                                                  .getProperty("nodoi.email");
@@ -181,7 +182,7 @@ public class Bundle extends DSpaceObject implements DSpaceObjectLegacySupport {
             if( (bit.getFormatId() == null) )
             { 
                bitstreamsNoHiddenFiles.add(bit); 
-            }else if (bit.getFormatId() != Integer.valueOf(hidden_format) ) 
+            } else if (hiddenFormatId == null || !bit.getFormatId().equals(hiddenFormatId))
             {
                 bitstreamsNoHiddenFiles.add(bit); 
             }

@@ -36,6 +36,7 @@ import org.apache.logging.log4j.Logger;
 import org.dspace.authorize.AuthorizeException;
 import org.dspace.authorize.ResourcePolicy;
 import org.dspace.authorize.service.AuthorizeService;
+import org.dspace.content.factory.ContentServiceFactory;
 import org.dspace.core.Constants;
 import org.dspace.core.Context;
 import org.junit.After;
@@ -335,6 +336,7 @@ public class BundleTest extends AbstractDSpaceObjectTest {
         File f = new File(testProps.get("test.bitstream").toString());
         Bitstream bs = bitstreamService.create(context, new FileInputStream(f));
         bs.setName(context, name);
+        bs.setFormat(context, ContentServiceFactory.getInstance().getBitstreamFormatService().create(context));
         bundleService.addBitstream(context, b, bs);
         context.restoreAuthSystemState();
 

@@ -531,12 +531,7 @@ public class DCInput {
      * @return true when there is no type restriction or typeName is allowed
      */
     public boolean isAllowedFor(String typeName) {
-        return true;
-        //if (typeBind.size() == 0) {
-        //    return true;
-        // }
-
-        //return typeBind.contains(typeName);
+        return typeBind.isEmpty() || typeBind.contains(typeName);
     }
 
     public String getScope() {
