@@ -226,6 +226,12 @@ GONE   <name-map collection-handle="2027.42/21609" submission-name="ipc" />
             <type>submission-form</type>
         </step-definition>
 
+        <step-definition id="traditionalpagetwo_elements" mandatory="true">
+            <heading>submit.progressbar.describe.steptwo</heading>
+            <processing-class>org.dspace.app.rest.submit.step.DescribeStep</processing-class>
+            <type>submission-form</type>
+        </step-definition>
+
         <step-definition id="traditionalpagetwo" mandatory="true">
             <heading>submit.progressbar.describe.steptwo</heading>
             <processing-class>org.dspace.app.rest.submit.step.DescribeStep</processing-class>
@@ -391,6 +397,7 @@ GONE   <name-map collection-handle="2027.42/21609" submission-name="ipc" />
     <!-- be defined in <step-definitions> above). -->
     <!-- -->
     <!-- -->
+
     <submission-definitions>
 
         <!--This "traditional" process defines the DEFAULT item submission process -->
@@ -910,9 +917,10 @@ GONE   <name-map collection-handle="2027.42/21609" submission-name="ipc" />
             <step id="collection"/>
             <step id="identifiers"/>
             <step id="traditionalpageone_elements"/>
+            <step id="traditionalpagetwo_elements"/>
             <step id="upload"/>
-            <!-- No cclicense or license step: the depositor accepts the
-                 "Deep Blue Documents Terms of Use version 2.1" in Elements,
+            <!-- No license or cclicense step: the depositor accepts the
+                 Deep Blue Documents Terms of Use version 2.1 in Elements,
                  and acceptance is recorded in dc.description.provenance. -->
         </submission-process>
 
