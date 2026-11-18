@@ -315,7 +315,7 @@
                     <label>U-M Campus</label>
                     <input-type value-pairs-name="um_campus">dropdown</input-type>
                     <hint>(* required)</hint>
-                    <required>true</required>
+                    <required>U-M Campus is required.</required>
                 </field>
             </row>
 
@@ -660,7 +660,7 @@
                     <label>U-M Campus</label>
                     <input-type value-pairs-name="um_campus">dropdown</input-type>
                     <hint>(* required)</hint>
-                    <required>true</required>
+                    <required>U-M Campus is required.</required>
                 </field>
             </row>
 
@@ -873,7 +873,7 @@
                     <label>Other Title(s)</label>
                     <input-type>onebox</input-type>
                     <hint>If the work has any alternate titles, please enter them.  Add additional by clicking + Add more. (* required)</hint>
-                    <required>You must enter a main title for this work.</required>
+                    <required></required>
                 </field>
             </row>
 
@@ -995,7 +995,7 @@
                     <label>U-M Campus</label>
                     <input-type value-pairs-name="um_campus">dropdown</input-type>
                     <hint>(* required)</hint>
-                    <required>true</required>
+                    <required>U-M Campus is required.</required>
                 </field>
             </row>
 
@@ -3099,7 +3099,7 @@
                     <label>Advisor(s)</label>
                     <input-type>onebox</input-type>
                     <hint>Advisor is required.  Add additional by clicking + Add more. (* required)</hint>
-                    <required>true</required>
+                    <required>Advisor is required.</required>
                 </field>
             </row>
 
@@ -5787,7 +5787,7 @@
                 <stored-value>blog post</stored-value>
             </pair>
             <pair>
-                <displayed-value>- Manuscript</displayed-value>
+                <displayed-value>- Website</displayed-value>
                 <stored-value>website</stored-value>
             </pair>
             <pair>
