@@ -28,8 +28,22 @@ jobs:
         uses: docker/build-push-action@v7.1.0
         with:
           context: .
+          pull: true
           push: true
           tags: 'ghcr.io/mlibrary/dspace/dspace-backend:${{ github.sha }}, ghcr.io/mlibrary/dspace/dspace-backend:${{ github.ref_name }}'
           file: backend.dockerfile
           build-args: |
             DEPENDENCIES_IMAGE=ghcr.io/mlibrary/dspace/dspace-dependencies:${{ github.ref_name }}
+
+      - name: Report Java version in published backend image
+        shell: bash
+        env:
+          BACKEND_IMAGE: ghcr.io/mlibrary/dspace/dspace-backend:${{ github.sha }}
+        run: |
+          docker run --rm --entrypoint java "$BACKEND_IMAGE" -version 2>&1 | tee java-version.txt
+          {
+            echo '### Java version in backend image'
+            echo '```'
+            cat java-version.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"

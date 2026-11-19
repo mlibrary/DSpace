@@ -40,7 +40,7 @@ RUN ant init_installation update_configs update_code update_webapps
 
 # Step 3 - Run tomcat
 # Create a new tomcat image that does not retain the the build directory contents
-FROM tomcat:9-jdk17
+FROM tomcat:9-jdk17-temurin
 ENV DSPACE_INSTALL=/dspace
 ENV TOMCAT_INSTALL=/usr/local/tomcat
 # Copy the /dspace directory from 'ant_build' containger to /dspace in this container
