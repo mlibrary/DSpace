@@ -86,12 +86,11 @@ sub SendEmail
                    'From'     => 'ulib-deepblue-documents-cron-reporting@umich.edu',
                    'Subject'  => $subject,
                   }
-                 );
-    print $mailer( $message );
-    $mailer->close;
+                 ) or die "Could not open mail delivery to $to: $!";
+    print {$mailer} $message or die "Could not write mail to $to: $!";
+    $mailer->close or die "Could not complete mail delivery to $to: $!";
 }
 
 
 __END__;
-
 

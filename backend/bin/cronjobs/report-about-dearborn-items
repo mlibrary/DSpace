@@ -87,6 +87,7 @@ my $date_str = strftime("%b%Y", localtime);  # e.g., "Sep2025"
 my $filename = qq{dissertation-report-$date_str.txt};
 my $file = qq{$gBaseDataDir/$filename};
 my $subject = qq{Dearborn Items Metadta for $date_str};
+$subject = "$ENV{'CRON_ENVIRONMENT'}: $subject" if $ENV{'CRON_ENVIRONMENT'};
 my $msg = qq{Attached is a text delimimted file containing metadata of all the Dearborn papers in DeepBlue Docs for $date_str};
 
 &WriteReportToFile  ($file, $report);
@@ -245,7 +246,7 @@ sub EmailZipFileData
     Disposition => 'attachment'
   );       
 
-  $msg->send('smtp', $gMailServer);
+  $msg->send('smtp', $gMailServer) or die "Could not send Dearborn report: $!";
   print "Email Sent Successfully\n";
 
 }
@@ -524,6 +525,5 @@ sub WriteReportToFile
   }
 
 __END__;
-
 
 

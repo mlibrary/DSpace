@@ -45,11 +45,12 @@ my $gMailServer     = $ENV{'mail__P__server'};
 
 my $dbhP = DBI->connect("dbi:Pg:dbname=$gDbName;host=$gDbService;port=$gDbPort", "$gDbUser", "$gDbPassword");
 
+my $has_anomalies = 0;
 &FindBaggingErrors();
 
 $dbhP->disconnect;
 
-exit;
+exit (($ENV{'CRON_WRAPPER'} || '') eq '1' && $has_anomalies ? 10 : 0);
 
 sub FindBaggingErrors
 {
@@ -73,8 +74,10 @@ sub FindBaggingErrors
   $count = $count + 0;
   if ( $count > 0 )
     {
+      $has_anomalies = 1;
+      print "$count APTrust bagging error(s); check aptrust_bagging_error.\n";
       my $email = qq{ulib-deepblue-documents-cron-reporting\@umich.edu};    
-      &EmailErrorMsg ( $email );
+      &EmailErrorMsg ( $email ) unless ($ENV{'CRON_WRAPPER'} || '') eq '1';
     }
 
 
@@ -96,8 +99,10 @@ sub FindBaggingErrors
 
   if ( $objects ne '' )
     {
+      $has_anomalies = 1;
+      print "APTrust objects with non-Success status: $objects\n";
       my $email = qq{ulib-deepblue-documents-cron-reporting\@umich.edu};    
-      &EmailErrorMsgTwo ( $email, $objects );
+      &EmailErrorMsgTwo ( $email, $objects ) unless ($ENV{'CRON_WRAPPER'} || '') eq '1';
     }
 
 }
@@ -153,6 +158,5 @@ sub EmailErrorMsgTwo
 
 
 __END__;
-
 
 

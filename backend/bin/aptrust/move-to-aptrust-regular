@@ -106,6 +106,7 @@ my $gHandlePrefix  = qq{2027.42};
 my $gBucketname = $ENV{'APTRUST_BUCKET_NAME'};
 
 my $gAllIsFine = 1;
+my $run_failed = 0;
 
 #This funciton was used to find items that were missing title in Docs.
 #&ItemsMissingTitles();
@@ -115,7 +116,7 @@ my $gAllIsFine = 1;
 
 $dbhP->disconnect;
 
-exit;
+exit (($ENV{'CRON_WRAPPER'} || '') eq '1' && $run_failed ? 1 : 0);
 
 sub CleanoutDirs
   {    
@@ -139,6 +140,7 @@ sub MoveAllToAPtrust
       if ( ! &ItemHasTitle( $handle ) )
       {
         print "Item $handle is missing title; skipping APTrust deposit.\n";
+        $run_failed = 1;
         my $msg = qq{Item missing title; skipped APTrust deposit.};
         my $statement = qq{delete from aptrust_bagging_error where handle ='$handle'};
         &ProcessSQL ( $statement );
@@ -162,6 +164,11 @@ sub MoveAllToAPtrust
 	    {
 	      &DepositBagToAPTrust();
 	    }
+      if ( $gAllIsFine != 1 )
+      {
+        $run_failed = 1;
+        warn "APTrust deposit failed for $handle; check aptrust_bagging_error.\n";
+      }
       &RemoveBag();
     }
   }
@@ -499,11 +506,12 @@ sub DoReplication
     my $statement = qq{$gBaseBinDir/dspace curate -t transmitaip -i  $handle -r - -e gkostin\@umich.edu 2>&1};
 
     my $out = `$statement`;
+    my $command_status = $?;
     #$out =~ s,log4j:ERROR Unable to delete log file,,gs;
     $out =~ s,\n,,gs;
 
     print $out;
-    if (!($out =~ /Curation task: transmitaip performed on:\s*([^ ]+).*?'Created AIP:\s*'([^']+)'/))
+    if ($command_status != 0 || !($out =~ /Curation task: transmitaip performed on:\s*([^ ]+).*?'Created AIP:\s*'([^']+)'/))
     {
 	    #There has been an error.
 	   $gAllIsFine = 0;
@@ -749,8 +757,16 @@ sub DepositBagToAPTrust
     {
       #This is where you send one bag at a time and record that in the db.
       my $out = `/root/.local/bin/aws s3 cp $gBagDir/$bag s3://$gBucketname/$bag 2>&1`;
+      my $command_status = $?;
       my $msg = qq{Sending $bag to APTurst via aws.\n};
       print $msg;
+      print $out;
+      if ( $command_status != 0 )
+      {
+        $gAllIsFine = 0;
+        warn "APTrust upload failed for $bag (wait status $command_status)\n";
+        next;
+      }
 
       my $handle = $bag;
       $handle =~ s,.tar,,;
@@ -950,6 +966,5 @@ sub WriteFile
 
 
 __END__;
-
 
 

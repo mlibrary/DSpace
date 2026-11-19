@@ -51,18 +51,19 @@ $sth->execute()             # Execute the query
     or die "Couldn't execute statement: " . $sth->errstr;
 
 my $result = qq{If any resuts other than  'BITSTREAM_MARKED_DELETED', 'BITSTREAM_NOT_FOUND', or 'CHECKSUM_MATCH' are found in the checksum_history table are : \n};
+my $has_anomalies = 0;
 my ( @data );
   while (@data = $sth->fetchrow_array()) {
-  my $result .= qq{$data[0]; };
+  $result .= qq{$data[0]; };
+  $has_anomalies = 1;
 }
 
 $dbhP->disconnect;
 
 print $result;
 
-exit;
+exit (($ENV{'CRON_WRAPPER'} || '') eq '1' && $has_anomalies ? 10 : 0);
 
 __END__;
-
 
 

@@ -67,7 +67,7 @@ $sth->finish;
 
 $dbhP->disconnect;
 
-exit;
+exit (($ENV{'CRON_WRAPPER'} || '') eq '1' && $story ne '' ? 10 : 0);
 
 
 sub GetHandle
@@ -97,5 +97,4 @@ $sth->finish;
   }
 
 __END__;
-
 

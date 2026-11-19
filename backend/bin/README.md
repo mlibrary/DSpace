@@ -14,6 +14,38 @@ hard-coded secrets.
 
 ---
 
+## Kubernetes Cron Wrapper Contract
+
+The job-specific Bash wrappers in `deepblue-documents-kube` set
+`CRON_WRAPPER=1` and `CRON_ENVIRONMENT` (for example, `production`).
+Deploy these script updates in the backend image before enabling the wrappers.
+
+In wrapper mode, `check-checksum`, `report-double-original`,
+`report-too-many-authors`, `email-aptrust-bagging-errors`, and
+`report-aptrust-status` exit **10** when they find anomalies. The author and
+bagging-error scripts print their findings instead of sending their own email.
+The APTrust status check retains the existing monitoring policy that any
+non-`Success` result warrants attention, including work still in progress.
+The wrapper logs the output and sends one environment-labeled notification.
+Without wrapper mode, the existing direct-invocation notification and exit
+behavior is preserved; checksum results are now correctly included in output.
+
+`filter-media-cronjob` and `move-to-aptrust-regular` exit nonzero in wrapper
+mode for their detected per-item failures. The mover also checks replicator
+and AWS upload exit status and does not record a failed upload as sent.
+This is not a comprehensive audit of the legacy bag-building utilities:
+some auxiliary subprocesses still do not check exit status.
+`report-about-dearborn-items` keeps delivering its attachment, prefixes its
+subject when `CRON_ENVIRONMENT` is supplied, and fails if delivery fails.
+`perl_mailer` now fails explicitly on delivery errors.
+
+Run the isolated contract checks with
+`perl backend/bin/tests/cron-wrapper-contract.t` from the repository root.
+They mock database, HTTP, and email dependencies, and run the APTrust mover
+only in dry-run mode.
+
+---
+
 ## Top-Level Scripts and Templates
 
 Utility scripts and XML metadata templates located directly in `backend/bin/`.
