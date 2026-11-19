@@ -217,7 +217,7 @@ for my $scenario (qw(success mail-close-failure)) {
         is($status, 0, 'Dearborn report succeeds');
         ok($mailed, 'Dearborn attachment delivery is preserved');
         open my $fh, '<', "$work/deliveries.log" or die $!;
-        like(scalar <$fh>, qr/^production: Dearborn/, 'Dearborn subject identifies environment');
+        like(scalar <$fh>, qr/^Dearborn Items Metadta for /, 'Dearborn subject remains unprefixed when CRON_ENVIRONMENT is set');
         close $fh or die $!;
     } else {
         isnt($status, 0, 'Dearborn report exposes delivery failure');

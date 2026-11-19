@@ -35,8 +35,8 @@ mode for their detected per-item failures. The mover also checks replicator
 and AWS upload exit status and does not record a failed upload as sent.
 This is not a comprehensive audit of the legacy bag-building utilities:
 some auxiliary subprocesses still do not check exit status.
-`report-about-dearborn-items` keeps delivering its attachment, prefixes its
-subject when `CRON_ENVIRONMENT` is supplied, and fails if delivery fails.
+`report-about-dearborn-items` keeps delivering its attachment with its original,
+unprefixed subject, and fails if delivery fails.
 `perl_mailer` now fails explicitly on delivery errors.
 
 Run the isolated contract checks with
