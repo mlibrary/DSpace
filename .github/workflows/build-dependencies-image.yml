@@ -28,6 +28,7 @@ jobs:
         uses: docker/build-push-action@v7.1.0
         with:
           context: .
+          pull: true
           push: true
           tags: 'ghcr.io/mlibrary/dspace/dspace-dependencies:${{ github.sha }}, ghcr.io/mlibrary/dspace/dspace-dependencies:${{ github.ref_name }}'
           file: dependencies.dockerfile

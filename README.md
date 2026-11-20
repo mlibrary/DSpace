@@ -17,6 +17,22 @@ The frontend service is in the [mlibrary/dspace-angular](https://github.com/mlib
 | Build dspace-express image      | dspace/dspace-express      | Express server for Prometheus metrics         |
 
 **The `dspace/dspace-backend` package is dependent on the `dspace/dspace-dependencies` package and needs to be built first.**
+
+### Java updates in backend images
+
+The backend uses floating Java 17 image tags, including `tomcat:9-jdk17-temurin`
+for the runtime. The dependencies and backend image workflows set `pull: true`
+to check for refreshed base images on every build, without pinning a Java patch
+version. Rebuild the dependencies image first, then the backend image, to refresh
+both the Maven build JDK and the runtime JDK.
+
+A Temurin release is available to these builds only after the corresponding
+Maven, Eclipse Temurin, and Tomcat image tags have been updated by their publishers.
+The backend workflow reports `java -version` from the published image in its logs.
+Existing containers do not update automatically: pull and redeploy the rebuilt
+backend image, then check the running container with
+`docker compose exec backend java -version`.
+
 ## Local Production Sandbox
 Using Docker Compose, you can build and run the backend services locally to simulate a production environment.
 ```shell
@@ -157,4 +173,3 @@ Then you can run the backend service in development mode with hot reload enabled
 Ensure your local configuration (dspace/config/local.cfg) points to localhost:5432 for the database and http://localhost:8983/solr for Solr.
 •
 Run the Spring Boot main class org.dspace.app.rest.Application located in dspace-server-webapp/src/main/java/org/dspace/app/rest/Application.java from IntelliJ IDEA or deploy the dspace-server-webapp module to a local Tomcat 9 instance.
-
