@@ -82,10 +82,40 @@ done
 [[ $count == 15 ]] || fail "expected 15 wrappers, got $count"
 
 export MOCK_SCENARIO=success
-for environment in staging demo workshop; do
+for environment in staging demo workshop preview testing; do
   run 0 index-discovery "$environment"
+  contains "$work/commands" 'dspace index-discovery'
+  [[ ! -e $work/mail-args ]] || fail "index-discovery mailed on success in $environment"
   run 0 index-oai "$environment"
+  contains "$work/commands" 'dspace oai import'
+  [[ ! -e $work/mail-args ]] || fail "index-oai mailed on success in $environment"
 done
+for environment in staging demo workshop preview testing custom-environment; do
+  for script in "$wrappers"/*.sh; do
+    job=$(basename "$script" .sh)
+    [[ $job != _runner ]] || continue
+    run 0 "$job" "$environment"
+    contains "$work/log" "environment=$environment wrapper=1"
+    [[ -s $work/commands ]] || fail "$job did not run in $environment"
+  done
+done
+run 0 filter-media testing
+contains "$work/commands" 'dspace filter-media'
+run 0 checksum-checker preview
+contains "$work/commands" 'check-checksum'
+bash -c 'source "$1"; job_command() { echo invoked; }; run_job new-aptrust-task normal testing' \
+  _ "$wrappers/_runner.sh" > "$work/log" 2>&1
+contains "$work/log" 'invoked'
+bash -c 'source "$1"; job_command() { echo invoked; }; run_job new-maintenance-task normal testing' \
+  _ "$wrappers/_runner.sh" > "$work/log" 2>&1
+contains "$work/log" 'invoked'
+export MOCK_SCENARIO=failure
+for job in index-discovery index-oai; do
+  run 7 "$job" testing
+  contains "$work/mail-args" "testing: $job FAILED"
+  contains "$work/mail-body" 'stderr from'
+done
+export MOCK_SCENARIO=success
 run 0 index-oai staging
 contains "$work/commands" 'dspace oai import'
 run 0 sub-weekly production
@@ -163,12 +193,12 @@ export MOCK_SCENARIO=success CRON_EMAIL_TO=cron-test@example.invalid
 run 0 monthly-report production
 contains "$work/mail-args" 'cron-test@example.invalid'
 unset CRON_EMAIL_TO
-run 64 index-discovery invalid
-run 64 index-discovery preview
-run 64 move-to-aptrust-regular staging
 status=0
 bash "$wrappers/index-oai.sh" > "$work/log" 2>&1 || status=$?
 [[ $status == 64 ]] || fail 'missing environment was accepted'
+status=0
+bash "$wrappers/index-oai.sh" "" > "$work/log" 2>&1 || status=$?
+[[ $status == 64 ]] || fail 'empty environment was accepted'
 status=0
 bash "$wrappers/index-oai.sh" staging extra > "$work/log" 2>&1 || status=$?
 [[ $status == 64 ]] || fail 'extra arguments were accepted'
