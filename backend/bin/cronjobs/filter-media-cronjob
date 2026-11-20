@@ -46,23 +46,32 @@ my @item_ids = &GetAllItems();
 
 # DSpace CLI log (see dspace/config/log4j2-cli.xml); full stack traces only go here
 my $gCliLog = $ENV{'DSPACE_CLI_LOG'} || '/dspace/data/log/dspace-cli.log';
+my $gBinDir = $ENV{'DSPACE_BIN_DIR'} || '/dspace/bin';
+my $run_failed = 0;
 
 foreach my $item_id ( @item_ids )
   {
-    my $command = qq{/dspace/bin/dspace filter-media -i $item_id};
+    my $command = qq{"$gBinDir/dspace" filter-media -i $item_id};
     print "$command\n";
 
     my $logOffset = -s $gCliLog || 0;
 
 # Redirect stderr to stdout so errors are included in the emailed report
 my $output = `$command 2>&1`;
+my $command_status = $?;
 
 # Print the output
 print $output;
+    if ( $command_status != 0 )
+      {
+        warn "filter-media failed for $item_id (wait status $command_status)\n";
+        $run_failed = 1;
+      }
 
     # stderr only has the error message; pull the root cause from the log
     if ( $output =~ m,ERROR filtering, )
       {
+        $run_failed = 1;
         print &GetLogCauses ( $gCliLog, $logOffset );
       }
 
@@ -70,7 +79,7 @@ print $output;
 
 
 $dbhP->disconnect;
-exit;
+exit (($ENV{'CRON_WRAPPER'} || '') eq '1' && $run_failed ? 1 : 0);
 
 sub GetAllItems
 {

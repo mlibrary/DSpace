@@ -119,11 +119,12 @@ if ($doTest eq 'test')
 
 }
 
+my $has_anomalies = 0;
 &CheckStatusOfBags();
 
 $dbhP->disconnect;
 
-exit;
+exit (($ENV{'CRON_WRAPPER'} || '') eq '1' && $has_anomalies ? 10 : 0);
 
 sub CheckStatusOfBags
     {
@@ -220,6 +221,12 @@ sub RecordStatusOfBag
 
         my $action = $more[0][0]{'action'};
         my $status = $more[0][0]{'status'};
+        if ( !defined($status) || $status ne 'Success' )
+        {
+          $has_anomalies = 1;
+          print "APTrust non-Success status for $object_identifier: " .
+            (defined($status) ? $status : '(missing status)') . "\n";
+        }
         my $storage_option = $more[0][0]{'storage_option'};  #Standard or Glacier.
         my $updated_at = $more[0][0]{'updated_at'}; 
 
@@ -244,6 +251,7 @@ sub RecordStatusOfBag
     }
     else
     {
+        $has_anomalies = 1;
 	      my $statement = qq{delete from aptrust_object_status where handle='$handle'};
         print $statement . "\n";
 	      &ProcessSQL ( $statement );
@@ -317,6 +325,5 @@ sub WriteFile
 
 
 __END__;
-
 
 

@@ -14,6 +14,48 @@ hard-coded secrets.
 
 ---
 
+## Kubernetes Cron Wrapper Contract
+
+The job-specific Bash wrappers in `cronjobs/wrappers/` are intended to be called
+by Kubernetes CronJobs, for example:
+`bash /dspace/bin/cronjobs/wrappers/checksum-checker.sh production`.
+They set `CRON_WRAPPER=1` and `CRON_ENVIRONMENT` for the wrapped script.
+Deploy these script updates in the backend image before enabling the wrappers.
+
+In wrapper mode, `check-checksum`, `report-double-original`,
+`report-too-many-authors`, `email-aptrust-bagging-errors`, and
+`report-aptrust-status` exit **10** when they find anomalies. The author and
+bagging-error scripts print their findings instead of sending their own email.
+The APTrust status check retains the existing monitoring policy that any
+non-`Success` result warrants attention, including work still in progress.
+The wrapper logs the output and sends one environment-labeled notification.
+Without wrapper mode, the existing direct-invocation notification and exit
+behavior is preserved; checksum results are now correctly included in output.
+
+`filter-media-cronjob` and `move-to-aptrust-regular` exit nonzero in wrapper
+mode for their detected per-item failures. The mover also checks replicator
+and AWS upload exit status and does not record a failed upload as sent.
+This is not a comprehensive audit of the legacy bag-building utilities:
+some auxiliary subprocesses still do not check exit status.
+`report-about-dearborn-items` keeps delivering its attachment with its original,
+unprefixed subject, and fails if delivery fails.
+`perl_mailer` now fails explicitly on delivery errors.
+
+Each job wrapper accepts exactly one environment argument: `production`,
+`staging`, `demo`, `workshop`, `preview`, or `testing`. Production is enabled
+for all jobs; non-production environments are restricted to the jobs documented
+below.
+Wrappers share `_runner.sh` for environment validation, output capture,
+notifications, and exit handling.
+
+Run the wrapper tests with
+`bash backend/bin/cronjobs/wrappers/tests/wrappers.sh` and the isolated script
+contract checks with `perl backend/bin/tests/cron-wrapper-contract.t` from the
+repository root. The contract checks mock database, HTTP, and email
+dependencies, and run the APTrust mover only in dry-run mode.
+
+---
+
 ## Top-Level Scripts and Templates
 
 Utility scripts and XML metadata templates located directly in `backend/bin/`.
@@ -74,6 +116,34 @@ releases, filter-media runs, and routine reports.
 | [`report-too-many-authors`](cronjobs/report-too-many-authors)               | Perl script  | Queries `metadatavalue` for items exceeding a hardcoded threshold of `dc.contributor.author` entries and emails a report to the configured address via `mail__P__server`.                                                                                                                           |
 | [`report-too-many-db-connections`](cronjobs/report-too-many-db-connections) | Perl script  | Counts PostgreSQL connections "in transaction" for the DSpace database by piping `ps -ef` through `grep` to match "in trans" process listings, and emails an alert to a hardcoded address if the count exceeds 10.                                                                                  |
 | [`update_author_list_too_long`](cronjobs/update_author_list_too_long)       | Perl script  | Fixes items whose author metadata list exceeds the display limit by truncating or restructuring the `dc.contributor.author` entries and staging corrected XML for `itemupdate`. Uses `BASE_DATA_DIR` and `BASE_BIN_DIR` env vars.                                                                   |
+
+---
+
+## `cronjobs/wrappers/` — Kubernetes CronJob Entrypoints
+
+Bash wrappers that provide environment-aware execution, logging, and email
+notifications for scheduled jobs. Job wrappers share `_runner.sh`; the argument
+is the target environment.
+
+| File                                                                                     | Type         | Description                                                                                                                                                                                  |
+|------------------------------------------------------------------------------------------|--------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [`_runner.sh`](cronjobs/wrappers/_runner.sh)                                              | Bash helper  | Shared wrapper runner. Validates the environment and job allowlist, captures output, sends configured notifications, and maps job results to exit statuses.                                  |
+| [`checksum-checker.sh`](cronjobs/wrappers/checksum-checker.sh)                           | Bash wrapper | Runs the custom `cronjobs/check-checksum` query in anomaly-reporting mode; sends a notification and exits 10 when anomalous checksum-history result codes are found.                          |
+| [`doi-process.sh`](cronjobs/wrappers/doi-process.sh)                                     | Bash wrapper | Runs the DSpace DOI organiser's update, status, reserve, and delete operations; adds quiet mode in staging and returns a failure if any operation fails.                                     |
+| [`dspace-checksum-checker.sh`](cronjobs/wrappers/dspace-checksum-checker.sh)             | Bash wrapper | Runs `dspace checker -d 1h -p` in staging; invokes DSpace's built-in bitstream checksum checker.                                                                                              |
+| [`email-aptrust-bagging-errors.sh`](cronjobs/wrappers/email-aptrust-bagging-errors.sh)   | Bash wrapper | Runs the APTrust bagging-error and status checks in anomaly-reporting mode; sends a wrapper notification when issues are found.                                                              |
+| [`filter-media.sh`](cronjobs/wrappers/filter-media.sh)                                   | Bash wrapper | Runs DSpace `filter-media` in staging and the custom `filter-media-cronjob` in production; treats reported per-item filtering errors as anomalies.                                          |
+| [`index-discovery.sh`](cronjobs/wrappers/index-discovery.sh)                             | Bash wrapper | Runs `dspace index-discovery`; enabled in production, staging, demo, and workshop.                                                                                                            |
+| [`index-oai.sh`](cronjobs/wrappers/index-oai.sh)                                         | Bash wrapper | Runs `dspace oai import`; enabled in production, staging, demo, and workshop.                                                                                                                 |
+| [`monthly-report.sh`](cronjobs/wrappers/monthly-report.sh)                               | Bash wrapper | Runs `monthly_report` and emails its full output as a report, including when the command succeeds.                                                                                            |
+| [`move-to-aptrust-regular.sh`](cronjobs/wrappers/move-to-aptrust-regular.sh)             | Bash wrapper | Runs the regular APTrust export pipeline; propagates failures from item processing and upload.                                                                                               |
+| [`report-about-dearborn-items.sh`](cronjobs/wrappers/report-about-dearborn-items.sh)     | Bash wrapper | Runs the Dearborn items report, preserving its attachment delivery and original email subject.                                                                                                |
+| [`report-aptrust-status.sh`](cronjobs/wrappers/report-aptrust-status.sh)                 | Bash wrapper | Runs the APTrust status check in anomaly-reporting mode; sends a wrapper notification when non-Success results require attention.                                                             |
+| [`report-double-original.sh`](cronjobs/wrappers/report-double-original.sh)               | Bash wrapper | Runs the duplicate-ORIGINAL-bundle report in anomaly-reporting mode; sends a notification and exits 10 when matches are found.                                                               |
+| [`report-too-many-authors.sh`](cronjobs/wrappers/report-too-many-authors.sh)             | Bash wrapper | Runs the excessive-author report in anomaly-reporting mode; sends a notification and exits 10 when matches are found.                                                                        |
+| [`sub-monthly.sh`](cronjobs/wrappers/sub-monthly.sh)                                     | Bash wrapper | Sends monthly DSpace subscriptions with `dspace subscription-send -f M`.                                                                                                                     |
+| [`sub-weekly.sh`](cronjobs/wrappers/sub-weekly.sh)                                       | Bash wrapper | Sends weekly DSpace subscriptions with `dspace subscription-send -f W`.                                                                                                                     |
+| [`tests/wrappers.sh`](cronjobs/wrappers/tests/wrappers.sh)                               | Bash test     | Isolated wrapper tests covering environment restrictions, command invocation, output capture, notifications, and exit-status handling.                                                     |
 
 ---
 

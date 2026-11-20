@@ -245,7 +245,7 @@ sub EmailZipFileData
     Disposition => 'attachment'
   );       
 
-  $msg->send('smtp', $gMailServer);
+  $msg->send('smtp', $gMailServer) or die "Could not send Dearborn report: $!";
   print "Email Sent Successfully\n";
 
 }
@@ -524,6 +524,4 @@ sub WriteReportToFile
   }
 
 __END__;
-
-
 
