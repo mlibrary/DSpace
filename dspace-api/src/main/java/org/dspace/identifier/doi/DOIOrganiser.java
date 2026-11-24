@@ -562,7 +562,28 @@ public class DOIOrganiser {
      * @param doiRow    - DOI to update
      */
     public void update(DOI doiRow) {
+        String identifier = DOI.SCHEME + doiRow.getDoi();
+        if (!quiet) {
+            System.out.println("Updating metadata of DOI " + identifier + ".");
+            System.out.flush();
+        }
+
+        try {
+            updateMetadata(doiRow);
+        } catch (RuntimeException ex) {
+            if (!quiet) {
+                System.err.println("It wasn't possible to update this identifier: " + identifier);
+            }
+            throw ex;
+        }
+    }
+
+    private void updateMetadata(DOI doiRow) {
         DSpaceObject dso = doiRow.getDSpaceObject();
+        if (dso == null) {
+            throw new IllegalStateException("DOI " + DOI.SCHEME + doiRow.getDoi()
+                                                + " has no associated DSpace object.");
+        }
         if (Constants.ITEM != dso.getType()) {
             throw new IllegalArgumentException("Currently DSpace supports DOIs for Items only.");
         }
@@ -605,15 +626,14 @@ public class DOIOrganiser {
             LOG.error("Database table DOI contains a DOI that is not valid: "
                           + DOI.SCHEME + doiRow.getDoi() + "!", ex);
 
-            if (!quiet) {
-                System.err.println("It wasn't possible to update this identifier: " + DOI.SCHEME + doiRow.getDoi());
-            }
-
             throw new IllegalStateException("Database table DOI contains a DOI "
                                                 + " that is not valid: "
                                                 + DOI.SCHEME + doiRow.getDoi() + "!", ex);
         } catch (SQLException ex) {
             LOG.error("It wasn't possible to connect to the Database!", ex);
+            if (!quiet) {
+                System.err.println("It wasn't possible to update this identifier: " + DOI.SCHEME + doiRow.getDoi());
+            }
         }
     }
 
