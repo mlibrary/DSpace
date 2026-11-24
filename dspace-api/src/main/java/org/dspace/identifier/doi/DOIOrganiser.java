@@ -100,7 +100,7 @@ public class DOIOrganiser {
         DOIOrganiser organiser = new DOIOrganiser(context,
             new DSpace().getSingletonService(DOIIdentifierProvider.class));
         // run command line interface
-        runCLI(context, organiser, args);
+        int exitCode = runCLI(context, organiser, args);
 
         try {
             context.complete();
@@ -109,9 +109,20 @@ public class DOIOrganiser {
             System.exit(-1);
         }
 
+        if (exitCode != 0) {
+            System.exit(exitCode);
+        }
     }
 
-    public static void runCLI(Context context, DOIOrganiser organiser, String[] args) {
+    /**
+     * Run the requested DOI operations, continuing after individual queued update failures.
+     * @param context DSpace context
+     * @param organiser organiser performing the operations
+     * @param args command line arguments
+     * @return 1 if any queued metadata update failed, otherwise 0
+     */
+    public static int runCLI(Context context, DOIOrganiser organiser, String[] args) {
+        int exitCode = 0;
         // initialize options
         Options options = new Options();
 
@@ -208,7 +219,7 @@ public class DOIOrganiser {
             organiser.list("deletion", null, null, DOIIdentifierProvider.TO_BE_DELETED);
         }
 
-        DOIService doiService = IdentifierServiceFactory.getInstance().getDOIService();
+        DOIService doiService = organiser.doiService;
         // Do we get a filter?
         if (line.hasOption("filter")) {
             String filter = line.getOptionValue("filter");
@@ -268,10 +279,21 @@ public class DOIOrganiser {
                 }
 
                 for (DOI doi : dois) {
-                    organiser.update(doi);
-                    context.uncacheEntity(doi);
+                    try {
+                        organiser.update(doi);
+                    } catch (RuntimeException ex) {
+                        exitCode = 1;
+                        String message = "Failed to update DOI " + DOI.SCHEME + doi.getDoi();
+                        LOG.error(message, ex);
+                        System.err.println(message + ": " + ex.getMessage());
+                        ex.printStackTrace(System.err);
+                    } finally {
+                        context.uncacheEntity(doi);
+                    }
                 }
             } catch (SQLException ex) {
+                exitCode = 1;
+                LOG.error("Error processing DOI metadata update queue", ex);
                 System.err.println("Error in database connection:" + ex.getMessage());
                 ex.printStackTrace(System.err);
             }
@@ -358,6 +380,7 @@ public class DOIOrganiser {
             }
         }
 
+        return exitCode;
     }
 
     /**
@@ -599,6 +622,7 @@ public class DOIOrganiser {
         } catch (IdentifierException ex) {
             if (!(ex instanceof DOIIdentifierException)) {
                 LOG.error("It wasn't possible to register the identifier online. ", ex);
+                throw new IllegalStateException("Unable to update DOI " + DOI.SCHEME + doiRow.getDoi(), ex);
             }
 
             DOIIdentifierException doiIdentifierException = (DOIIdentifierException) ex;
@@ -621,6 +645,7 @@ public class DOIOrganiser {
             if (!quiet) {
                 System.err.println("It wasn't possible to update this identifier: " + DOI.SCHEME + doiRow.getDoi());
             }
+            throw new IllegalStateException("Unable to update DOI " + DOI.SCHEME + doiRow.getDoi(), ex);
 
         } catch (IllegalArgumentException ex) {
             LOG.error("Database table DOI contains a DOI that is not valid: "
@@ -634,6 +659,7 @@ public class DOIOrganiser {
             if (!quiet) {
                 System.err.println("It wasn't possible to update this identifier: " + DOI.SCHEME + doiRow.getDoi());
             }
+            throw new IllegalStateException("Unable to update DOI " + DOI.SCHEME + doiRow.getDoi(), ex);
         }
     }
 
