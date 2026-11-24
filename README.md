@@ -16,7 +16,16 @@ The frontend service is in the [mlibrary/dspace-angular](https://github.com/mlib
 | Build dspace-solr image         | dspace/dspace-solr         | Solr search engine for DSpace                 |
 | Build dspace-express image      | dspace/dspace-express      | Express server for Prometheus metrics         |
 
-**The `dspace/dspace-backend` package is dependent on the `dspace/dspace-dependencies` package and needs to be built first.**
+**Build the `dspace/dspace-dependencies` package before building `dspace/dspace-backend`.**
+
+The dependencies workflow publishes the shared
+`ghcr.io/mlibrary/dspace/dspace-dependencies:base` image. Build it once as part of
+base-image preparation, alongside the db, express, and solr images. Backend
+builds on all branches reuse this image; they do not require a dependencies image
+with a matching commit SHA or branch tag. Rerun the dependencies workflow only
+when intentionally refreshing the base image (for example, after Maven dependency
+or build JDK changes). Run it from the branch whose dependencies should be shared.
+Backend images continue to be tagged with their commit SHA and branch name.
 
 ### Java updates in backend images
 

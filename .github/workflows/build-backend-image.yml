@@ -33,7 +33,7 @@ jobs:
           tags: 'ghcr.io/mlibrary/dspace/dspace-backend:${{ github.sha }}, ghcr.io/mlibrary/dspace/dspace-backend:${{ github.ref_name }}'
           file: backend.dockerfile
           build-args: |
-            DEPENDENCIES_IMAGE=ghcr.io/mlibrary/dspace/dspace-dependencies:${{ github.ref_name }}
+            DEPENDENCIES_IMAGE=ghcr.io/mlibrary/dspace/dspace-dependencies:base
 
       - name: Report Java version in published backend image
         shell: bash
